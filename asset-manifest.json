@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/duaghwns.github.io/blog/static/css/main.f9fbe189.css",
-    "main.js": "/duaghwns.github.io/blog/static/js/main.5d398386.js",
-    "static/js/787.f587e8d5.chunk.js": "/duaghwns.github.io/blog/static/js/787.f587e8d5.chunk.js",
-    "index.html": "/duaghwns.github.io/blog/index.html",
-    "main.f9fbe189.css.map": "/duaghwns.github.io/blog/static/css/main.f9fbe189.css.map",
-    "main.5d398386.js.map": "/duaghwns.github.io/blog/static/js/main.5d398386.js.map",
-    "787.f587e8d5.chunk.js.map": "/duaghwns.github.io/blog/static/js/787.f587e8d5.chunk.js.map"
+    "main.css": "/blog/static/css/main.f9fbe189.css",
+    "main.js": "/blog/static/js/main.9586b5c9.js",
+    "static/js/787.f587e8d5.chunk.js": "/blog/static/js/787.f587e8d5.chunk.js",
+    "index.html": "/blog/index.html",
+    "main.f9fbe189.css.map": "/blog/static/css/main.f9fbe189.css.map",
+    "main.9586b5c9.js.map": "/blog/static/js/main.9586b5c9.js.map",
+    "787.f587e8d5.chunk.js.map": "/blog/static/js/787.f587e8d5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f9fbe189.css",
-    "static/js/main.5d398386.js"
+    "static/js/main.9586b5c9.js"
   ]
 }
