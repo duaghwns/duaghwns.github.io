@@ -1,116 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swipe Gallery</title>
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon"> 
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://kit.fontawesome.com/c47106c6a7.js"
-   crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+	<meta charset='utf-8'>
+	<meta name='viewport' content='width=device-width,initial-scale=1'>
+
+	<title>Svelte app</title>
+
+	<link rel='icon' type='image/png' href='./favicon.png'>
+	<link rel='stylesheet' href='./global.css'>
+	<link rel='stylesheet' href='./build/bundle.css'>
+
+	<script defer src='./build/bundle.js'></script>
 </head>
+
 <body>
-    <div class="wrap">
-        <h1>UI/UX <span>PORTFOLIO</span></h1>
-
-        <ul class="auto">
-            <li class="btnStart"><i class="fas fa-play">▶️</i></li>
-            <li class="btnStop"><i class="fas fa-pause">⏸</i></li>
-        </ul>
-
-        <div class="swiper-wrapper">
-            <!-- <div class="swiper-slide">
-                <div class="inner">
-                    <div class="con">
-                        <img src="./img/IMG_0104.JPG">
-                        <h2>pic1</h2>
-                        <p>asdfasdfasdfasdfascontent</p>
-                    </div>
-                </div>
-            </div> -->
-        </div>
-
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-        
-        <div class="swiper-pagination"></div>
-    </div>
-<script>
-    const insertImage = () => {
-        const swiper = document.querySelector('.swiper-wrapper');
-
-        for(let i=4;i<=11;i++) {
-            if(i>9){
-                console.log(`./img/IMG_01${i}.JPG`)
-                swiper.innerHTML += `<div class="swiper-slide">
-                    <div class="inner">
-                        <div class="con">
-                            <img src="./img/IMG_01${i}.JPG">
-                            <h2>pic${i}</h2>
-                            <p>asdfasdfasdfasdfascontent</p>
-                        </div>
-                    </div>`;
-            } else {
-                console.log(`./img/IMG_010${i}.JPG`)
-                swiper.innerHTML += `<div class="swiper-slide">
-                    <div class="inner">
-                        <div class="con">
-                            <img src="./img/IMG_010${i}.JPG">
-                            <h2>pic0${i}</h2>
-                            <p>일본사진 ${i}번</p>
-                        </div>
-                    </div>`;
-            }
-        }
-    }
-    window.onload = insertImage();
-
-    const swiper = new Swiper('.wrap', {
-        direction: "horizontal", // 스와이프 방향
-        loop: true,
-        pagination: {
-            el: '.swiper-pagination', // 페이지 메뉴 요소명
-            type: 'fraction'
-        },
-        navigation : {
-            nextEl : '.swiper-button-next',
-            prevEl : '.swiper-button-prev',
-        },
-        spaceBetween: 0, // 패널 사이의 간격을 100px로 설정
-        slidesPerView: "auto", // CSS에 지정한 슬라이더의 크기를 반영
-        grabCursor: true, // 스와이프 시 마우스 포인터 모양 변경
-        centeredSlides: true, // 슬라이더 패널을 항상 가운데로 정렬
-        speed: 1000, // 슬러이더 이동 속도 지정
-        effect:"coverflow", // 이펙트 효과 지정
-        converflowEffect: {
-            rotate: 50,     // 회전 각도 지정
-            stretch: -100,    // 슬라이드 간의 당김 정도 지정
-            depth: 400,     // 원근감 지정
-            modifier:1,     // 중첩 정도 지정
-            slideShadows: false, // 슬라이드 그림자 지정
-        },
-        autoplay: {
-            delay:1000,
-            disableOnInteraction:true
-        }
-    });
-
-    const btnStart = document.querySelector('.btnStart');
-    const btnStop = document.querySelector('.btnStop');
-
-    btnStart.addEventListener('click', () => {
-        swiper.autoplay.start();
-    });
-
-    btnStop.addEventListener('click', () => {
-        swiper.autoplay.stop();
-    });
-
-
-
-</script>
 </body>
 </html>
