@@ -1,18 +1,37 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-	<meta charset='utf-8'>
-	<meta name='viewport' content='width=device-width,initial-scale=1'>
-
-	<title>염호준</title>
-
-	<link rel='icon' type='image/png' href='./favicon.png'>
-	<link rel='stylesheet' href='./global.css'>
-	<link rel='stylesheet' href='./build/bundle.css'>
-
-	<script defer src='./build/bundle.js'></script>
+    <meta charset="UTF-8">
+    <link rel="icon" href="./favicon.png">
+    <title>인스타그램 팔로우 추이</title>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./lang.js"></script>
 </head>
-
 <body>
+    <div class="main-title-wrap">
+        <h1>
+            📊 <span id="mainTitle"></span>
+        </h1>
+        <span class="madeby">made by <a href="https://www.instagram.com/duaghwns/" target="_blank">@duaghwns</a></span>
+        <div class="lang-toggle" id="langToggle"></div>
+    </div>
+    <div class="upload-section">
+        <div class="guide" id="guideText"></div>
+        <div class="guide chart-wrap">
+            <div class="chart-tabs" id="chartTabs"></div>
+            <canvas id="pieChart" width="250" height="250"></canvas>
+        </div>
+        <div class="dropzones">
+            <div class="dropzone" id="pastDrop"></div>
+            <div class="dropzone" id="currentDrop"></div>
+            <div class="ads-area"><span class="ads-area-text"></span></div>
+        </div>
+    </div>
+    <div class="list-toggles" id="listToggles"></div>
+    <div class="lists" id="lists"></div>
+    <!-- <script src="./index.js"></script> -->
+    <script src="./obfuscator.js"></script>
 </body>
 </html>
