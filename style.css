@@ -18,12 +18,32 @@ h1 {
   display: flex;
   align-items: center;
 }
+.info {
+  display: inline-block;
+  padding-bottom: 10px;
+}
+.bank {
+  display: block;
+  font-size: 0.78em;
+  font-weight: 400;
+  color: #aaa;
+  margin-left: 5px;
+  cursor: pointer;
+}
+#bank{
+  color: inherit;      /* 부모 요소의 색상 상속 (혹은 원하는 색상으로 변경) */
+  text-decoration: none; /* 밑줄 제거 */
+}
+#bank:hover{
+  color: black;
+}
 .madeby {
   font-size: 0.98em;
   font-weight: 400;
   color: #aaa;
   margin-left: 5px;
   margin-bottom: 10px;
+  padding-bottom: 10px;
   vertical-align: bottom;
 }
 .madeby a {
