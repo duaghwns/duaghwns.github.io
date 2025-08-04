@@ -47,7 +47,6 @@
 
   .lang-toggle {
     position: absolute;
-    position: static;
     margin-top: 5px;
     width: 100%;
     display: flex;
