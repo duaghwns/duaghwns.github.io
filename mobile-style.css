@@ -45,11 +45,8 @@
     font-size: 1.18em;
   }
 
-  .lang-select{
-    position: absolute;
-  }
-  
   .lang-toggle {
+    position: absolute;
     position: static;
     margin-top: 5px;
     width: 100%;
