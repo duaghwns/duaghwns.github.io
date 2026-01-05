@@ -22,7 +22,7 @@ const defaultFields = [
     },
     {
         key: 'aperture',
-        labels: { korean: '조리개', english: 'Aperture', icon: '⚙️' },
+        labels: { korean: '조리개', english: 'Aperture', icon: '✨' },
         value: ''
     },
     {
