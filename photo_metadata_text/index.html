@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Metadata Text Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📸 Photo Metadata Text Generator</h1>
+            <p class="subtitle">사진 메타데이터를 텍스트로 변환하세요</p>
+        </header>
+
+        <main>
+            <!-- 파일 업로드 섹션 -->
+            <section class="upload-section">
+                <div class="upload-box" id="uploadBox">
+                    <input type="file" id="fileInput" accept="image/jpeg,image/jpg" hidden>
+                    <div class="upload-content">
+                        <div class="upload-icon">📁</div>
+                        <p class="upload-text">JPG 파일을 선택하거나 드래그하세요</p>
+                        <button class="btn-upload" onclick="document.getElementById('fileInput').click()">파일 선택</button>
+                    </div>
+                </div>
+                <div id="imagePreview" class="image-preview" style="display: none;">
+                    <img id="previewImg" alt="Preview">
+                    <p id="fileName"></p>
+                </div>
+            </section>
+
+            <!-- 인스타그램 아이디 입력 -->
+            <section class="instagram-section">
+                <h2>Instagram 설정</h2>
+                <div class="input-group">
+                    <label for="instagramId">Instagram ID (@ 없이 입력)</label>
+                    <input type="text" id="instagramId" placeholder="your_instagram_id" maxlength="30">
+                </div>
+            </section>
+
+            <!-- 메타데이터 필드 순서 설정 -->
+            <section class="metadata-section">
+                <div class="section-header-with-options">
+                    <div>
+                        <h2>메타데이터 필드 순서 설정</h2>
+                        <p class="section-description">드래그하여 순서를 변경하세요</p>
+                    </div>
+                    <div class="label-options">
+                        <label class="label-option">
+                            <input type="radio" name="labelType" value="korean" checked>
+                            <span>한글 (카메라:)</span>
+                        </label>
+                        <label class="label-option">
+                            <input type="radio" name="labelType" value="english">
+                            <span>English (Camera:)</span>
+                        </label>
+                        <label class="label-option">
+                            <input type="radio" name="labelType" value="icon">
+                            <span>아이콘 (📷)</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="metadata-list" id="metadataList">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+            </section>
+
+            <!-- 텍스트 편집 및 미리보기 -->
+            <section class="text-section">
+                <div class="text-columns">
+                    <div class="text-column">
+                        <h2>텍스트 편집</h2>
+                        <textarea id="textEditor" rows="15" placeholder="메타데이터가 여기에 표시됩니다..."></textarea>
+                    </div>
+                    <div class="text-column">
+                        <h2>Instagram 미리보기</h2>
+                        <div class="instagram-preview">
+                            <div class="instagram-header">
+                                <div class="instagram-profile">
+                                    <div class="profile-pic"></div>
+                                    <span class="username" id="previewUsername">username</span>
+                                </div>
+                            </div>
+                            <div class="instagram-image">
+                                <img id="instagramPreviewImg" alt="Preview">
+                            </div>
+                            <div class="instagram-caption">
+                                <p><strong id="captionUsername">username</strong> <span id="captionText"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 액션 버튼 -->
+            <section class="actions">
+                <button class="btn btn-copy" id="copyBtn">📋 텍스트 복사</button>
+                <button class="btn btn-reset" id="resetBtn">🔄 초기화</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
