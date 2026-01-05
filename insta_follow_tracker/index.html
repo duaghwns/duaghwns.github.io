@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" >
+    <link rel="icon" href="./favicon.png">
+    <title>Insta Follow Tracker</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8M16JYBC6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W8M16JYBC6');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7368916815606494"
+     crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./mobile-style.css" />
+    <script src="./lang.js"></script>
+</head>
+<body>
+    <div class="main-title-wrap">
+        <h1>
+            📊 <span id="mainTitle"></span>
+        </h1>
+        <div class="info">
+            <span class="bank">개발자 후원 <a id="bank">토스뱅크 1000-0355-6332 염*준</a></span>
+            <span class="madeby">made by <a href="https://www.instagram.com/duaghwns/" target="_blank">@duaghwns</a></span>
+            <img src="https://hitwebcounter.com/counter/counter.php?page=21305826&style=0007&nbdigits=5&type=page&initCount=0" border="0" /></a>
+        </div>
+        <div class="lang-toggle" id="langToggle"></div>
+    </div>
+    <div class="upload-section">
+        <div class="guide" id="guideText"></div>
+        <div class="guide chart-wrap">
+            <div class="chart-tabs" id="chartTabs"></div>
+             <canvas id="pieChart" style="width:100%;max-width:300px;height:auto;"></canvas>
+        </div>
+        <div class="dropzones">
+            <div class="dropzone" id="pastDrop"></div>
+            <div class="dropzone" id="currentDrop"></div>
+            <div class="ads-area"><span class="ads-area-text"></span></div>
+        </div>
+    </div>
+    <div class="list-toggles" id="listToggles"></div>
+    <div class="lists" id="lists"></div>
+    <script src="./obfuscator.js"></script>
+    <!-- <script src="./index.js"></script> -->
+</body>
+</html>

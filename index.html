@@ -2,51 +2,130 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" >
-    <link rel="icon" href="./favicon.png">
-    <title>Insta Follow Tracker</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W8M16JYBC6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-W8M16JYBC6');
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7368916815606494"
-     crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./mobile-style.css" />
-    <script src="./lang.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="염호준 - 사진작가 & 개발자 | Photography Portfolio & Development Projects">
+    <title>YEOM HOJOON - Photographer & Developer</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="insta_follow_tracker/favicon.png">
 </head>
 <body>
-    <div class="main-title-wrap">
-        <h1>
-            📊 <span id="mainTitle"></span>
-        </h1>
-        <div class="info">
-            <span class="bank">개발자 후원 <a id="bank">토스뱅크 1000-0355-6332 염*준</a></span>
-            <span class="madeby">made by <a href="https://www.instagram.com/duaghwns/" target="_blank">@duaghwns</a></span>
-            <img src="https://hitwebcounter.com/counter/counter.php?page=21305826&style=0007&nbdigits=5&type=page&initCount=0" border="0" /></a>
+    <!-- Hero Section - Photography Portfolio -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">YEOM HOJOON</h1>
+            <p class="hero-subtitle">Photographer & Developer</p>
+            <p class="hero-description">
+                인물, 웨딩, 코스프레, 거리 사진 등 다양한 장르를 촬영합니다.<br>
+                컬러와 흑백 스타일을 아우르는 작품들을 만나보세요.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://yeomhojoon.myportfolio.com/" target="_blank" class="btn-hero btn-primary">Photography Portfolio</a>
+                <a href="https://www.instagram.com/duaghwns/" target="_blank" class="btn-hero btn-outline">Instagram</a>
+            </div>
+            <div class="scroll-indicator">
+                <span>Scroll Down</span>
+                <div class="scroll-arrow">↓</div>
+            </div>
         </div>
-        <div class="lang-toggle" id="langToggle"></div>
-    </div>
-    <div class="upload-section">
-        <div class="guide" id="guideText"></div>
-        <div class="guide chart-wrap">
-            <div class="chart-tabs" id="chartTabs"></div>
-             <canvas id="pieChart" style="width:100%;max-width:300px;height:auto;"></canvas>
+    </section>
+
+    <!-- Development Projects Section -->
+    <section class="projects-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Development Projects</h2>
+                <p class="section-subtitle">웹 개발 및 자동화 도구</p>
+            </div>
+
+            <div class="projects-list">
+                <!-- Instagram Follow Tracker -->
+                <div class="project-item">
+                    <div class="project-number">01</div>
+                    <div class="project-content">
+                        <h3>Instagram Follow Tracker</h3>
+                        <p class="project-desc">
+                            인스타그램 팔로워/팔로잉 관계를 추적하고 분석하는 웹 도구입니다.
+                            언팔로우한 사람, 새로운 팔로워, 맞팔 관계를 차트로 시각화하여 보여줍니다.
+                            4개 국어를 지원하며 모든 데이터는 브라우저에서만 처리됩니다.
+                        </p>
+                        <div class="project-tags">
+                            <span>JavaScript</span>
+                            <span>Chart.js</span>
+                            <span>JSZip</span>
+                            <span>다국어</span>
+                        </div>
+                    </div>
+                    <div class="project-link">
+                        <a href="insta_follow_tracker/index.html" class="link-arrow">실행하기 →</a>
+                    </div>
+                </div>
+
+                <!-- Instagram Message Analyzer -->
+                <div class="project-item">
+                    <div class="project-number">02</div>
+                    <div class="project-content">
+                        <h3>Instagram Message Analyzer</h3>
+                        <p class="project-desc">
+                            인스타그램 메시지 내역을 검색하고 분석하는 도구입니다.
+                            ZIP 파일을 업로드하면 대화 내용을 키워드로 검색하고 정렬할 수 있습니다.
+                            클라이언트 사이드에서 모든 처리가 이루어져 개인정보가 안전합니다.
+                        </p>
+                        <div class="project-tags">
+                            <span>JavaScript</span>
+                            <span>JSZip</span>
+                            <span>모듈화</span>
+                            <span>검색</span>
+                        </div>
+                    </div>
+                    <div class="project-link">
+                        <a href="insta_message_search/index.html" class="link-arrow">실행하기 →</a>
+                    </div>
+                </div>
+
+                <!-- File Organizer -->
+                <div class="project-item">
+                    <div class="project-number">03</div>
+                    <div class="project-content">
+                        <h3>File Organizer</h3>
+                        <p class="project-desc">
+                            사진작가를 위한 드래그 앤 드롭 기반 이미지 자동 정리 도구입니다.
+                            JPG와 RAW 파일을 날짜나 확장자별로 자동 분류하고 일괄 이름 변경이 가능합니다.
+                            Windows와 macOS를 모두 지원하며 대량의 파일도 빠르게 처리합니다.
+                        </p>
+                        <div class="project-tags">
+                            <span>Python</span>
+                            <span>Swift</span>
+                            <span>Cross-platform</span>
+                        </div>
+                    </div>
+                    <div class="project-link">
+                        <a href="https://github.com/duaghwns/file_organizer" target="_blank" class="link-arrow">GitHub →</a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="dropzones">
-            <div class="dropzone" id="pastDrop"></div>
-            <div class="dropzone" id="currentDrop"></div>
-            <div class="ads-area"><span class="ads-area-text"></span></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>YEOM HOJOON</h3>
+                    <p>Photographer & Developer based in Korea</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://yeomhojoon.myportfolio.com/" target="_blank">Photography</a>
+                    <a href="https://www.instagram.com/duaghwns/" target="_blank">Instagram</a>
+                    <a href="https://github.com/duaghwns" target="_blank">GitHub</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 YEOM HOJOON. All rights reserved.</p>
+                <p class="privacy-note">All data processed in browser only</p>
+            </div>
         </div>
-    </div>
-    <div class="list-toggles" id="listToggles"></div>
-    <div class="lists" id="lists"></div>
-    <script src="./obfuscator.js"></script>
-    <!-- <script src="./index.js"></script> -->
+    </footer>
 </body>
 </html>
