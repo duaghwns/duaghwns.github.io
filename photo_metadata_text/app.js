@@ -188,96 +188,176 @@ function processFile(file) {
 }
 
 // EXIF 데이터 읽기
-function readExifData(file) {
-    EXIF.getData(file, function() {
-        try {
-            const allTags = EXIF.getAllTags(this);
-            console.log('모든 EXIF 태그:', allTags);
+// EXIF 데이터 읽기 (exifr 라이브러리 사용으로 변경)
+async function readExifData(file) {
+    try {
+        // exifr를 사용하여 메타데이터 추출 (makerNote: true가 렌즈 정보 핵심)
+        const output = await exifr.parse(file, {
+            tiff: true,
+            exif: true,
+            gps: true,
+            makerNote: true, // 제조사 노트(렌즈 정보 포함) 읽기
+            xmp: true        // Adobe 정보 읽기
+        });
 
-            // 카메라 정보
-            const make = EXIF.getTag(this, 'Make') || '';
-            const model = EXIF.getTag(this, 'Model') || '';
+        console.log('추출된 원본 데이터:', output);
 
-            // 렌즈 정보 (여러 가능한 태그 확인)
-            let lensInfo = EXIF.getTag(this, 'LensModel') ||
-                          EXIF.getTag(this, 'LensInfo') ||
-                          EXIF.getTag(this, 'Lens') ||
-                          allTags['LensModel'] ||
-                          allTags['LensInfo'] ||
-                          allTags['Lens'] || '';
-
-            // 촬영 설정
-            const focalLength = EXIF.getTag(this, 'FocalLength');
-            const fNumber = EXIF.getTag(this, 'FNumber');
-            const exposureTime = EXIF.getTag(this, 'ExposureTime');
-            const iso = EXIF.getTag(this, 'ISOSpeedRatings') || EXIF.getTag(this, 'ISO');
-
-            // 날짜/시간
-            const dateTime = EXIF.getTag(this, 'DateTime') ||
-                           EXIF.getTag(this, 'DateTimeOriginal') ||
-                           EXIF.getTag(this, 'CreateDate');
-
-            // GPS 위치 정보
-            const gpsLatitude = EXIF.getTag(this, 'GPSLatitude');
-            const gpsLatitudeRef = EXIF.getTag(this, 'GPSLatitudeRef');
-            const gpsLongitude = EXIF.getTag(this, 'GPSLongitude');
-            const gpsLongitudeRef = EXIF.getTag(this, 'GPSLongitudeRef');
-
-            // GPS 좌표가 있으면 주소로 변환
-            if (gpsLatitude && gpsLongitude) {
-                const lat = convertDMSToDD(gpsLatitude, gpsLatitudeRef);
-                const lng = convertDMSToDD(gpsLongitude, gpsLongitudeRef);
-
-                // 임시로 좌표를 저장
-                currentMetadata = {
-                    camera: (make && model) ? `${make} ${model}`.trim() : '',
-                    lens: lensInfo,
-                    focalLength: focalLength ? `${focalLength}mm` : '',
-                    aperture: fNumber ? `f/${fNumber}` : '',
-                    shutterSpeed: exposureTime ? formatShutterSpeed(exposureTime) : '',
-                    iso: iso ? `ISO ${iso}` : '',
-                    dateTime: dateTime ? formatDateTime(dateTime) : '',
-                    location: '위치 조회 중...'
-                };
-
-                updateFieldValues();
-                generateText();
-
-                // 주소 변환 API 호출
-                getAddressFromCoordinates(lat, lng);
-            } else {
-                currentMetadata = {
-                    camera: (make && model) ? `${make} ${model}`.trim() : '',
-                    lens: lensInfo,
-                    focalLength: focalLength ? `${focalLength}mm` : '',
-                    aperture: fNumber ? `f/${fNumber}` : '',
-                    shutterSpeed: exposureTime ? formatShutterSpeed(exposureTime) : '',
-                    iso: iso ? `ISO ${iso}` : '',
-                    dateTime: dateTime ? formatDateTime(dateTime) : '',
-                    location: ''
-                };
-
-                console.log('추출된 메타데이터:', currentMetadata);
-                updateFieldValues();
-                generateText();
-            }
-        } catch (error) {
-            console.error('메타데이터 읽기 실패:', error);
-            // 실패 시 더미 데이터 사용
-            currentMetadata = {
-                camera: 'Canon EOS R5',
-                lens: 'RF 24-70mm F2.8 L IS USM',
-                focalLength: '50mm',
-                aperture: 'f/2.8',
-                shutterSpeed: '1/125s',
-                iso: 'ISO 400',
-                dateTime: '2025.01.05',
-                location: 'Seoul, Korea'
-            };
-            updateFieldValues();
-            generateText();
+        if (!output) {
+            throw new Error('EXIF 데이터가 없습니다.');
         }
-    });
+
+        // 1. 카메라 정보 조합
+        const make = output.Make || '';
+        const model = output.Model || '';
+        const camera = (make && model) ? `${make} ${model}`.replace(make, '').trim() : (model || make); 
+        // replace는 'Canon Canon EOS...' 처럼 중복되는 경우 방지
+
+        // 2. 렌즈 정보 (exifr가 자동으로 제조사별 태그를 찾아 LensModel에 넣어줍니다)
+        let lensInfo = output.LensModel || output.Lens || output.LensInfo || '';
+        
+        // 렌즈 정보가 없고 XMP 데이터에만 있는 경우 (일부 소니/니콘 등)
+        if (!lensInfo && output.LensID) lensInfo = output.LensID;
+
+        // 3. 노출 정보 포맷팅
+        const focalLength = output.FocalLength ? `${Math.round(output.FocalLength)}mm` : '';
+        const fNumber = output.FNumber ? `f/${output.FNumber}` : '';
+        
+        // 셔터스피드 계산
+        let shutterSpeed = '';
+        if (output.ExposureTime) {
+            if (output.ExposureTime >= 1) {
+                shutterSpeed = `${output.ExposureTime}s`;
+            } else {
+                shutterSpeed = `1/${Math.round(1 / output.ExposureTime)}s`;
+            }
+        }
+
+        const iso = (output.ISO || output.ISOSpeedRatings) ? `ISO ${output.ISO || output.ISOSpeedRatings}` : '';
+
+        // 4. 날짜 변환
+        let dateTimeStr = '';
+        const dateSource = output.DateTimeOriginal || output.CreateDate || output.DateTime;
+        if (dateSource) {
+            // Date 객체이거나 문자열일 수 있음
+            const dateObj = new Date(dateSource);
+            if (!isNaN(dateObj)) {
+                // 유효한 날짜 객체인 경우
+                const year = dateObj.getFullYear();
+                const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dateObj.getDate()).padStart(2, '0');
+                dateTimeStr = `${year}.${month}.${day}`;
+            } else {
+                // 문자열인 경우 기존 방식 유지
+                dateTimeStr = String(dateSource).split(' ')[0].replace(/:/g, '.');
+            }
+        }
+
+        // 5. GPS 처리 (exifr는 자동으로 십진수 좌표를 줍니다. 변환 함수 필요 없음)
+        const lat = output.latitude;
+        const lng = output.longitude;
+
+        // 전역 변수 업데이트
+        currentMetadata = {
+            camera: make && model ? `${make} ${model}` : (model || ''),
+            lens: lensInfo,
+            focalLength: focalLength,
+            aperture: fNumber,
+            shutterSpeed: shutterSpeed,
+            iso: iso,
+            dateTime: dateTimeStr,
+            location: (lat && lng) ? '위치 조회 중...' : ''
+        };
+
+        // UI 업데이트
+        updateFieldValues();
+        generateText();
+
+        // 위치 정보가 있다면 주소 변환 실행
+        if (lat && lng) {
+            getAddressFromCoordinates(lat, lng);
+        }
+
+    } catch (error) {
+        console.error('메타데이터 읽기 실패:', error);
+        alert('사진 정보를 읽을 수 없거나 지원하지 않는 형식입니다.');
+        
+        // 실패 시 빈 값으로 초기화
+        currentMetadata = {
+            camera: '', lens: '', focalLength: '', aperture: '',
+            shutterSpeed: '', iso: '', dateTime: '', location: ''
+        };
+        updateFieldValues();
+        generateText();
+    }
+}
+
+// GPS 좌표를 주소로 변환
+async function getAddressFromCoordinates(lat, lng) {
+    try {
+        // 현재 선택된 라벨 타입 확인
+        const labelType = document.querySelector('input[name="labelType"]:checked').value;
+        const language = (labelType === 'korean') ? 'ko' : 'en';
+
+        // Nominatim API 사용 (무료, 제한: 1초당 1회)
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=${language}`,
+            {
+                headers: {
+                    'User-Agent': 'PhotoMetadataTextGenerator/1.0'
+                }
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('주소 변환 실패');
+        }
+
+        const data = await response.json();
+        console.log('Geocoding 결과:', data);
+
+        let addressParts = [];
+        const addr = data.address;
+
+        // 주소 형식으로 조합
+        if (addr) {
+            // 국가
+            if (addr.country) {
+                addressParts.push(addr.country);
+            }
+            // 시/도
+            if (addr.province || addr.state) {
+                addressParts.push(addr.province || addr.state);
+            }
+            // 시/군/구
+            if (addr.city || addr.county) {
+                addressParts.push(addr.city || addr.county);
+            }
+            // 구
+            if (addr.borough || addr.district) {
+                addressParts.push(addr.borough || addr.district);
+            }
+            // 동/읍/면
+            if (addr.suburb || addr.neighbourhood || addr.hamlet || addr.village) {
+                addressParts.push(addr.suburb || addr.neighbourhood || addr.hamlet || addr.village);
+            }
+        }
+
+        const formattedAddress = addressParts.length > 0
+            ? addressParts.join(' ')
+            : data.display_name || `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+
+        currentMetadata.location = formattedAddress;
+        console.log('변환된 주소:', formattedAddress);
+
+        updateFieldValues();
+        generateText();
+    } catch (error) {
+        console.error('주소 변환 오류:', error);
+        // 실패 시 좌표 표시
+        currentMetadata.location = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        updateFieldValues();
+        generateText();
+    }
 }
 
 // GPS DMS를 DD로 변환
