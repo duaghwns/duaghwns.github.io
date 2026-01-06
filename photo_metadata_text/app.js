@@ -329,6 +329,7 @@ function toggleAllFields() {
 
 function generateText() {
     const lines = [];
+    
     fieldOrder.forEach(f => {
         if(f.enabled && f.value) {
             let prefix = '';
@@ -359,7 +360,7 @@ function addHashtags() {
 
     if(currentMetadata.camera) tags.push(`#${currentMetadata.camera.replace(/\s/g, '')}`);
     if(currentMetadata.make) tags.push(`#${currentMetadata.make.replace(/\s/g, '')}`);
-    if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
+    // if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
     tags.push('#snapshot', '#exif');
     
     const current = elements.textEditor.value;
