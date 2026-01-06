@@ -3,20 +3,19 @@ let currentMetadata = {};
 let fieldOrder = [];
 let outputFormat = 'multiline';
 
-// 모든 옵션 복구 (Make, Camera, Lens, FocalLength, Aperture, ShutterSpeed, ISO, Flash, Date, Location, Software, Copyright)
+// 기본 필드 (Copyright를 ID로 자동 처리하므로 labelType valueOnly로 설정)
 const defaultFields = [
-    { key: 'make', labels: { ko: '제조사', en: 'Maker', en_upper: 'MAKER', en_lower: 'maker', icon: '🏭' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'camera', labels: { ko: '카메라', en: 'Camera', en_upper: 'CAMERA', en_lower: 'camera', icon: '📷' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'lens', labels: { ko: '렌즈', en: 'Lens', en_upper: 'LENS', en_lower: 'lens', icon: '🔭' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'focalLength', labels: { ko: '초점거리', en: 'Focal Length', en_upper: 'FOCAL LENGTH', en_lower: 'focal length', icon: '📏' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'aperture', labels: { ko: '조리개', en: 'Aperture', en_upper: 'APERTURE', en_lower: 'aperture', icon: '✨' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'shutterSpeed', labels: { ko: '셔터속도', en: 'Shutter Speed', en_upper: 'SHUTTER SPEED', en_lower: 'shutter speed', icon: '⏱️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'iso', labels: { ko: 'ISO', en: 'ISO', en_upper: 'ISO', en_lower: 'iso', icon: '💡' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'flash', labels: { ko: '플래시', en: 'Flash', en_upper: 'FLASH', en_lower: 'flash', icon: '⚡' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'dateTime', labels: { ko: '촬영일', en: 'Date', en_upper: 'DATE', en_lower: 'date', icon: '📅' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'software', labels: { ko: '소프트웨어', en: 'Software', en_upper: 'SOFTWARE', en_lower: 'software', icon: '💻' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' }
+    { key: 'make', label: { ko: '제조사', en: 'Make' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'camera', label: { ko: '카메라', en: 'Camera' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'lens', label: { ko: '렌즈', en: 'Lens' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'focalLength', label: { ko: '초점거리', en: 'Focal Length' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'aperture', label: { ko: '조리개', en: 'Aperture' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'shutterSpeed', label: { ko: '셔터속도', en: 'Shutter Speed' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'iso', label: { ko: 'ISO', en: 'ISO' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'dateTime', label: { ko: '촬영일', en: 'Date' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'software', label: { ko: '소프트웨어', en: 'Software' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'copyright', label: { ko: '저작권', en: 'Copyright' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'location', label: { ko: '위치', en: 'Location' }, value: '', enabled: false, labelType: 'valueOnly' }
 ];
 
 // DOM Elements
@@ -26,18 +25,23 @@ const elements = {
     fileInfoArea: document.getElementById('fileInfoArea'),
     removeImgBtn: document.getElementById('removeImgBtn'),
     fileName: document.getElementById('fileName'),
+    
     metadataList: document.getElementById('metadataList'),
     textEditor: document.getElementById('textEditor'),
+    
     instagramId: document.getElementById('instagramId'),
-    copyrightText: document.getElementById('copyrightText'),
+    // copyrightText 제거됨
+    
     previewUsername: document.getElementById('previewUsername'),
     captionUsername: document.getElementById('captionUsername'),
     captionText: document.getElementById('captionText'),
     instagramPreviewImg: document.getElementById('instagramPreviewImg'),
+    
     themeToggle: document.getElementById('themeToggle'),
     toast: document.getElementById('toast'),
     addHashtagsBtn: document.getElementById('addHashtagsBtn'),
     separatorInput: document.getElementById('separator'),
+    
     presetSelect: document.getElementById('presetSelect'),
     savePresetBtn: document.getElementById('savePresetBtn'),
     downloadWatermarkBtn: document.getElementById('downloadWatermarkBtn')
@@ -54,7 +58,11 @@ function init() {
     // 초기 탭 설정 (미리보기)
     document.body.setAttribute('data-view', 'preview');
     
+    // 초기 구분자 상태 설정
     handleFormatChange(outputFormat);
+    
+    // 저작권 및 미리보기 초기 업데이트
+    updateCopyrightValue();
     updatePreview();
 }
 
@@ -71,36 +79,33 @@ function setupMobileNav() {
 }
 
 function setupEventListeners() {
+    // 업로드
     elements.uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); elements.uploadBox.classList.add('drag-over'); });
     elements.uploadBox.addEventListener('dragleave', () => elements.uploadBox.classList.remove('drag-over'));
     elements.uploadBox.addEventListener('drop', handleDrop);
     elements.fileInput.addEventListener('change', handleFileSelect);
+    
     elements.removeImgBtn.addEventListener('click', resetImage);
     elements.themeToggle.addEventListener('click', toggleTheme);
     document.getElementById('copyBtn').addEventListener('click', copyText);
     document.getElementById('toggleAllBtn').addEventListener('click', toggleAllFields);
     elements.addHashtagsBtn.addEventListener('click', addHashtags);
     elements.downloadWatermarkBtn.addEventListener('click', downloadImageWithWatermark);
+
     elements.savePresetBtn.addEventListener('click', savePreset);
     elements.presetSelect.addEventListener('change', loadSelectedPreset);
 
-    // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
+    // Instagram ID 변경 -> Copyright 자동 업데이트 + 미리보기 갱신
     elements.instagramId.addEventListener('input', () => { 
         saveSettings(); 
-        generateText(); // 텍스트 재생성
+        updateCopyrightValue();
+        generateText(); // Copyright 갱신을 위해 텍스트 재생성
         updatePreview(); 
     });
     
-    // Copyright 입력창 (ID와 별개로 수동 입력시)
-    if(elements.copyrightText) {
-        elements.copyrightText.addEventListener('input', () => {
-            saveSettings();
-            generateText();
-        });
-    }
-
     elements.textEditor.addEventListener('input', updatePreview);
     
+    // 구분자 입력 시 즉시 반영
     elements.separatorInput.addEventListener('input', () => {
         if(outputFormat === 'inline') generateText();
     });
@@ -113,6 +118,15 @@ function setupEventListeners() {
             generateText();
         });
     });
+}
+
+// 저작권 필드 값 = © + Instagram ID
+function updateCopyrightValue() {
+    const cpField = fieldOrder.find(f => f.key === 'copyright');
+    if (cpField) {
+        const id = elements.instagramId.value.trim();
+        cpField.value = id ? `© ${id}` : '';
+    }
 }
 
 function handleFormatChange(format) {
@@ -180,15 +194,12 @@ async function readExifData(file) {
             camera = `${make} ${model}`;
         }
 
-        let lens = output.LensModel || output.Lens || output.LensInfo || '';
-        if(!lens && output.LensID) lens = output.LensID;
-
+        let lens = output.LensModel || output.Lens || '';
         const focal = output.FocalLength ? `${Math.round(output.FocalLength)}mm` : '';
         const aperture = output.FNumber ? `f/${output.FNumber}` : '';
         const shutter = output.ExposureTime ? 
             (output.ExposureTime >= 1 ? `${output.ExposureTime}s` : `1/${Math.round(1/output.ExposureTime)}s`) : '';
         const iso = output.ISO ? `ISO ${output.ISO}` : '';
-        const flash = output.Flash ? (output.Flash === 0 ? 'Off' : 'On') : '';
         const software = output.Software || '';
         
         let dateStr = '';
@@ -200,18 +211,21 @@ async function readExifData(file) {
             dateStr = `${year}.${month}.${day}`;
         }
 
+        // GPS 데이터 확인
         let location = '';
         if (output.latitude && output.longitude) {
             location = await getAddressFromCoordinates(output.latitude, output.longitude);
+            // 위치가 있다면 인스타 미리보기의 장소 부분도 업데이트 가능 (옵션)
             document.querySelector('.insta-loc').textContent = location || "MetaShaper";
         }
 
         currentMetadata = {
-            camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, flash,
+            camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, 
             dateTime: dateStr, location, software,
-            copyright: '' // ID로 자동 생성
+            copyright: '' // 추후 업데이트
         };
 
+        updateCopyrightValue();
         updateFieldValues();
         generateText();
         showToast('정보 추출 완료!');
@@ -223,6 +237,7 @@ async function readExifData(file) {
     }
 }
 
+// [복구됨] 좌표 -> 주소 변환 (OpenStreetMap Nominatim)
 async function getAddressFromCoordinates(lat, lng) {
     try {
         const response = await fetch(
@@ -234,15 +249,13 @@ async function getAddressFromCoordinates(lat, lng) {
         const data = await response.json();
         const addr = data.address;
         
+        // 시/구/동 위주로 간략하게
         let parts = [];
-        // 시/군/구 동/읍/면 추출
         if (addr.city || addr.county) parts.push(addr.city || addr.county);
         if (addr.borough || addr.district) parts.push(addr.borough || addr.district);
-        if (addr.suburb || addr.neighbourhood || addr.hamlet || addr.village) {
-            parts.push(addr.suburb || addr.neighbourhood || addr.hamlet || addr.village);
-        }
+        if (addr.suburb || addr.neighborhood || addr.hamlet) parts.push(addr.suburb || addr.neighborhood || addr.hamlet);
         
-        return parts.length > 0 ? parts.join(' ') : (data.display_name.split(',')[0] || "");
+        return parts.length > 0 ? parts.join(' ') : (data.display_name || "");
     } catch (e) {
         console.error(e);
         return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
@@ -252,15 +265,8 @@ async function getAddressFromCoordinates(lat, lng) {
 function updateFieldValues() {
     fieldOrder = fieldOrder.map(f => {
         let val = currentMetadata[f.key] || '';
-        // Copyright는 instagramId가 있으면 자동 생성
-        if(f.key === 'copyright') {
-            const id = elements.instagramId.value.trim();
-            if(elements.copyrightText && elements.copyrightText.value) {
-                 val = `© ${elements.copyrightText.value}`; // 수동 입력 우선
-            } else if(id) {
-                val = `© ${id}`;
-            }
-        }
+        // copyright는 항상 실시간 ID 기준
+        if(f.key === 'copyright') val = elements.instagramId.value ? `© ${elements.instagramId.value}` : '';
         return { ...f, value: val };
     });
     renderMetadataList();
@@ -275,27 +281,15 @@ function renderMetadataList() {
         item.draggable = true;
         item.dataset.index = index;
         
-        // 라벨 타입에 따른 텍스트 표시
-        const typeNameMap = {
-            'valueOnly': '값만',
-            'ko': '한글',
-            'en': 'English',
-            'en_upper': 'UPPER',
-            'en_lower': 'lower',
-            'icon': '아이콘'
-        };
-
-        const currentTypeName = typeNameMap[field.labelType] || '값만';
-
         item.innerHTML = `
             <span class="drag-handle"><i class="ri-draggable"></i></span>
-            <input type="checkbox" class="metadata-checkbox" ${field.enabled ? 'checked' : ''} onchange="toggleField(${index})">
+            <input type="checkbox" ${field.enabled ? 'checked' : ''} onchange="toggleField(${index})">
             <div class="meta-content">
-                <span class="meta-key">${field.labels.en}</span>
+                <span class="meta-key">${field.label.en} / ${field.label.ko}</span>
                 <span class="meta-val">${field.value || '-'}</span>
             </div>
-            <button class="label-toggle-btn" onclick="cycleLabelType(${index})" title="라벨 형식 변경">
-                ${currentTypeName}
+            <button class="label-toggle-btn" onclick="cycleLabelType(${index})">
+                ${getLabelTypeName(field.labelType)}
             </button>
         `;
         addDragEvents(item);
@@ -303,8 +297,13 @@ function renderMetadataList() {
     });
 }
 
+function getLabelTypeName(type) {
+    const map = { 'valueOnly': '값만', 'en': 'Eng', 'ko': '한글' };
+    return map[type] || '값만';
+}
+
 function cycleLabelType(index) {
-    const types = ['valueOnly', 'ko', 'en', 'en_upper', 'en_lower', 'icon'];
+    const types = ['valueOnly', 'en', 'ko'];
     const current = fieldOrder[index].labelType || 'valueOnly';
     fieldOrder[index].labelType = types[(types.indexOf(current) + 1) % types.length];
     saveSettings();
@@ -331,12 +330,8 @@ function generateText() {
     const lines = [];
     fieldOrder.forEach(f => {
         if(f.enabled && f.value) {
-            let prefix = '';
-            if (f.labelType !== 'valueOnly') {
-                 // 해당 타입의 라벨을 가져옴 (없으면 기본키)
-                 prefix = (f.labels[f.labelType] || f.key) + ': ';
-            }
-            lines.push(`${prefix}${f.value}`);
+            const label = f.labelType === 'valueOnly' ? '' : `${f.label[f.labelType]}: `;
+            lines.push(`${label}${f.value}`);
         }
     });
 
@@ -393,7 +388,6 @@ async function downloadImageWithWatermark() {
         const h = originalImage.height;
         const fontSize = Math.max(24, w * 0.03); 
         const padding = fontSize;
-        
         const text = elements.textEditor.value;
         const lines = text.split('\n');
         const lineHeight = fontSize * 1.5;
@@ -425,6 +419,7 @@ async function downloadImageWithWatermark() {
     };
 }
 
+// 프리셋 기능 (단순화)
 function savePreset() {
     const name = prompt("프리셋 이름을 입력하세요:");
     if(!name) return;
@@ -488,34 +483,23 @@ function loadSelectedPreset() {
 }
 
 function loadSettings() {
-    const saved = localStorage.getItem('metaShaper_fields_v4');
+    const saved = localStorage.getItem('metaShaper_fields');
     if(saved) {
         const savedOrder = JSON.parse(saved);
         fieldOrder = defaultFields.map(df => {
             const savedItem = savedOrder.find(so => so.key === df.key);
-            // 라벨 설정 병합
-            if (savedItem) {
-                return { ...df, enabled: savedItem.enabled, labelType: savedItem.labelType, value: '' };
-            }
-            return df;
+            return savedItem ? { ...df, ...savedItem, value: '' } : df;
         });
     } else {
         fieldOrder = JSON.parse(JSON.stringify(defaultFields));
     }
-    
     elements.instagramId.value = localStorage.getItem('instagramId') || '';
-    if(elements.copyrightText) {
-        elements.copyrightText.value = localStorage.getItem('copyrightText') || '';
-    }
 }
 
 function saveSettings() {
     const toSave = fieldOrder.map(({ value, ...rest }) => rest);
-    localStorage.setItem('metaShaper_fields_v4', JSON.stringify(toSave));
+    localStorage.setItem('metaShaper_fields', JSON.stringify(toSave));
     localStorage.setItem('instagramId', elements.instagramId.value);
-    if(elements.copyrightText) {
-        localStorage.setItem('copyrightText', elements.copyrightText.value);
-    }
 }
 
 function resetImage() {

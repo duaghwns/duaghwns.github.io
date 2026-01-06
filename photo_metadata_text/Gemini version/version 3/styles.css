@@ -37,15 +37,15 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .card { background: var(--bg-card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .card h3 { font-size: 0.95rem; font-weight: 700; color: var(--text-main); }
-.mt-2 { margin-top: 0.5rem; }
 
-/* Upload Area */
+/* Upload Area (Small) */
 .upload-area.small-mode { height: 70px; border: 2px dashed var(--border); border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; background: var(--input-bg); transition: 0.3s; width: 100%; }
 .upload-area:hover, .upload-area.drag-over { border-color: var(--primary); background: rgba(37,99,235,0.05); }
 .upload-placeholder { display: flex; align-items: center; gap: 10px; color: var(--text-sub); }
 .upload-icon { font-size: 1.4rem; color: var(--primary); }
 .upload-placeholder p { font-size: 0.9rem; font-weight: 500; }
 
+/* File Info */
 .file-info-area { margin-top: 10px; }
 .mini-preview-wrapper { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); }
 #fileName { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
@@ -56,49 +56,18 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .input-wrap i { color: var(--text-sub); margin-right: 10px; }
 .input-wrap input { border: none; background: transparent; width: 100%; color: var(--text-main); outline: none; font-size: 0.95rem; }
 
-/* List Item Style Fix (버튼 깨짐 해결) */
+/* List */
 .metadata-list { display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto; }
-.metadata-item { 
-    display: flex; 
-    align-items: center; 
-    background: var(--input-bg); 
-    padding: 10px 12px; 
-    border-radius: 10px; 
-    gap: 10px; 
-    border: 1px solid transparent; 
-    transition: 0.2s; 
-}
+.metadata-item { display: flex; align-items: center; background: var(--input-bg); padding: 10px 12px; border-radius: 10px; gap: 10px; border: 1px solid transparent; transition: 0.2s; }
 .metadata-item:hover { border-color: var(--primary); }
 .metadata-item.disabled { opacity: 0.5; }
-.drag-handle { color: var(--text-sub); cursor: grab; font-size: 1.1rem; flex-shrink: 0; }
-.metadata-checkbox { flex-shrink: 0; width: 18px; height: 18px; }
-
-.meta-content { 
-    flex: 1; 
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
+.drag-handle { color: var(--text-sub); cursor: grab; font-size: 1.1rem; }
+.meta-content { flex: 1; overflow: hidden; }
 .meta-key { display: block; font-size: 0.7rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
 .meta-val { display: block; font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.label-toggle-btn { background: var(--bg-card); border: 1px solid var(--border); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; cursor: pointer; color: var(--text-sub); min-width: 50px; }
 
-/* 버튼 크기 고정 및 스타일 */
-.label-toggle-btn { 
-    background: var(--bg-card); 
-    border: 1px solid var(--border); 
-    padding: 6px 10px; 
-    border-radius: 6px; 
-    font-size: 0.75rem; 
-    cursor: pointer; 
-    color: var(--text-main); 
-    min-width: 70px; /* 고정 너비 */
-    text-align: center;
-    flex-shrink: 0; /* 줄어들지 않게 */
-}
-.label-toggle-btn:hover { border-color: var(--primary); color: var(--primary); }
-
-/* 전체선택 버튼 스타일 */
+/* 전체선택 버튼 스타일 (수정됨) */
 .active-text-btn { color: var(--primary); font-weight: 700; cursor: pointer; background: rgba(37,99,235,0.1); border: 1px solid var(--primary); font-size: 0.8rem; padding: 6px 12px; border-radius: 20px; transition: 0.2s; white-space: nowrap; }
 .active-text-btn:hover { background: var(--primary); color: white; }
 
@@ -113,7 +82,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .radio-chip input:checked + span { background: var(--primary); color: white; border-color: var(--primary); }
 
 /* Editor */
-#textEditor { width: 100%; height: 250px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; color: var(--text-main); font-size: 0.95rem; resize: none; outline: none; margin-bottom: 15px; line-height: 1.5; white-space: pre-wrap; font-family: inherit; }
+#textEditor { width: 100%; height: 200px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; color: var(--text-main); font-size: 0.95rem; resize: none; outline: none; margin-bottom: 15px; line-height: 1.5; white-space: pre-wrap; font-family: inherit; }
 .action-row { display: flex; justify-content: space-between; align-items: center; }
 .tag-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
 .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
@@ -123,12 +92,12 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .preset-select { padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text-main); font-size: 0.8rem; margin-right: 5px; max-width: 100px; }
 .icon-btn-sm { background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--text-main); padding: 4px; cursor: pointer; font-size: 1rem; margin-right: 8px; display: flex; align-items: center; }
 
-/* Instagram Preview (Fixed Layout) */
+/* Instagram Preview (Improved Layout) */
 .insta-mockup { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; max-width: 100%; margin: 0 auto; width: 400px; }
+/* 헤더 정렬 수정 */
 .insta-header { padding: 10px 12px; display: flex; align-items: center; gap: 10px; width: 100%; height: 56px; }
 .insta-profile-pic { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #bc1888); flex-shrink: 0; }
-/* 중요: 이름 뜸 현상 수정 */
-.insta-info { display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 0; }
+.insta-info { display: flex; flex-direction: column; justify-content: center; flex: 1; }
 .insta-username { font-size: 0.9rem; font-weight: 600; line-height: 1.2; color: var(--text-main); }
 .insta-loc { font-size: 0.75rem; color: var(--text-sub); line-height: 1.2; }
 .icon-more { font-size: 1.2rem; color: var(--text-main); }
@@ -145,6 +114,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     position: relative;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+    /* 기본적으로 정사각형 혹은 원본 비율을 따르지만... */
 }
 
 .insta-photo-container img {
@@ -164,23 +134,9 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 
 .insta-actions { padding: 8px 12px; display: flex; justify-content: space-between; font-size: 1.5rem; color: var(--text-main); }
 .left-icons { display: flex; gap: 16px; }
-
-/* Caption Area Fix */
 .insta-caption-area { padding: 0 12px 12px; font-size: 0.9rem; color: var(--text-main); }
-.caption-wrapper {
-    display: block; /* 블록 요소로 변경하여 내부 요소들이 흐르게 함 */
-}
-.insta-username-bold { 
-    font-weight: 600; 
-    margin-right: 6px; 
-    display: inline; /* 인라인 유지 */
-}
-.caption-text {
-    white-space: pre-wrap; /* 줄바꿈 적용 */
-    word-break: break-word; 
-    line-height: 1.4;
-    display: inline; /* 아이디 옆에 바로 붙도록 */
-}
+.caption-content { white-space: pre-wrap; word-break: break-word; line-height: 1.4; }
+.insta-username-bold { font-weight: 600; margin-right: 6px; float: left; }
 
 /* Mobile Nav */
 .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: var(--bg-card); border-top: 1px solid var(--border); height: var(--nav-height); justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
@@ -196,9 +152,10 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     .desktop-split { display: block; padding: 0 1rem; }
     .mobile-nav { display: flex; }
     
+    /* 모바일에서는 일단 다 숨김 */
     .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: none; margin-bottom: 20px; }
     
-    /* 모바일 탭별 표시 로직 (사용자 요청 반영) */
+    /* [수정됨] 모바일 탭별 표시 로직 */
     /* 1. 미리보기 탭: 업로드 + 인스타그램 미리보기 */
     body[data-view="preview"] .upload-card, 
     body[data-view="preview"] .preview-card { display: block; }
@@ -207,7 +164,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     body[data-view="settings"] .setting-card, 
     body[data-view="settings"] .list-card { display: block; }
     
-    /* 3. 편집 탭: 텍스트 에디터 (넓게) */
+    /* 3. 편집 탭: 텍스트 에디터 */
     body[data-view="edit"] .result-card { display: block; }
 
     .mobile-spacer { height: 70px; }

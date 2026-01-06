@@ -2,42 +2,49 @@
 let currentMetadata = {};
 let fieldOrder = [];
 let outputFormat = 'multiline';
+// 구분자는 기본적으로 활성화 상태에서 값을 가져오되, CSS/HTML로 제어
+let copyrightPinned = true; 
 
-// 모든 옵션 복구 (Make, Camera, Lens, FocalLength, Aperture, ShutterSpeed, ISO, Flash, Date, Location, Software, Copyright)
+// 기본 필드 (Copyright, Software 추가)
 const defaultFields = [
-    { key: 'make', labels: { ko: '제조사', en: 'Maker', en_upper: 'MAKER', en_lower: 'maker', icon: '🏭' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'camera', labels: { ko: '카메라', en: 'Camera', en_upper: 'CAMERA', en_lower: 'camera', icon: '📷' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'lens', labels: { ko: '렌즈', en: 'Lens', en_upper: 'LENS', en_lower: 'lens', icon: '🔭' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'focalLength', labels: { ko: '초점거리', en: 'Focal Length', en_upper: 'FOCAL LENGTH', en_lower: 'focal length', icon: '📏' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'aperture', labels: { ko: '조리개', en: 'Aperture', en_upper: 'APERTURE', en_lower: 'aperture', icon: '✨' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'shutterSpeed', labels: { ko: '셔터속도', en: 'Shutter Speed', en_upper: 'SHUTTER SPEED', en_lower: 'shutter speed', icon: '⏱️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'iso', labels: { ko: 'ISO', en: 'ISO', en_upper: 'ISO', en_lower: 'iso', icon: '💡' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'flash', labels: { ko: '플래시', en: 'Flash', en_upper: 'FLASH', en_lower: 'flash', icon: '⚡' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'dateTime', labels: { ko: '촬영일', en: 'Date', en_upper: 'DATE', en_lower: 'date', icon: '📅' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'software', labels: { ko: '소프트웨어', en: 'Software', en_upper: 'SOFTWARE', en_lower: 'software', icon: '💻' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' }
+    { key: 'make', label: { ko: '제조사', en: 'Make' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'camera', label: { ko: '카메라', en: 'Camera' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'lens', label: { ko: '렌즈', en: 'Lens' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'focalLength', label: { ko: '초점거리', en: 'Focal Length' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'aperture', label: { ko: '조리개', en: 'Aperture' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'shutterSpeed', label: { ko: '셔터속도', en: 'Shutter Speed' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'iso', label: { ko: 'ISO', en: 'ISO' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'dateTime', label: { ko: '촬영일', en: 'Date' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'software', label: { ko: '소프트웨어', en: 'Software' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'copyright', label: { ko: '저작권', en: 'Copyright' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'location', label: { ko: '위치', en: 'Location' }, value: '', enabled: false, labelType: 'valueOnly' }
 ];
 
 // DOM Elements
 const elements = {
     fileInput: document.getElementById('fileInput'),
     uploadBox: document.getElementById('uploadBox'),
+    miniPreviewImg: document.getElementById('miniPreviewImg'),
     fileInfoArea: document.getElementById('fileInfoArea'),
     removeImgBtn: document.getElementById('removeImgBtn'),
     fileName: document.getElementById('fileName'),
+    
     metadataList: document.getElementById('metadataList'),
     textEditor: document.getElementById('textEditor'),
+    
     instagramId: document.getElementById('instagramId'),
     copyrightText: document.getElementById('copyrightText'),
+    
     previewUsername: document.getElementById('previewUsername'),
     captionUsername: document.getElementById('captionUsername'),
     captionText: document.getElementById('captionText'),
     instagramPreviewImg: document.getElementById('instagramPreviewImg'),
+    
     themeToggle: document.getElementById('themeToggle'),
     toast: document.getElementById('toast'),
     addHashtagsBtn: document.getElementById('addHashtagsBtn'),
     separatorInput: document.getElementById('separator'),
+    
     presetSelect: document.getElementById('presetSelect'),
     savePresetBtn: document.getElementById('savePresetBtn'),
     downloadWatermarkBtn: document.getElementById('downloadWatermarkBtn')
@@ -50,12 +57,10 @@ function init() {
     setupMobileNav();
     applyTheme();
     renderMetadataList();
+    document.body.setAttribute('data-view', 'upload');
     
-    // 초기 탭 설정 (미리보기)
-    document.body.setAttribute('data-view', 'preview');
-    
+    // 초기 로드 시 포맷에 따른 구분자 비활성 처리
     handleFormatChange(outputFormat);
-    updatePreview();
 }
 
 function setupMobileNav() {
@@ -71,40 +76,41 @@ function setupMobileNav() {
 }
 
 function setupEventListeners() {
+    // 업로드
     elements.uploadBox.addEventListener('dragover', (e) => { e.preventDefault(); elements.uploadBox.classList.add('drag-over'); });
     elements.uploadBox.addEventListener('dragleave', () => elements.uploadBox.classList.remove('drag-over'));
     elements.uploadBox.addEventListener('drop', handleDrop);
     elements.fileInput.addEventListener('change', handleFileSelect);
+    
     elements.removeImgBtn.addEventListener('click', resetImage);
     elements.themeToggle.addEventListener('click', toggleTheme);
     document.getElementById('copyBtn').addEventListener('click', copyText);
     document.getElementById('toggleAllBtn').addEventListener('click', toggleAllFields);
     elements.addHashtagsBtn.addEventListener('click', addHashtags);
+    
+    // 워터마크 다운로드
     elements.downloadWatermarkBtn.addEventListener('click', downloadImageWithWatermark);
+
+    // 프리셋 저장/로드
     elements.savePresetBtn.addEventListener('click', savePreset);
     elements.presetSelect.addEventListener('change', loadSelectedPreset);
 
-    // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
-    elements.instagramId.addEventListener('input', () => { 
-        saveSettings(); 
-        generateText(); // 텍스트 재생성
-        updatePreview(); 
+    // 입력 감지
+    elements.instagramId.addEventListener('input', () => { saveSettings(); updatePreview(); });
+    elements.copyrightText.addEventListener('input', () => {
+        // 저작권 텍스트 입력 시 메타데이터 값 업데이트
+        const cpField = fieldOrder.find(f => f.key === 'copyright');
+        if(cpField) cpField.value = elements.copyrightText.value;
+        saveSettings();
+        generateText();
     });
     
-    // Copyright 입력창 (ID와 별개로 수동 입력시)
-    if(elements.copyrightText) {
-        elements.copyrightText.addEventListener('input', () => {
-            saveSettings();
-            generateText();
-        });
-    }
-
     elements.textEditor.addEventListener('input', updatePreview);
-    
     elements.separatorInput.addEventListener('input', () => {
         if(outputFormat === 'inline') generateText();
     });
 
+    // 포맷 변경
     document.querySelectorAll('input[name="outputFormat"]').forEach(radio => {
         radio.addEventListener('change', (e) => {
             outputFormat = e.target.value;
@@ -118,10 +124,8 @@ function setupEventListeners() {
 function handleFormatChange(format) {
     if(format === 'inline') {
         elements.separatorInput.disabled = false;
-        elements.separatorInput.style.opacity = '1';
     } else {
         elements.separatorInput.disabled = true;
-        elements.separatorInput.style.opacity = '0.5';
     }
 }
 
@@ -154,6 +158,8 @@ async function processFile(file) {
 
         const imageUrl = URL.createObjectURL(imageFile);
         
+        // 미리보기 (Small Mode)
+        elements.miniPreviewImg.src = imageUrl;
         elements.fileInfoArea.classList.remove('hidden');
         elements.instagramPreviewImg.src = imageUrl;
         elements.fileName.textContent = file.name;
@@ -162,7 +168,6 @@ async function processFile(file) {
     } catch (error) {
         console.error(error);
         showToast('이미지 처리 실패');
-        elements.fileName.textContent = "오류 발생";
     }
 }
 
@@ -180,36 +185,26 @@ async function readExifData(file) {
             camera = `${make} ${model}`;
         }
 
-        let lens = output.LensModel || output.Lens || output.LensInfo || '';
-        if(!lens && output.LensID) lens = output.LensID;
-
+        let lens = output.LensModel || output.Lens || '';
         const focal = output.FocalLength ? `${Math.round(output.FocalLength)}mm` : '';
         const aperture = output.FNumber ? `f/${output.FNumber}` : '';
         const shutter = output.ExposureTime ? 
             (output.ExposureTime >= 1 ? `${output.ExposureTime}s` : `1/${Math.round(1/output.ExposureTime)}s`) : '';
         const iso = output.ISO ? `ISO ${output.ISO}` : '';
-        const flash = output.Flash ? (output.Flash === 0 ? 'Off' : 'On') : '';
         const software = output.Software || '';
         
         let dateStr = '';
         if (output.DateTimeOriginal) {
             const date = new Date(output.DateTimeOriginal);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            dateStr = `${year}.${month}.${day}`;
+            dateStr = `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;
         }
 
-        let location = '';
-        if (output.latitude && output.longitude) {
-            location = await getAddressFromCoordinates(output.latitude, output.longitude);
-            document.querySelector('.insta-loc').textContent = location || "MetaShaper";
-        }
+        const location = (output.latitude && output.longitude) ? `${output.latitude.toFixed(4)}, ${output.longitude.toFixed(4)}` : '';
 
         currentMetadata = {
-            camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, flash,
+            camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, 
             dateTime: dateStr, location, software,
-            copyright: '' // ID로 자동 생성
+            copyright: elements.copyrightText.value // 사용자 입력값 유지
         };
 
         updateFieldValues();
@@ -223,46 +218,11 @@ async function readExifData(file) {
     }
 }
 
-async function getAddressFromCoordinates(lat, lng) {
-    try {
-        const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ko`,
-            { headers: { 'User-Agent': 'MetaShaper/1.0' } }
-        );
-        if (!response.ok) return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-        
-        const data = await response.json();
-        const addr = data.address;
-        
-        let parts = [];
-        // 시/군/구 동/읍/면 추출
-        if (addr.city || addr.county) parts.push(addr.city || addr.county);
-        if (addr.borough || addr.district) parts.push(addr.borough || addr.district);
-        if (addr.suburb || addr.neighbourhood || addr.hamlet || addr.village) {
-            parts.push(addr.suburb || addr.neighbourhood || addr.hamlet || addr.village);
-        }
-        
-        return parts.length > 0 ? parts.join(' ') : (data.display_name.split(',')[0] || "");
-    } catch (e) {
-        console.error(e);
-        return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    }
-}
-
 function updateFieldValues() {
-    fieldOrder = fieldOrder.map(f => {
-        let val = currentMetadata[f.key] || '';
-        // Copyright는 instagramId가 있으면 자동 생성
-        if(f.key === 'copyright') {
-            const id = elements.instagramId.value.trim();
-            if(elements.copyrightText && elements.copyrightText.value) {
-                 val = `© ${elements.copyrightText.value}`; // 수동 입력 우선
-            } else if(id) {
-                val = `© ${id}`;
-            }
-        }
-        return { ...f, value: val };
-    });
+    fieldOrder = fieldOrder.map(f => ({
+        ...f,
+        value: currentMetadata[f.key] || (f.key === 'copyright' ? elements.copyrightText.value : '')
+    }));
     renderMetadataList();
 }
 
@@ -275,27 +235,15 @@ function renderMetadataList() {
         item.draggable = true;
         item.dataset.index = index;
         
-        // 라벨 타입에 따른 텍스트 표시
-        const typeNameMap = {
-            'valueOnly': '값만',
-            'ko': '한글',
-            'en': 'English',
-            'en_upper': 'UPPER',
-            'en_lower': 'lower',
-            'icon': '아이콘'
-        };
-
-        const currentTypeName = typeNameMap[field.labelType] || '값만';
-
         item.innerHTML = `
             <span class="drag-handle"><i class="ri-draggable"></i></span>
-            <input type="checkbox" class="metadata-checkbox" ${field.enabled ? 'checked' : ''} onchange="toggleField(${index})">
+            <input type="checkbox" ${field.enabled ? 'checked' : ''} onchange="toggleField(${index})">
             <div class="meta-content">
-                <span class="meta-key">${field.labels.en}</span>
+                <span class="meta-key">${field.label.en} / ${field.label.ko}</span>
                 <span class="meta-val">${field.value || '-'}</span>
             </div>
-            <button class="label-toggle-btn" onclick="cycleLabelType(${index})" title="라벨 형식 변경">
-                ${currentTypeName}
+            <button class="label-toggle-btn" onclick="cycleLabelType(${index})">
+                ${getLabelTypeName(field.labelType)}
             </button>
         `;
         addDragEvents(item);
@@ -303,8 +251,13 @@ function renderMetadataList() {
     });
 }
 
+function getLabelTypeName(type) {
+    const map = { 'valueOnly': '값만', 'en': 'Eng', 'ko': '한글' };
+    return map[type] || '값만';
+}
+
 function cycleLabelType(index) {
-    const types = ['valueOnly', 'ko', 'en', 'en_upper', 'en_lower', 'icon'];
+    const types = ['valueOnly', 'en', 'ko'];
     const current = fieldOrder[index].labelType || 'valueOnly';
     fieldOrder[index].labelType = types[(types.indexOf(current) + 1) % types.length];
     saveSettings();
@@ -331,12 +284,8 @@ function generateText() {
     const lines = [];
     fieldOrder.forEach(f => {
         if(f.enabled && f.value) {
-            let prefix = '';
-            if (f.labelType !== 'valueOnly') {
-                 // 해당 타입의 라벨을 가져옴 (없으면 기본키)
-                 prefix = (f.labels[f.labelType] || f.key) + ': ';
-            }
-            lines.push(`${prefix}${f.value}`);
+            const label = f.labelType === 'valueOnly' ? '' : `${f.label[f.labelType]}: `;
+            lines.push(`${label}${f.value}`);
         }
     });
 
@@ -354,12 +303,13 @@ function updatePreview() {
 
 function addHashtags() {
     const tags = ['#photography', '#photooftheday'];
+    
+    // 요청 5: 사용자명 해시태그 추가
     const userId = elements.instagramId.value.replace('@', '').trim();
     if(userId) tags.push(`#${userId}`);
 
     if(currentMetadata.camera) tags.push(`#${currentMetadata.camera.replace(/\s/g, '')}`);
     if(currentMetadata.make) tags.push(`#${currentMetadata.make.replace(/\s/g, '')}`);
-    if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
     tags.push('#snapshot', '#exif');
     
     const current = elements.textEditor.value;
@@ -373,6 +323,7 @@ function copyText() {
     showToast('텍스트가 복사되었습니다!');
 }
 
+// 워터마크 모드 (이미지에 텍스트 합성)
 async function downloadImageWithWatermark() {
     const img = elements.instagramPreviewImg;
     if(!img.src || img.src.includes('data:image/gif')) {
@@ -380,8 +331,6 @@ async function downloadImageWithWatermark() {
         return;
     }
 
-    showToast('이미지 생성 중...');
-    
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const originalImage = new Image();
@@ -389,51 +338,54 @@ async function downloadImageWithWatermark() {
     originalImage.src = img.src;
 
     originalImage.onload = () => {
-        const w = originalImage.width;
-        const h = originalImage.height;
-        const fontSize = Math.max(24, w * 0.03); 
-        const padding = fontSize;
-        
-        const text = elements.textEditor.value;
-        const lines = text.split('\n');
-        const lineHeight = fontSize * 1.5;
-        const textAreaHeight = (lines.length * lineHeight) + (padding * 2);
+        // 캔버스 크기 설정 (원본 비율 유지)
+        canvas.width = originalImage.width;
+        canvas.height = originalImage.height;
 
-        canvas.width = w;
-        canvas.height = h + textAreaHeight;
-
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // 이미지 그리기
         ctx.drawImage(originalImage, 0, 0);
 
+        // 텍스트 설정
+        const text = elements.textEditor.value;
+        const fontSize = Math.max(24, canvas.width * 0.025); // 이미지 크기에 비례
         ctx.font = `${fontSize}px sans-serif`;
-        ctx.fillStyle = "#000000";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+        ctx.shadowBlur = 4;
         ctx.textAlign = "center";
-        ctx.textBaseline = "top";
+        ctx.textBaseline = "bottom";
 
-        let startY = h + padding;
-        lines.forEach((line) => {
-            ctx.fillText(line, w / 2, startY);
-            startY += lineHeight;
+        // 텍스트 줄바꿈 처리 및 그리기
+        const lines = text.split('\n');
+        const lineHeight = fontSize * 1.4;
+        const totalHeight = lines.length * lineHeight;
+        let startY = canvas.height - totalHeight - (canvas.height * 0.05); // 하단 5% 여백
+
+        lines.forEach((line, index) => {
+            ctx.fillText(line, canvas.width / 2, startY + (index * lineHeight));
         });
 
+        // 다운로드
         const link = document.createElement('a');
         link.download = `metashaper_${Date.now()}.jpg`;
-        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.href = canvas.toDataURL('image/jpeg', 0.9);
         link.click();
-        showToast('저장되었습니다.');
+        showToast('이미지 저장 완료!');
     };
 }
 
+// 프리셋 기능
 function savePreset() {
     const name = prompt("프리셋 이름을 입력하세요:");
     if(!name) return;
+
     const preset = {
         name: name,
         order: fieldOrder.map(f => ({ key: f.key, enabled: f.enabled, labelType: f.labelType })),
         format: outputFormat,
         separator: elements.separatorInput.value
     };
+
     let presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
     presets.push(preset);
     localStorage.setItem('metaShaper_presets', JSON.stringify(presets));
@@ -443,7 +395,7 @@ function savePreset() {
 
 function loadPresets() {
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
-    elements.presetSelect.innerHTML = '<option value="">프리셋...</option>';
+    elements.presetSelect.innerHTML = '<option value="">프리셋 불러오기...</option>';
     presets.forEach((p, idx) => {
         const opt = document.createElement('option');
         opt.value = idx;
@@ -455,10 +407,12 @@ function loadPresets() {
 function loadSelectedPreset() {
     const idx = elements.presetSelect.value;
     if(idx === "") return;
+
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
     const p = presets[idx];
     if(!p) return;
 
+    // 현재 fieldOrder를 프리셋 순서대로 재정렬 및 설정 적용
     const newOrder = [];
     p.order.forEach(po => {
         const field = fieldOrder.find(f => f.key === po.key) || defaultFields.find(f => f.key === po.key);
@@ -469,6 +423,7 @@ function loadSelectedPreset() {
         }
     });
 
+    // 프리셋에 없는 필드들도 뒤에 붙여줌 (누락 방지)
     fieldOrder.forEach(f => {
         if(!newOrder.find(nf => nf.key === f.key)) newOrder.push(f);
     });
@@ -477,6 +432,7 @@ function loadSelectedPreset() {
     outputFormat = p.format;
     elements.separatorInput.value = p.separator || ', ';
     
+    // UI 반영
     const radio = document.querySelector(`input[name="outputFormat"][value="${outputFormat}"]`);
     if(radio) radio.checked = true;
     handleFormatChange(outputFormat);
@@ -484,45 +440,44 @@ function loadSelectedPreset() {
     saveSettings();
     renderMetadataList();
     generateText();
-    showToast(`프리셋 적용됨`);
+    showToast(`프리셋 "${p.name}" 적용됨`);
 }
 
 function loadSettings() {
-    const saved = localStorage.getItem('metaShaper_fields_v4');
+    const saved = localStorage.getItem('metaShaper_fields');
     if(saved) {
+        // 저장된 설정 불러오되, defaultFields에 있는 최신 키값들 병합
         const savedOrder = JSON.parse(saved);
         fieldOrder = defaultFields.map(df => {
             const savedItem = savedOrder.find(so => so.key === df.key);
-            // 라벨 설정 병합
-            if (savedItem) {
-                return { ...df, enabled: savedItem.enabled, labelType: savedItem.labelType, value: '' };
-            }
-            return df;
+            // 값이 있으면 저장된 설정 사용, 없으면 기본값 사용 (새로 추가된 'software' 등 대응)
+            return savedItem ? { ...df, ...savedItem, value: '' } : df;
         });
+        
+        // 순서도 저장된 순서 반영하려면 로직이 더 복잡해지므로, 
+        // 여기서는 필드 속성만 복원하고 순서는 defaultFields 기준(혹은 저장된 순서)으로 병합해야 함.
+        // 간단하게 위 매핑으로 처리.
     } else {
         fieldOrder = JSON.parse(JSON.stringify(defaultFields));
     }
     
     elements.instagramId.value = localStorage.getItem('instagramId') || '';
-    if(elements.copyrightText) {
-        elements.copyrightText.value = localStorage.getItem('copyrightText') || '';
-    }
+    elements.copyrightText.value = localStorage.getItem('copyrightText') || '';
 }
 
 function saveSettings() {
+    // value는 저장 안 함 (설정만 저장)
     const toSave = fieldOrder.map(({ value, ...rest }) => rest);
-    localStorage.setItem('metaShaper_fields_v4', JSON.stringify(toSave));
+    localStorage.setItem('metaShaper_fields', JSON.stringify(toSave));
     localStorage.setItem('instagramId', elements.instagramId.value);
-    if(elements.copyrightText) {
-        localStorage.setItem('copyrightText', elements.copyrightText.value);
-    }
+    localStorage.setItem('copyrightText', elements.copyrightText.value);
 }
 
 function resetImage() {
     elements.fileInfoArea.classList.add('hidden');
     elements.instagramPreviewImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     elements.fileInput.value = '';
-    currentMetadata = {};
+    currentMetadata = { ...currentMetadata, camera: '', lens: '', focalLength: '', aperture: '', shutterSpeed: '', iso: '', dateTime: '', location: '', software: '' };
     updateFieldValues();
     generateText();
 }
