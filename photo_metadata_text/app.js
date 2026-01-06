@@ -258,9 +258,9 @@ function updateFieldValues() {
         if(f.key === 'copyright') {
             const id = elements.instagramId.value.trim();
             if(elements.copyrightText && elements.instagramId.value) {
-                 val = `Copylight ${currentMetadata.dateTime.substring(4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
+                 val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
             } else if(id) {
-                val = `Copylight ${currentMetadata.dateTime.substring(4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
+                val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
             }
         }
         return { ...f, value: val };
