@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photo Metadata Text Generator</title>
+    <title>Photo Metadata Text Generator v3</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📸</text></svg>">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/exifr/dist/full.umd.js"></script>
@@ -43,26 +43,35 @@
 
             <!-- 메타데이터 필드 순서 설정 -->
             <section class="metadata-section">
-                <div class="section-header-with-options">
-                    <div>
-                        <h2>메타데이터 필드 순서 설정</h2>
-                        <p class="section-description">드래그하여 순서를 변경하세요</p>
+                <div>
+                    <h2>메타데이터 필드 순서 설정</h2>
+                    <p class="section-description">드래그하여 순서를 변경하고, 각 항목의 라벨 버튼을 클릭하여 표시 형식을 변경하세요</p>
+                </div>
+
+                <!-- 전체 제어 및 출력 설정 -->
+                <div class="control-section">
+                    <div class="control-buttons">
+                        <button class="btn-control" id="basicInfoBtn">📋 기본정보</button>
+                        <button class="btn-control" id="toggleAllBtn">✓ 전체 켜기</button>
                     </div>
-                    <div class="label-options">
-                        <label class="label-option">
-                            <input type="radio" name="labelType" value="korean" checked>
-                            <span>한글 (카메라:)</span>
-                        </label>
-                        <label class="label-option">
-                            <input type="radio" name="labelType" value="english">
-                            <span>English (Camera:)</span>
-                        </label>
-                        <label class="label-option">
-                            <input type="radio" name="labelType" value="icon">
-                            <span>아이콘 (📷)</span>
-                        </label>
+                    <div class="output-settings">
+                        <div class="output-format">
+                            <label class="format-label">
+                                <input type="radio" name="outputFormat" value="multiline" checked style="display: none;">
+                                <span>한 줄씩</span>
+                            </label>
+                            <label class="format-label">
+                                <input type="radio" name="outputFormat" value="inline" style="display: none;">
+                                <span>일렬로</span>
+                            </label>
+                        </div>
+                        <div class="separator-input">
+                            <label for="separator">구분자:</label>
+                            <input type="text" id="separator" placeholder=", " maxlength="5" value=", " disabled>
+                        </div>
                     </div>
                 </div>
+
                 <div class="metadata-list" id="metadataList">
                     <!-- 동적으로 생성됨 -->
                 </div>
@@ -72,7 +81,13 @@
             <section class="text-section">
                 <div class="text-columns">
                     <div class="text-column">
-                        <h2>텍스트 편집</h2>
+                        <div class="text-header">
+                            <h2>텍스트 편집</h2>
+                            <button class="btn-pin" id="pinBtn" title="고정 모드: 메타데이터를 아래에 추가">
+                                <span class="pin-icon">📌</span>
+                                <span class="pin-text">고정</span>
+                            </button>
+                        </div>
                         <textarea id="textEditor" rows="15" placeholder="메타데이터가 여기에 표시됩니다..."></textarea>
                     </div>
                     <div class="text-column">

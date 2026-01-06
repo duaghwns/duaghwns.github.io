@@ -2,49 +2,102 @@
 let currentMetadata = {};
 let fieldOrder = [];
 let draggedElement = null;
+let englishCaseMode = 'title'; // 'title', 'upper', or 'lower'
+let outputFormat = 'multiline'; // 'multiline' or 'inline'
+let separator = ', '; // 구분자
+let isPinned = false; // 고정 모드
+let userEdited = false; // 사용자가 직접 편집했는지 여부
+let copyrightPinnedToBottom = true; // copyright가 맨 아래에 고정되어 있는지
+
+// 기본 정보 필드 (기본값으로 체크될 필드들)
+const basicFields = ['camera', 'lens', 'aperture', 'shutterSpeed', 'iso', 'dateTime'];
 
 // 기본 메타데이터 필드 정의
 const defaultFields = [
     {
         key: 'camera',
-        labels: { korean: '카메라', english: 'Camera', icon: '📷' },
+        labels: { korean: '카메라', english: 'Camera', englishUpper: 'CAMERA', englishLower: 'camera', icon: '📷', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
+    {
+        key: 'make',
+        labels: { korean: '제조사', english: 'Make', englishUpper: 'MAKE', englishLower: 'make', icon: '🏭', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'lens',
-        labels: { korean: '렌즈', english: 'Lens', icon: '🔭' },
+        labels: { korean: '렌즈', english: 'Lens', englishUpper: 'LENS', englishLower: 'lens', icon: '🔭', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'focalLength',
-        labels: { korean: '초점거리', english: 'Focal Length', icon: '📏' },
+        labels: { korean: '초점거리', english: 'Focal Length', englishUpper: 'FOCAL LENGTH', englishLower: 'focal length', icon: '📏', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'aperture',
-        labels: { korean: '조리개', english: 'Aperture', icon: '✨' },
+        labels: { korean: '조리개', english: 'Aperture', englishUpper: 'APERTURE', englishLower: 'aperture', icon: '✨', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'shutterSpeed',
-        labels: { korean: '셔터속도', english: 'Shutter Speed', icon: '⏱️' },
+        labels: { korean: '셔터속도', english: 'Shutter Speed', englishUpper: 'SHUTTER SPEED', englishLower: 'shutter speed', icon: '⏱️', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'iso',
-        labels: { korean: 'ISO', english: 'ISO', icon: '💡' },
+        labels: { korean: 'ISO', english: 'ISO', englishUpper: 'ISO', englishLower: 'iso', icon: '💡', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
+    {
+        key: 'flash',
+        labels: { korean: '플래시', english: 'Flash', englishUpper: 'FLASH', englishLower: 'flash', icon: '⚡', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'dateTime',
-        labels: { korean: '촬영일시', english: 'Date', icon: '📅' },
+        labels: { korean: '촬영일시', english: 'Date', englishUpper: 'DATE', englishLower: 'date', icon: '📅', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
     },
     {
         key: 'location',
-        labels: { korean: '위치', english: 'Location', icon: '📍' },
+        labels: { korean: '위치', english: 'Location', englishUpper: 'LOCATION', englishLower: 'location', icon: '📍', valueOnly: '' },
+        labelType: 'valueOnly',
         value: ''
-    }
+    },
+    {
+        key: 'creator',
+        labels: { korean: '작가', english: 'Creator', englishUpper: 'CREATOR', englishLower: 'creator', icon: '👤', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
+    {
+        key: 'artist',
+        labels: { korean: '아티스트', english: 'Artist', englishUpper: 'ARTIST', englishLower: 'artist', icon: '🎨', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
+    {
+        key: 'software',
+        labels: { korean: '소프트웨어', english: 'Software', englishUpper: 'SOFTWARE', englishLower: 'software', icon: '💻', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
+    {
+        key: 'copyright',
+        labels: { korean: '저작권', english: 'Copyright', englishUpper: 'COPYRIGHT', englishLower: 'copyright', icon: '©️', valueOnly: '' },
+        labelType: 'valueOnly',
+        value: ''
+    },
 ];
 
 // DOM 요소
@@ -62,6 +115,10 @@ const previewUsername = document.getElementById('previewUsername');
 const captionUsername = document.getElementById('captionUsername');
 const captionText = document.getElementById('captionText');
 const instagramPreviewImg = document.getElementById('instagramPreviewImg');
+const toggleAllBtn = document.getElementById('toggleAllBtn');
+const basicInfoBtn = document.getElementById('basicInfoBtn');
+const separatorInput = document.getElementById('separator');
+const pinBtn = document.getElementById('pinBtn');
 
 // 초기화
 function init() {
@@ -73,16 +130,24 @@ function init() {
 
 // 설정 로드 (LocalStorage)
 function loadSettings() {
-    const savedOrder = localStorage.getItem('metadataFieldOrder');
+    const savedOrder = localStorage.getItem('metadataFieldOrder_v3');
     const savedInstagramId = localStorage.getItem('instagramId');
-    const savedLabelType = localStorage.getItem('labelType');
+    const savedEnglishCase = localStorage.getItem('englishCaseMode');
+    const savedOutputFormat = localStorage.getItem('outputFormat') || 'multiline';
+    const savedSeparator = localStorage.getItem('separator');
 
     if (savedOrder) {
         fieldOrder = JSON.parse(savedOrder);
+        // 저장된 필드에 labelType이 없는 경우 기본값 설정
+        fieldOrder = fieldOrder.map(field => ({
+            ...field,
+            labelType: field.labelType || 'valueOnly'
+        }));
     } else {
+        // 첫 로드 시 기본정보만 체크
         fieldOrder = defaultFields.map(field => ({
             ...field,
-            enabled: true
+            enabled: basicFields.includes(field.key)
         }));
     }
 
@@ -90,18 +155,85 @@ function loadSettings() {
         instagramId.value = savedInstagramId;
     }
 
-    if (savedLabelType) {
-        const radio = document.querySelector(`input[name="labelType"][value="${savedLabelType}"]`);
-        if (radio) radio.checked = true;
+    if (savedEnglishCase) {
+        englishCaseMode = savedEnglishCase;
     }
+
+    outputFormat = savedOutputFormat;
+    const formatRadio = document.querySelector(`input[name="outputFormat"][value="${savedOutputFormat}"]`);
+    if (formatRadio) {
+        formatRadio.checked = true;
+        // active 클래스 추가
+        document.querySelectorAll('.format-label').forEach(label => label.classList.remove('active'));
+        formatRadio.closest('.format-label').classList.add('active');
+    }
+
+    if (savedSeparator !== null) {
+        separator = savedSeparator;
+        separatorInput.value = savedSeparator;
+    }
+
+    // 구분자 disabled 상태 업데이트
+    separatorInput.disabled = (outputFormat === 'multiline');
+
+    updateToggleAllButton();
 }
 
 // 설정 저장 (LocalStorage)
 function saveSettings() {
-    localStorage.setItem('metadataFieldOrder', JSON.stringify(fieldOrder));
+    localStorage.setItem('metadataFieldOrder_v3', JSON.stringify(fieldOrder));
     localStorage.setItem('instagramId', instagramId.value);
-    const labelType = document.querySelector('input[name="labelType"]:checked').value;
-    localStorage.setItem('labelType', labelType);
+    localStorage.setItem('englishCaseMode', englishCaseMode);
+    localStorage.setItem('outputFormat', outputFormat);
+    localStorage.setItem('separator', separator);
+}
+
+// 전체 켜기/끄기 토글
+function toggleAllFields() {
+    const allEnabled = fieldOrder.every(field => field.enabled);
+
+    fieldOrder = fieldOrder.map(field => ({
+        ...field,
+        enabled: !allEnabled
+    }));
+
+    saveSettings();
+    renderMetadataList();
+
+    // 고정 모드일 때는 추가, 아니면 덮어쓰기
+    if (isPinned && userEdited) {
+        appendMetadataToText();
+    } else {
+        generateText();
+    }
+
+    updateToggleAllButton();
+}
+
+// 전체 켜기/끄기 버튼 텍스트 업데이트
+function updateToggleAllButton() {
+    const allEnabled = fieldOrder.every(field => field.enabled);
+    toggleAllBtn.textContent = allEnabled ? '✗ 전체 끄기' : '✓ 전체 켜기';
+}
+
+// 기본정보 선택
+function selectBasicInfo() {
+    fieldOrder = fieldOrder.map(field => ({
+        ...field,
+        enabled: basicFields.includes(field.key)
+    }));
+
+    saveSettings();
+    renderMetadataList();
+
+    // 고정 모드일 때는 추가, 아니면 덮어쓰기
+    if (isPinned && userEdited) {
+        appendMetadataToText();
+    } else {
+        generateText();
+    }
+
+    updateToggleAllButton();
 }
 
 // 이벤트 리스너 설정
@@ -122,19 +254,73 @@ function setupEventListeners() {
     });
 
     // 텍스트 편집
-    textEditor.addEventListener('input', updatePreview);
+    textEditor.addEventListener('input', () => {
+        userEdited = true; // 사용자가 직접 편집함
+        updatePreview();
+    });
+
+    // 고정 버튼
+    pinBtn.addEventListener('click', () => {
+        isPinned = !isPinned;
+        pinBtn.classList.toggle('active', isPinned);
+
+        if (isPinned) {
+            pinBtn.title = '고정 해제: 메타데이터를 덮어쓰기';
+        } else {
+            pinBtn.title = '고정 모드: 메타데이터를 아래에 추가';
+            userEdited = false;
+        }
+    });
 
     // 버튼
     copyBtn.addEventListener('click', copyText);
     resetBtn.addEventListener('click', resetAll);
 
-    // 라벨 타입 변경
-    document.querySelectorAll('input[name="labelType"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            saveSettings();
-            renderMetadataList();
-            generateText();
+    // 기본정보 버튼
+    basicInfoBtn.addEventListener('click', selectBasicInfo);
+
+    // 전체 켜기/끄기 버튼
+    toggleAllBtn.addEventListener('click', toggleAllFields);
+
+    // 출력 형식 변경 - label 클릭으로 동작
+    document.querySelectorAll('.format-label').forEach(label => {
+        label.addEventListener('click', (e) => {
+            const radio = label.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+                outputFormat = radio.value;
+
+                // active 클래스 토글
+                document.querySelectorAll('.format-label').forEach(l => l.classList.remove('active'));
+                label.classList.add('active');
+
+                // 구분자 disabled 상태 업데이트
+                separatorInput.disabled = (outputFormat === 'multiline');
+
+                saveSettings();
+
+                // 고정 모드일 때는 추가, 아니면 덮어쓰기
+                if (isPinned && userEdited) {
+                    appendMetadataToText();
+                } else {
+                    generateText();
+                }
+            }
         });
+    });
+
+    // 구분자 변경
+    separatorInput.addEventListener('input', (e) => {
+        separator = e.target.value;
+        saveSettings();
+        if (outputFormat === 'inline') {
+            // 고정 모드일 때는 추가, 아니면 덮어쓰기
+            if (isPinned && userEdited) {
+                appendMetadataToText();
+            } else {
+                generateText();
+            }
+        }
     });
 }
 
@@ -209,8 +395,24 @@ async function readExifData(file) {
         // 1. 카메라 정보 조합
         const make = output.Make || '';
         const model = output.Model || '';
-        const camera = (make && model) ? `${make} ${model}`.replace(make, '').trim() : (model || make); 
-        // replace는 'Canon Canon EOS...' 처럼 중복되는 경우 방지
+
+        // 중복 제거: 모델명이 제조사명으로 시작하면 제조사명 제거
+        let camera = '';
+        if (make && model) {
+            // 모델명에 제조사명이 포함되어 있는지 확인 (대소문자 무시)
+            let tempModel = model;
+            const makeLower = make.toLowerCase();
+
+            // 제조사명이 여러 번 반복될 수 있으므로 모두 제거
+            while (tempModel.toLowerCase().startsWith(makeLower + ' ') ||
+                   (tempModel.toLowerCase().startsWith(makeLower) && tempModel.length > make.length)) {
+                tempModel = tempModel.substring(make.length).trim();
+            }
+
+            camera = tempModel || model;
+        } else {
+            camera = model || make;
+        }
 
         // 2. 렌즈 정보 (exifr가 자동으로 제조사별 태그를 찾아 LensModel에 넣어줍니다)
         let lensInfo = output.LensModel || output.Lens || output.LensInfo || '';
@@ -234,7 +436,13 @@ async function readExifData(file) {
 
         const iso = (output.ISO || output.ISOSpeedRatings) ? `ISO ${output.ISO || output.ISOSpeedRatings}` : '';
 
-        // 4. 날짜 변환
+        // 4. 플래시 정보
+        let flashInfo = '';
+        if (output.Flash !== undefined) {
+            flashInfo = output.Flash === 0 ? 'Off' : 'On';
+        }
+
+        // 5. 날짜 변환
         let dateTimeStr = '';
         const dateSource = output.DateTimeOriginal || output.CreateDate || output.DateTime;
         if (dateSource) {
@@ -252,20 +460,32 @@ async function readExifData(file) {
             }
         }
 
-        // 5. GPS 처리 (exifr는 자동으로 십진수 좌표를 줍니다. 변환 함수 필요 없음)
+        // 6. GPS 처리 (exifr는 자동으로 십진수 좌표를 줍니다. 변환 함수 필요 없음)
         const lat = output.latitude;
         const lng = output.longitude;
 
+        // 7. 크리에이터, 아티스트, 저작권, 소프트웨어 정보
+        const creator = output.Creator || output.XPAuthor || '';
+        const artist = output.Artist || '';
+        const copyright = output.Copyright || '';
+        const software = output.Software || '';
+
         // 전역 변수 업데이트
         currentMetadata = {
-            camera: make && model ? `${make} ${model}` : (model || ''),
+            camera: camera,  // 중복 제거된 camera 변수 사용
+            make: make,
             lens: lensInfo,
             focalLength: focalLength,
             aperture: fNumber,
             shutterSpeed: shutterSpeed,
             iso: iso,
+            flash: flashInfo,
             dateTime: dateTimeStr,
-            location: (lat && lng) ? '위치 조회 중...' : ''
+            location: (lat && lng) ? '위치 조회 중...' : '',
+            creator: creator,
+            artist: artist,
+            copyright: copyright,
+            software: software
         };
 
         // UI 업데이트
@@ -409,7 +629,6 @@ function updateFieldValues() {
 // 메타데이터 리스트 렌더링
 function renderMetadataList() {
     metadataList.innerHTML = '';
-    const labelType = document.querySelector('input[name="labelType"]:checked').value;
 
     fieldOrder.forEach((field, index) => {
         const item = document.createElement('div');
@@ -417,7 +636,18 @@ function renderMetadataList() {
         item.draggable = true;
         item.dataset.index = index;
 
-        const displayLabel = field.labels ? field.labels[labelType] : field.label;
+        // 현재 필드의 labelType에 따라 표시할 라벨 결정
+        let displayLabel = getDisplayLabel(field);
+
+        // 라벨 타입 버튼 텍스트
+        const labelTypeButtons = {
+            valueOnly: '정보만',
+            korean: '한글',
+            english: 'English',
+            englishUpper: 'ENGLISH',
+            englishLower: 'english',
+            icon: '아이콘'
+        };
 
         item.innerHTML = `
             <span class="drag-handle">☰</span>
@@ -425,6 +655,9 @@ function renderMetadataList() {
                    onchange="toggleField(${index})">
             <span class="metadata-label">${displayLabel}</span>
             <span class="metadata-value">${field.value || '(값 없음)'}</span>
+            <button class="label-type-btn" onclick="cycleLabelType(${index})" title="라벨 표시 형식 변경">
+                ${labelTypeButtons[field.labelType]}
+            </button>
         `;
 
         // 드래그 이벤트
@@ -437,11 +670,101 @@ function renderMetadataList() {
     });
 }
 
+// 필드의 labelType에 따라 표시할 라벨 반환
+function getDisplayLabel(field) {
+    const labelType = field.labelType || 'valueOnly';
+
+    if (labelType === 'valueOnly') {
+        return '';
+    } else if (labelType === 'english' || labelType === 'englishUpper' || labelType === 'englishLower') {
+        return field.labels[labelType] || field.labels.english;
+    } else {
+        return field.labels[labelType] || field.key;
+    }
+}
+
+// 개별 필드의 라벨 타입 순환 (valueOnly -> korean -> english -> englishUpper -> englishLower -> icon -> valueOnly)
+function cycleLabelType(index) {
+    const field = fieldOrder[index];
+    const cycle = ['valueOnly', 'korean', 'english', 'englishUpper', 'englishLower', 'icon'];
+    const currentIndex = cycle.indexOf(field.labelType);
+    const nextIndex = (currentIndex + 1) % cycle.length;
+
+    fieldOrder[index].labelType = cycle[nextIndex];
+
+    saveSettings();
+    renderMetadataList();
+
+    // 고정 모드일 때는 텍스트를 수정하지 않음 (라벨 타입 변경은 UI에만 반영)
+    // 고정 모드가 아닐 때만 텍스트를 다시 생성
+    if (!isPinned || !userEdited) {
+        generateText();
+    }
+}
+
 // 필드 활성화/비활성화
 function toggleField(index) {
+    const wasEnabled = fieldOrder[index].enabled;
     fieldOrder[index].enabled = !fieldOrder[index].enabled;
     saveSettings();
-    generateText();
+
+    // 고정 모드일 때는 변경된 필드만 추가, 아니면 덮어쓰기
+    if (isPinned && userEdited) {
+        // 활성화된 경우에만 해당 필드를 추가
+        if (fieldOrder[index].enabled) {
+            appendSingleFieldToText(index);
+        }
+        // 비활성화된 경우는 텍스트에서 제거하지 않음 (사용자가 직접 편집한 내용 유지)
+    } else {
+        generateText();
+    }
+
+    updateToggleAllButton();
+}
+
+// 단일 필드만 텍스트에 추가 (고정 모드)
+function appendSingleFieldToText(index) {
+    const field = fieldOrder[index];
+
+    if (!field.enabled || !field.value) {
+        return;
+    }
+
+    let displayValue = field.value;
+
+    // Copyright 처리
+    if (field.key === 'copyright') {
+        const year = currentMetadata.dateTime ? currentMetadata.dateTime.split('.')[0] : new Date().getFullYear();
+        const username = instagramId.value.replace('@', '') || (currentMetadata.copyright || currentMetadata.creator || currentMetadata.artist || '');
+        displayValue = `Copyright ${year} ${username} All rights reserved.`;
+
+        // Copyright가 맨 아래 고정인 경우는 appendMetadataToText로 처리
+        if (copyrightPinnedToBottom) {
+            appendMetadataToText();
+            return;
+        }
+    }
+
+    // 개별 필드의 labelType 사용
+    const fieldLabelType = field.labelType || 'valueOnly';
+    let lineText;
+
+    if (fieldLabelType === 'valueOnly') {
+        lineText = displayValue;
+    } else {
+        const displayLabel = field.labels[fieldLabelType] || field.key;
+        lineText = `${displayLabel}: ${displayValue}`;
+    }
+
+    // 기존 텍스트에 추가
+    const currentText = textEditor.value.trim();
+    if (currentText) {
+        textEditor.value = currentText + '\n' + lineText;
+    } else {
+        textEditor.value = lineText;
+    }
+
+    updatePreview();
 }
 
 // 드래그 시작
@@ -485,6 +808,15 @@ function handleDragEnd(e) {
     });
 
     fieldOrder = newOrder;
+
+    // copyright 위치 확인 - 맨 마지막이 아니면 고정 해제
+    const copyrightIndex = fieldOrder.findIndex(f => f.key === 'copyright');
+    if (copyrightIndex !== -1 && copyrightIndex !== fieldOrder.length - 1) {
+        copyrightPinnedToBottom = false;
+    } else if (copyrightIndex === fieldOrder.length - 1) {
+        copyrightPinnedToBottom = true;
+    }
+
     saveSettings();
     renderMetadataList();
     generateText();
@@ -492,18 +824,121 @@ function handleDragEnd(e) {
 
 // 텍스트 생성
 function generateText() {
+    // 고정 모드일 때는 생성하지 않음
+    if (isPinned && userEdited) {
+        return;
+    }
+
     const lines = [];
-    const labelType = document.querySelector('input[name="labelType"]:checked').value;
+    let copyrightLine = '';
 
     fieldOrder.forEach(field => {
         if (field.enabled && field.value) {
-            const displayLabel = field.labels ? field.labels[labelType] : field.label;
-            lines.push(`${displayLabel}: ${field.value}`);
+            // Copyright는 별도 처리 (맨 아래 고정인 경우)
+            if (field.key === 'copyright' && copyrightPinnedToBottom) {
+                const year = currentMetadata.dateTime ? currentMetadata.dateTime.split('.')[0] : new Date().getFullYear();
+                const username = instagramId.value.replace('@', '') || (currentMetadata.copyright || currentMetadata.creator || currentMetadata.artist || '');
+                copyrightLine = `Copyright ${year} ${username} All rights reserved.`;
+                return;
+            }
+
+            let displayValue = field.value;
+
+            // Copyright가 맨 아래 고정이 아닌 경우
+            if (field.key === 'copyright') {
+                const year = currentMetadata.dateTime ? currentMetadata.dateTime.split('.')[0] : new Date().getFullYear();
+                const username = instagramId.value.replace('@', '') || (currentMetadata.copyright || currentMetadata.creator || currentMetadata.artist || '');
+                displayValue = `Copyright ${year} ${username} All rights reserved.`;
+            }
+
+            // 개별 필드의 labelType 사용
+            const fieldLabelType = field.labelType || 'valueOnly';
+
+            if (fieldLabelType === 'valueOnly') {
+                // "정보만" 옵션: 라벨 없이 값만 표시
+                lines.push(displayValue);
+            } else {
+                const displayLabel = field.labels[fieldLabelType] || field.key;
+                lines.push(`${displayLabel}: ${displayValue}`);
+            }
         }
     });
 
-    const generatedText = lines.join('\n');
+    // 출력 형식에 따라 텍스트 생성
+    let generatedText;
+    if (outputFormat === 'inline') {
+        // 일렬로 출력 (구분자 사용)
+        generatedText = lines.join(separator);
+    } else {
+        // 한 줄씩 출력
+        generatedText = lines.join('\n');
+    }
+
+    // Copyright가 맨 아래 고정이면 한 줄 띄우고 추가
+    if (copyrightLine) {
+        generatedText += '\n\n' + copyrightLine;
+    }
+
     textEditor.value = generatedText;
+    userEdited = false; // 자동 생성된 텍스트
+    updatePreview();
+}
+
+// 텍스트에 메타데이터 추가 (고정 모드)
+function appendMetadataToText() {
+    const lines = [];
+    let copyrightLine = '';
+
+    fieldOrder.forEach(field => {
+        if (field.enabled && field.value) {
+            // Copyright는 별도 처리 (맨 아래 고정인 경우)
+            if (field.key === 'copyright' && copyrightPinnedToBottom) {
+                const year = currentMetadata.dateTime ? currentMetadata.dateTime.split('.')[0] : new Date().getFullYear();
+                const username = instagramId.value.replace('@', '') || (currentMetadata.copyright || currentMetadata.creator || currentMetadata.artist || '');
+                copyrightLine = `Copyright ${year} ${username} All rights reserved.`;
+                return;
+            }
+
+            let displayValue = field.value;
+
+            // Copyright가 맨 아래 고정이 아닌 경우
+            if (field.key === 'copyright') {
+                const year = currentMetadata.dateTime ? currentMetadata.dateTime.split('.')[0] : new Date().getFullYear();
+                const username = instagramId.value.replace('@', '') || (currentMetadata.copyright || currentMetadata.creator || currentMetadata.artist || '');
+                displayValue = `Copyright ${year} ${username} All rights reserved.`;
+            }
+
+            // 개별 필드의 labelType 사용
+            const fieldLabelType = field.labelType || 'valueOnly';
+
+            if (fieldLabelType === 'valueOnly') {
+                lines.push(displayValue);
+            } else {
+                const displayLabel = field.labels[fieldLabelType] || field.key;
+                lines.push(`${displayLabel}: ${displayValue}`);
+            }
+        }
+    });
+
+    let metadataText;
+    if (outputFormat === 'inline') {
+        metadataText = lines.join(separator);
+    } else {
+        metadataText = lines.join('\n');
+    }
+
+    if (copyrightLine) {
+        metadataText += '\n\n' + copyrightLine;
+    }
+
+    // 기존 텍스트에 추가
+    const currentText = textEditor.value.trim();
+    if (currentText) {
+        textEditor.value = currentText + '\n\n' + metadataText;
+    } else {
+        textEditor.value = metadataText;
+    }
+
     updatePreview();
 }
 
