@@ -540,7 +540,7 @@ function deletePreset() {
 }
 
 function loadSettings() {
-    const saved = localStorage.getItem('metaShaper_fields_v4');
+    const saved = localStorage.getItem('metaShaper_fields');
     if(saved) {
         const savedOrder = JSON.parse(saved);
         fieldOrder = defaultFields.map(df => {
@@ -564,7 +564,7 @@ function loadSettings() {
 
 function saveSettings() {
     const toSave = fieldOrder.map(({ value, ...rest }) => rest);
-    localStorage.setItem('metaShaper_fields_v4', JSON.stringify(toSave));
+    localStorage.setItem('metaShaper_fields', JSON.stringify(toSave));
     localStorage.setItem('instagramId', elements.instagramId.value);
     // if(elements.copyrightText) {
     //     localStorage.setItem('copyrightText', elements.copyrightText.value);
