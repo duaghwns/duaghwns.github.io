@@ -87,8 +87,18 @@ function setupEventListeners() {
     elements.presetSelect.addEventListener('change', handlePresetChange);
 
     // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
-    elements.instagramId.addEventListener('input', () => {
+    elements.instagramId.addEventListener('input', (e) => {
+        // Instagram ID 포맷 검증 및 변환
+        let value = e.target.value;
+        // 대문자를 소문자로 변환
+        value = value.toLowerCase();
+        // 허용된 문자만 유지 (영문 소문자, 숫자, _, .)
+        value = value.replace(/[^a-z0-9_.]/g, '');
+        // 변환된 값으로 업데이트
+        e.target.value = value;
+
         saveSettings();
+        updateFieldValues(); // 저작권 필드 업데이트
         generateText(); // 텍스트 재생성
         updatePreview();
     });
@@ -259,10 +269,12 @@ function updateFieldValues() {
         // Copyright는 instagramId가 있으면 자동 생성
         if(f.key === 'copyright') {
             const id = elements.instagramId.value.trim();
-            if(elements.copyrightText && elements.instagramId.value) {
-                 val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
+            const year = currentMetadata.dateTime ? currentMetadata.dateTime.substring(0,4) : new Date().getFullYear();
+
+            if(elements.copyrightText && elements.copyrightText.value.trim()) {
+                val = elements.copyrightText.value.trim(); // 수동 입력 우선
             } else if(id) {
-                val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
+                val = `Copyright ${year}. ${id} All rights reserved.`;
             }
         }
         return { ...f, value: val };
