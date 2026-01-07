@@ -15,8 +15,8 @@ const defaultFields = [
     { key: 'flash', labels: { ko: '플래시', en: 'Flash', en_upper: 'FLASH', en_lower: 'flash', icon: '⚡' }, value: '', enabled: false, labelType: 'valueOnly' },
     { key: 'dateTime', labels: { ko: '촬영일', en: 'Date', en_upper: 'DATE', en_lower: 'date', icon: '📅' }, value: '', enabled: true, labelType: 'valueOnly' },
     { key: 'software', labels: { ko: '소프트웨어', en: 'Software', en_upper: 'SOFTWARE', en_lower: 'software', icon: '💻' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' }
+    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' }
 ];
 
 // DOM Elements
@@ -89,13 +89,21 @@ function setupEventListeners() {
     // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
     elements.instagramId.addEventListener('input', (e) => {
         // Instagram ID 포맷 검증 및 변환
-        let value = e.target.value;
+        const originalValue = e.target.value;
+        let value = originalValue;
+
         // 대문자를 소문자로 변환
         value = value.toLowerCase();
         // 허용된 문자만 유지 (영문 소문자, 숫자, _, .)
         value = value.replace(/[^a-z0-9_.]/g, '');
+
         // 변환된 값으로 업데이트
         e.target.value = value;
+
+        // 변환이 발생했으면 알림 표시
+        if (originalValue !== value && originalValue.length > 0) {
+            showToast('영문 소문자, 숫자, _, . 만 입력 가능합니다');
+        }
 
         saveSettings();
         updateFieldValues(); // 저작권 필드 업데이트
@@ -217,8 +225,8 @@ async function readExifData(file) {
         let location = '';
         if (output.latitude && output.longitude) {
             location = await getAddressFromCoordinates(output.latitude, output.longitude);
-            document.querySelector('.insta-loc').textContent = location || "MetaShaper";
         }
+        document.querySelector('.insta-loc').textContent = location || "MetaShaper";
 
         currentMetadata = {
             camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, flash,
