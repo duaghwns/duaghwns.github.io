@@ -372,15 +372,46 @@ function updatePreview() {
 }
 
 function addHashtags() {
-    const tags = ['#photography', '#photooftheday'];
+    const tags = [];
     const userId = elements.instagramId.value.replace('@', '').trim();
-    if(userId) tags.push(`#${userId}`);
-
-    if(currentMetadata.camera) tags.push(`#${currentMetadata.camera.replace(/\s/g, '')}`);
-    if(currentMetadata.make) tags.push(`#${currentMetadata.make.replace(/\s/g, '')}`);
-    // if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
-    tags.push('#snapshot', '#exif');
     
+    // 해시태그용 문자열 정리 함수
+    const sanitizeHashtag = (str) => {
+        return str
+        .toLowerCase()
+        .replace(/-/g, '_')  // 하이픈을 언더스코어로 변환
+        .replace(/\./g, '')  // 마침표 제거
+        .replace(/\s+/g, '')  // 공백 제거
+        .replace(/[^a-z0-9_]/g, '');  // 영문, 숫자, 언더스코어만 허용
+    };
+    
+    if(userId) tags.push('#'+sanitizeHashtag(`${userId}`));
+
+    // 제조사 해시태그 (소문자)
+    if(currentMetadata.make) {
+        const makeTag = sanitizeHashtag(currentMetadata.make);
+        if(makeTag) tags.push(`#${makeTag}`);
+    }
+
+    // 모델명 해시태그 (제조사 제외, 소문자)
+    if(currentMetadata.camera) {
+        let modelTag = currentMetadata.camera;
+        // 제조사명이 포함되어 있으면 제거
+        if(currentMetadata.make && modelTag.toLowerCase().startsWith(currentMetadata.make.toLowerCase())) {
+            modelTag = modelTag.substring(currentMetadata.make.length).trim();
+        }
+        modelTag = sanitizeHashtag(modelTag);
+        if(modelTag) tags.push(`#${modelTag}`);
+    }
+
+    // 렌즈 해시태그 (소문자)
+    if(currentMetadata.lens) {
+        const lensTag = sanitizeHashtag(currentMetadata.lens);
+        if(lensTag) tags.push(`#${lensTag}`);
+    }
+
+    tags.push('#metashaper');
+
     const current = elements.textEditor.value;
     elements.textEditor.value = current + (current ? '\n\n' : '') + tags.join(' ');
     updatePreview();
