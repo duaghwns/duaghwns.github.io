@@ -187,7 +187,9 @@ async function readExifData(file) {
         const model = output.Model || '';
         let camera = model;
         if (make && model && model.toLowerCase().startsWith(make.toLowerCase())) {
-            camera = model.substring(make.length).trim();
+            // camera = model.substring(make.length).trim();
+            camera = `${make} ${model.substring(make.length).trim()}`;
+            // camera = model.replace(make, '').trim();
         } else if (make && model) {
             camera = `${make} ${model}`;
         }
