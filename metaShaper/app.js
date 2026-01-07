@@ -85,12 +85,12 @@ function setupEventListeners() {
     elements.presetSelect.addEventListener('change', loadSelectedPreset);
 
     // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
-    elements.instagramId.addEventListener('input', () => { 
-        saveSettings(); 
+    elements.instagramId.addEventListener('input', () => {
+        saveSettings();
         generateText(); // 텍스트 재생성
-        updatePreview(); 
+        updatePreview();
     });
-    
+
     // Copyright 입력창 (ID와 별개로 수동 입력시)
     if(elements.copyrightText) {
         elements.copyrightText.addEventListener('input', () => {
@@ -446,7 +446,7 @@ function savePreset() {
 
 function loadPresets() {
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
-    elements.presetSelect.innerHTML = '<option value="">프리셋...</option>';
+    elements.presetSelect.innerHTML = '<option value="">프리셋 선택</option>';
     presets.forEach((p, idx) => {
         const opt = document.createElement('option');
         opt.value = idx;
@@ -505,7 +505,7 @@ function loadSettings() {
     } else {
         fieldOrder = JSON.parse(JSON.stringify(defaultFields));
     }
-    
+
     elements.instagramId.value = localStorage.getItem('instagramId') || '';
 
     // if(elements.copyrightText) {
@@ -542,13 +542,13 @@ function toggleTheme() {
     const newTheme = isDark ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
-    elements.themeToggle.querySelector('i').className = newTheme === 'dark' ? 'ri-sun-line' : 'ri-moon-line';
+    elements.themeToggle.querySelector('i').className = newTheme === 'dark' ? 'ri-moon-line' : 'ri-sun-line';
 }
 
 function applyTheme() {
     const saved = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', saved);
-    elements.themeToggle.querySelector('i').className = saved === 'dark' ? 'ri-sun-line' : 'ri-moon-line';
+    elements.themeToggle.querySelector('i').className = saved === 'dark' ? 'ri-moon-line' : 'ri-sun-line';
 }
 
 let dragSrcEl = null;

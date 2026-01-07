@@ -17,7 +17,7 @@
                 <h1>MetaShaper</h1>
             </div>
             <button id="themeToggle" class="icon-btn" aria-label="테마 변경">
-                <i class="ri-moon-line"></i>
+                <i class="ri-sun-line"></i>
             </button>
         </header>
 
@@ -35,7 +35,7 @@
                                 </div>
                             </label>
                             <input type="file" id="fileInput" accept="image/*" style="display:none;">
-                            
+
                             <div id="fileInfoArea" class="file-info-area hidden">
                                 <div class="mini-preview-wrapper">
                                     <span id="fileName">filename.jpg</span>
@@ -44,30 +44,16 @@
                             </div>
                         </section>
 
-                        <section class="card setting-card">
-                            <div class="card-header">
-                                <h3>기본 설정</h3>
-                            </div>
-                            <div class="input-group">
-                                <div class="input-wrap">
-                                    <i class="ri-instagram-line"></i>
-                                    <input type="text" id="instagramId" placeholder="Instagram ID">
-                                </div>
-                                <div class="input-wrap mt-2" style="display:none;">
-                                    <i class="ri-copyright-line"></i>
-                                    <input type="text" id="copyrightText" placeholder="Copyright Name">
-                                </div>
-                            </div>
-                        </section>
-
-                        <section class="card list-card">
+                        <section class="card list-card list-card-expanded">
                             <div class="card-header">
                                 <h3>표시 항목</h3>
                                 <div class="header-actions">
-                                    <select id="presetSelect" class="preset-select">
-                                        <option value="">프리셋...</option>
-                                    </select>
-                                    <button id="savePresetBtn" class="icon-btn-sm" title="저장"><i class="ri-save-3-line"></i></button>
+                                    <div class="preset-group">
+                                        <select id="presetSelect" class="preset-select">
+                                            <option value="">프리셋 선택</option>
+                                        </select>
+                                        <button id="savePresetBtn" class="icon-btn-sm" title="저장"><i class="ri-save-3-line"></i></button>
+                                    </div>
                                     <button id="toggleAllBtn" class="text-btn active-text-btn">전체선택</button>
                                 </div>
                             </div>
@@ -134,7 +120,18 @@
                                     <input type="text" id="separator" class="sep-input" placeholder="구분자" value=" | " disabled>
                                 </div>
                             </div>
-                            
+
+                            <div class="input-group" style="margin-bottom: 15px;">
+                                <div class="input-wrap">
+                                    <i class="ri-instagram-line"></i>
+                                    <input type="text" id="instagramId" placeholder="Instagram ID">
+                                </div>
+                                <div class="input-wrap mt-2" style="display:none;">
+                                    <i class="ri-copyright-line"></i>
+                                    <input type="text" id="copyrightText" placeholder="Copyright Name">
+                                </div>
+                            </div>
+
                             <div class="editor-container">
                                 <textarea id="textEditor" placeholder="사진을 업로드하면 정보가 추출됩니다."></textarea>
                                 <div class="action-row">
