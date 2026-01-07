@@ -40,6 +40,7 @@ const elements = {
     separatorInput: document.getElementById('separator'),
     presetSelect: document.getElementById('presetSelect'),
     savePresetBtn: document.getElementById('savePresetBtn'),
+    deletePresetBtn: document.getElementById('deletePresetBtn'),
     downloadWatermarkBtn: document.getElementById('downloadWatermarkBtn'),
 };
 
@@ -82,7 +83,8 @@ function setupEventListeners() {
     elements.addHashtagsBtn.addEventListener('click', addHashtags);
     elements.downloadWatermarkBtn.addEventListener('click', downloadImageWithWatermark);
     elements.savePresetBtn.addEventListener('click', savePreset);
-    elements.presetSelect.addEventListener('change', loadSelectedPreset);
+    elements.deletePresetBtn.addEventListener('click', deletePreset);
+    elements.presetSelect.addEventListener('change', handlePresetChange);
 
     // Instagram ID 변경시 저작권 자동 업데이트 및 텍스트 갱신
     elements.instagramId.addEventListener('input', () => {
@@ -446,7 +448,7 @@ function savePreset() {
 
 function loadPresets() {
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
-    elements.presetSelect.innerHTML = '<option value="">프리셋 선택</option>';
+    elements.presetSelect.innerHTML = '<option value="">현재 프리셋 저장</option>';
     presets.forEach((p, idx) => {
         const opt = document.createElement('option');
         opt.value = idx;
@@ -455,9 +457,24 @@ function loadPresets() {
     });
 }
 
-function loadSelectedPreset() {
+function handlePresetChange() {
     const idx = elements.presetSelect.value;
+
+    // 버튼 표시 상태 변경
+    if(idx === "") {
+        elements.savePresetBtn.style.display = 'flex';
+        elements.deletePresetBtn.style.display = 'none';
+    } else {
+        elements.savePresetBtn.style.display = 'none';
+        elements.deletePresetBtn.style.display = 'flex';
+    }
+
+    // 프리셋 로드
     if(idx === "") return;
+    loadSelectedPreset(idx);
+}
+
+function loadSelectedPreset(idx) {
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
     const p = presets[idx];
     if(!p) return;
@@ -479,7 +496,7 @@ function loadSelectedPreset() {
     fieldOrder = newOrder;
     outputFormat = p.format;
     elements.separatorInput.value = p.separator || ', ';
-    
+
     const radio = document.querySelector(`input[name="outputFormat"][value="${outputFormat}"]`);
     if(radio) radio.checked = true;
     handleFormatChange(outputFormat);
@@ -487,7 +504,27 @@ function loadSelectedPreset() {
     saveSettings();
     renderMetadataList();
     generateText();
-    showToast(`프리셋 적용됨`);
+    showToast(`프리셋 "${p.name}" 적용됨`);
+}
+
+function deletePreset() {
+    const idx = elements.presetSelect.value;
+    if(idx === "") return;
+
+    const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
+    const presetName = presets[idx].name;
+
+    if(!confirm(`"${presetName}" 프리셋을 삭제하시겠습니까?`)) return;
+
+    presets.splice(idx, 1);
+    localStorage.setItem('metaShaper_presets', JSON.stringify(presets));
+
+    elements.presetSelect.value = "";
+    elements.savePresetBtn.style.display = 'flex';
+    elements.deletePresetBtn.style.display = 'none';
+
+    loadPresets();
+    showToast(`프리셋 "${presetName}" 삭제됨`);
 }
 
 function loadSettings() {

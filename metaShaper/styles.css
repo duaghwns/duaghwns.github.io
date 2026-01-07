@@ -158,6 +158,16 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     color: var(--primary);
 }
 
+.icon-btn-sm.delete-btn {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.icon-btn-sm.delete-btn:hover {
+    background: #ef4444;
+    color: white;
+}
+
 /* Instagram Preview (Fixed Layout) */
 .insta-mockup { background: var(--bg-card); border: 1px solid var(--border); border-radius: 3px; max-width: 100%; margin: 0 auto; width: 400px; }
 .insta-header { padding: 10px 12px; display: flex; align-items: center; gap: 10px; width: 100%; height: 56px; }
