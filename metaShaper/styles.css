@@ -172,7 +172,6 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 /* Photo Container - White Padding Logic for 4:5 Ratio */
 .insta-photo-container {
     width: 100%;
-    aspect-ratio: 4 / 5; /* 4:5 비율 고정 */
     background-color: #ffffff; /* 흰색 배경 (여백) */
     display: flex;
     justify-content: center;
@@ -186,8 +185,16 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .insta-photo-container img {
     display: block;
     max-width: 100%;
-    max-height: 100%;
+    /* 최대 높이를 너비의 125% (4:5 비율)로 제한 */
+    max-height: 125vw;
     object-fit: contain; /* 비율 유지하며 컨테이너 안에 맞춤 (여백 발생) */
+}
+
+@media (min-width: 769px) {
+    /* 데스크탑 프리뷰 너비 400px 기준 */
+    .insta-photo-container img {
+        max-height: 500px; /* 400px * 1.25 */
+    }
 }
 
 .insta-actions { padding: 8px 12px; display: flex; justify-content: space-between; font-size: 1.5rem; color: var(--text-main); }
