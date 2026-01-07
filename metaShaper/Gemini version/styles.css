@@ -172,7 +172,6 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 }
 .insta-username-bold { 
     font-weight: 600; 
-    margin-right: 6px; 
     display: inline; /* 인라인 유지 */
 }
 .caption-text {

@@ -40,7 +40,7 @@ const elements = {
     separatorInput: document.getElementById('separator'),
     presetSelect: document.getElementById('presetSelect'),
     savePresetBtn: document.getElementById('savePresetBtn'),
-    downloadWatermarkBtn: document.getElementById('downloadWatermarkBtn')
+    downloadWatermarkBtn: document.getElementById('downloadWatermarkBtn'),
 };
 
 function init() {
@@ -212,6 +212,8 @@ async function readExifData(file) {
             copyright: '' // ID로 자동 생성
         };
 
+        console.log('currentMetadata :: ',currentMetadata)
+
         updateFieldValues();
         generateText();
         showToast('정보 추출 완료!');
@@ -255,10 +257,10 @@ function updateFieldValues() {
         // Copyright는 instagramId가 있으면 자동 생성
         if(f.key === 'copyright') {
             const id = elements.instagramId.value.trim();
-            if(elements.copyrightText && elements.copyrightText.value) {
-                 val = `© ${elements.copyrightText.value}`; // 수동 입력 우선
+            if(elements.copyrightText && elements.instagramId.value) {
+                 val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
             } else if(id) {
-                val = `© ${id}`;
+                val = `Copylight ${currentMetadata.dateTime.substring(0,4)} ${elements.instagramId.value} all rights reserved`; // 수동 입력 우선
             }
         }
         return { ...f, value: val };
@@ -329,6 +331,7 @@ function toggleAllFields() {
 
 function generateText() {
     const lines = [];
+    
     fieldOrder.forEach(f => {
         if(f.enabled && f.value) {
             let prefix = '';
@@ -359,7 +362,7 @@ function addHashtags() {
 
     if(currentMetadata.camera) tags.push(`#${currentMetadata.camera.replace(/\s/g, '')}`);
     if(currentMetadata.make) tags.push(`#${currentMetadata.make.replace(/\s/g, '')}`);
-    if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
+    // if(currentMetadata.lens) tags.push(`#${currentMetadata.lens.replace(/\s/g, '').replace(/\//g, '')}`);
     tags.push('#snapshot', '#exif');
     
     const current = elements.textEditor.value;
@@ -504,18 +507,19 @@ function loadSettings() {
     }
     
     elements.instagramId.value = localStorage.getItem('instagramId') || '';
-    if(elements.copyrightText) {
-        elements.copyrightText.value = localStorage.getItem('copyrightText') || '';
-    }
+
+    // if(elements.copyrightText) {
+    //     elements.copyrightText.value = localStorage.getItem('copyrightText') || '';
+    // }
 }
 
 function saveSettings() {
     const toSave = fieldOrder.map(({ value, ...rest }) => rest);
     localStorage.setItem('metaShaper_fields_v4', JSON.stringify(toSave));
     localStorage.setItem('instagramId', elements.instagramId.value);
-    if(elements.copyrightText) {
-        localStorage.setItem('copyrightText', elements.copyrightText.value);
-    }
+    // if(elements.copyrightText) {
+    //     localStorage.setItem('copyrightText', elements.copyrightText.value);
+    // }
 }
 
 function resetImage() {
