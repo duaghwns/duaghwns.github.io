@@ -11,18 +11,18 @@ function t(key) {
 
 // 모든 옵션 복구 (Make, Camera, Lens, FocalLength, Aperture, ShutterSpeed, ISO, Flash, Date, Location, Software, Copyright)
 const defaultFields = [
-    { key: 'make', labels: { ko: '제조사', en: 'Maker', en_upper: 'MAKER', en_lower: 'maker', icon: '🏭' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'camera', labels: { ko: '카메라', en: 'Camera', en_upper: 'CAMERA', en_lower: 'camera', icon: '📷' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'lens', labels: { ko: '렌즈', en: 'Lens', en_upper: 'LENS', en_lower: 'lens', icon: '🔭' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'focalLength', labels: { ko: '초점거리', en: 'Focal Length', en_upper: 'FOCAL LENGTH', en_lower: 'focal length', icon: '📏' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'aperture', labels: { ko: '조리개', en: 'Aperture', en_upper: 'APERTURE', en_lower: 'aperture', icon: '✨' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'shutterSpeed', labels: { ko: '셔터속도', en: 'Shutter Speed', en_upper: 'SHUTTER SPEED', en_lower: 'shutter speed', icon: '⏱️' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'iso', labels: { ko: 'ISO', en: 'ISO', en_upper: 'ISO', en_lower: 'iso', icon: '💡' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'flash', labels: { ko: '플래시', en: 'Flash', en_upper: 'FLASH', en_lower: 'flash', icon: '⚡' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'dateTime', labels: { ko: '촬영일', en: 'Date', en_upper: 'DATE', en_lower: 'date', icon: '📅' }, value: '', enabled: true, labelType: 'valueOnly' },
-    { key: 'software', labels: { ko: '소프트웨어', en: 'Software', en_upper: 'SOFTWARE', en_lower: 'software', icon: '💻' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' },
-    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' }
+    { key: 'make', labels: { ko: '제조사', en: 'Maker', en_upper: 'MAKER', en_lower: 'maker', zh: '制造商', ja: 'メーカー', icon: '🏭' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'camera', labels: { ko: '카메라', en: 'Camera', en_upper: 'CAMERA', en_lower: 'camera', zh: '相机', ja: 'カメラ', icon: '📷' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'lens', labels: { ko: '렌즈', en: 'Lens', en_upper: 'LENS', en_lower: 'lens', zh: '镜头', ja: 'レンズ', icon: '🔭' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'focalLength', labels: { ko: '초점거리', en: 'Focal Length', en_upper: 'FOCAL LENGTH', en_lower: 'focal length', zh: '焦距', ja: '焦点距離', icon: '📏' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'aperture', labels: { ko: '조리개', en: 'Aperture', en_upper: 'APERTURE', en_lower: 'aperture', zh: '光圈', ja: '絞り', icon: '✨' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'shutterSpeed', labels: { ko: '셔터속도', en: 'Shutter Speed', en_upper: 'SHUTTER SPEED', en_lower: 'shutter speed', zh: '快门速度', ja: 'シャッタースピード', icon: '⏱️' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'iso', labels: { ko: 'ISO', en: 'ISO', en_upper: 'ISO', en_lower: 'iso', zh: 'ISO', ja: 'ISO', icon: '💡' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'flash', labels: { ko: '플래시', en: 'Flash', en_upper: 'FLASH', en_lower: 'flash', zh: '闪光灯', ja: 'フラッシュ', icon: '⚡' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'dateTime', labels: { ko: '촬영일', en: 'Date', en_upper: 'DATE', en_lower: 'date', zh: '日期', ja: '撮影日', icon: '📅' }, value: '', enabled: true, labelType: 'valueOnly' },
+    { key: 'software', labels: { ko: '소프트웨어', en: 'Software', en_upper: 'SOFTWARE', en_lower: 'software', zh: '软件', ja: 'ソフトウェア', icon: '💻' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'location', labels: { ko: '위치', en: 'Location', en_upper: 'LOCATION', en_lower: 'location', zh: '位置', ja: '位置', icon: '📍' }, value: '', enabled: false, labelType: 'valueOnly' },
+    { key: 'copyright', labels: { ko: '저작권', en: 'Copyright', en_upper: 'COPYRIGHT', en_lower: 'copyright', zh: '版权', ja: '著作権', icon: '©️' }, value: '', enabled: true, labelType: 'valueOnly' }
 ];
 
 // DOM Elements
@@ -364,18 +364,20 @@ function renderMetadataList() {
         item.className = `metadata-item ${!field.enabled ? 'disabled' : ''}`;
         item.draggable = true;
         item.dataset.index = index;
-        
-        // 라벨 타입에 따른 텍스트 표시
+
+        // 라벨 타입에 따른 텍스트 표시 (다국어 지원)
         const typeNameMap = {
-            'valueOnly': '값만',
-            'ko': '한글',
-            'en': 'English',
-            'en_upper': 'UPPER',
-            'en_lower': 'lower',
-            'icon': '아이콘'
+            'valueOnly': t('valueOnly'),
+            'ko': t('korean'),
+            'en': t('english'),
+            'en_upper': t('englishUpper'),
+            'en_lower': t('englishLower'),
+            'zh': t('chinese'),
+            'ja': t('japanese'),
+            'icon': t('icon')
         };
 
-        const currentTypeName = typeNameMap[field.labelType] || '값만';
+        const currentTypeName = typeNameMap[field.labelType] || t('valueOnly');
 
         item.innerHTML = `
             <span class="drag-handle"><i class="ri-draggable"></i></span>
@@ -402,7 +404,18 @@ function renderMetadataList() {
 }
 
 function cycleLabelType(index) {
-    const types = ['valueOnly', 'ko', 'en', 'en_upper', 'en_lower', 'icon'];
+    // 현재 언어에 따라 표시할 라벨 타입 목록 결정
+    let types = ['valueOnly', 'icon', 'en', 'en_upper', 'en_lower'];
+
+    // 영어가 아닌 경우 해당 언어 추가
+    if (currentLang === 'ko') {
+        types.splice(1, 0, 'ko'); // valueOnly 다음에 ko 추가
+    } else if (currentLang === 'zh') {
+        types.splice(1, 0, 'zh'); // valueOnly 다음에 zh 추가
+    } else if (currentLang === 'ja') {
+        types.splice(1, 0, 'ja'); // valueOnly 다음에 ja 추가
+    }
+
     const current = fieldOrder[index].labelType || 'valueOnly';
     fieldOrder[index].labelType = types[(types.indexOf(current) + 1) % types.length];
     saveSettings();
@@ -520,7 +533,7 @@ function addHashtags() {
 function copyText() {
     elements.textEditor.select();
     document.execCommand('copy');
-    showToast('텍스트가 복사되었습니다!');
+    showToast(t('textCopied'));
 }
 
 async function downloadImageWithWatermark() {
@@ -593,7 +606,7 @@ function savePreset() {
 
 function loadPresets() {
     const presets = JSON.parse(localStorage.getItem('metaShaper_presets') || '[]');
-    elements.presetSelect.innerHTML = '<option value="">현재 프리셋 저장</option>';
+    elements.presetSelect.innerHTML = `<option value="">${t('currentPreset')}</option>`;
     presets.forEach((p, idx) => {
         const opt = document.createElement('option');
         opt.value = idx;
@@ -767,6 +780,12 @@ function changeLanguage(lang) {
     currentLang = lang;
     localStorage.setItem('language', lang);
     updateUILanguage();
+
+    // 프리셋 드롭다운 다시 로드 (다국어 적용)
+    loadPresets();
+
+    // 메타데이터 리스트 다시 렌더링 (라벨 타입 이름 다국어 적용)
+    renderMetadataList();
 
     // GPS 위치 정보가 있으면 다시 가져오기
     if (currentMetadata.latitude && currentMetadata.longitude) {

@@ -74,9 +74,9 @@
                         
                         <section class="card preview-card">
                             <div class="card-header">
-                                <h3>미리보기</h3>
+                                <h3 data-i18n="preview">미리보기</h3>
                                 <button id="downloadWatermarkBtn" class="btn-secondary-sm">
-                                    <i class="ri-download-2-line"></i> 이미지 저장
+                                    <i class="ri-download-2-line"></i> <span data-i18n="downloadImage">이미지 저장</span>
                                 </button>
                             </div>
                             
@@ -114,30 +114,30 @@
 
                         <section class="card result-card">
                             <div class="card-header">
-                                <h3>텍스트 편집</h3>
+                                <h3 data-i18n="textEdit">텍스트 편집</h3>
                                 <div class="format-options">
                                     <div class="radio-group">
                                         <label class="radio-chip">
                                             <input type="radio" name="outputFormat" value="multiline" checked>
-                                            <span>줄바꿈</span>
+                                            <span data-i18n="multiline">줄바꿈</span>
                                         </label>
                                         <label class="radio-chip">
                                             <input type="radio" name="outputFormat" value="inline">
-                                            <span>일렬로</span>
+                                            <span data-i18n="inline">일렬로</span>
                                         </label>
                                     </div>
-                                    <input type="text" id="separator" class="sep-input" placeholder="구분자" value=" | " disabled>
+                                    <input type="text" id="separator" class="sep-input" data-i18n-placeholder="separator" placeholder="구분자" value=" | " disabled>
                                 </div>
                             </div>
 
                             <div class="input-group" style="margin-bottom: 15px;">
                                 <div class="input-wrap">
                                     <i class="ri-instagram-line"></i>
-                                    <input type="text" id="instagramId" placeholder="Instagram ID">
+                                    <input type="text" id="instagramId" data-i18n-placeholder="instagramId" placeholder="Instagram ID">
                                 </div>
                                 <div class="input-wrap mt-2" style="display:none;">
                                     <i class="ri-copyright-line"></i>
-                                    <input type="text" id="copyrightText" placeholder="Copyright Name">
+                                    <input type="text" id="copyrightText" data-i18n-placeholder="copyright" placeholder="Copyright Name">
                                 </div>
                             </div>
 
@@ -145,10 +145,10 @@
                                 <textarea id="textEditor" placeholder="사진을 업로드하면 정보가 추출됩니다."></textarea>
                                 <div class="action-row">
                                     <button id="addHashtagsBtn" class="tag-btn">
-                                        <i class="ri-hashtag"></i> 해시태그 추가
+                                        <i class="ri-hashtag"></i> <span data-i18n="addHashtags">해시태그 추가</span>
                                     </button>
                                     <button id="copyBtn" class="btn-primary">
-                                        <i class="ri-file-copy-line"></i> 복사
+                                        <i class="ri-file-copy-line"></i> <span data-i18n="copy">복사</span>
                                     </button>
                                 </div>
                             </div>
