@@ -376,7 +376,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 
     /* 모바일에서 텍스트 에디터 높이 조정 */
     #textEditor {
-        height: calc(100vh - 350px);
+        height: calc(100vh - 370px);
     }
 
     /* 모바일에서 화살표 버튼 표시, 드래그 핸들 숨김 */
