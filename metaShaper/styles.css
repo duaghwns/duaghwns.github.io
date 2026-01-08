@@ -75,6 +75,45 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .drag-handle { color: var(--text-sub); cursor: grab; font-size: 1.1rem; flex-shrink: 0; }
 .metadata-checkbox { flex-shrink: 0; width: 18px; height: 18px; }
 
+/* 모바일 재정렬 버튼 */
+.mobile-reorder-btns {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.mobile-arrow-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-main);
+    cursor: pointer;
+    padding: 2px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 24px;
+    transition: 0.2s;
+}
+
+.mobile-arrow-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.mobile-arrow-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.mobile-arrow-btn i {
+    pointer-events: none;
+}
+
 .meta-content { 
     flex: 1; 
     overflow: hidden; 
@@ -274,6 +313,15 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     .list-card-expanded .metadata-list {
         max-height: calc(100vh - 240px);
         min-height: 320px;
+    }
+
+    /* 모바일에서 화살표 버튼 표시, 드래그 핸들 숨김 */
+    .mobile-reorder-btns {
+        display: flex;
+    }
+
+    .drag-handle {
+        display: none;
     }
 }
 

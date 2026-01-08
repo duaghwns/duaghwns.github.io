@@ -328,6 +328,14 @@ function renderMetadataList() {
 
         item.innerHTML = `
             <span class="drag-handle"><i class="ri-draggable"></i></span>
+            <div class="mobile-reorder-btns">
+                <button class="mobile-arrow-btn" onclick="moveItemUp(${index})" title="위로 이동" ${index === 0 ? 'disabled' : ''}>
+                    <i class="ri-arrow-up-s-line"></i>
+                </button>
+                <button class="mobile-arrow-btn" onclick="moveItemDown(${index})" title="아래로 이동" ${index === fieldOrder.length - 1 ? 'disabled' : ''}>
+                    <i class="ri-arrow-down-s-line"></i>
+                </button>
+            </div>
             <input type="checkbox" class="metadata-checkbox" ${field.enabled ? 'checked' : ''} onchange="toggleField(${index})">
             <div class="meta-content">
                 <span class="meta-key">${field.labels.en}</span>
@@ -361,6 +369,26 @@ function toggleField(index) {
 function toggleAllFields() {
     const anyDisabled = fieldOrder.some(f => !f.enabled);
     fieldOrder = fieldOrder.map(f => ({ ...f, enabled: anyDisabled }));
+    saveSettings();
+    renderMetadataList();
+    generateText();
+}
+
+// 모바일용 항목 위로 이동
+function moveItemUp(index) {
+    if (index === 0) return;
+    const [item] = fieldOrder.splice(index, 1);
+    fieldOrder.splice(index - 1, 0, item);
+    saveSettings();
+    renderMetadataList();
+    generateText();
+}
+
+// 모바일용 항목 아래로 이동
+function moveItemDown(index) {
+    if (index === fieldOrder.length - 1) return;
+    const [item] = fieldOrder.splice(index, 1);
+    fieldOrder.splice(index + 1, 0, item);
     saveSettings();
     renderMetadataList();
     generateText();
