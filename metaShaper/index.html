@@ -34,24 +34,6 @@
                 <div class="desktop-split">
 
                     <div class="panel-left">
-
-                        <section class="card upload-card">
-                            <label id="uploadBox" for="fileInput" class="upload-area small-mode">
-                                <div class="upload-placeholder">
-                                    <i class="ri-add-circle-line upload-icon"></i>
-                                    <p data-i18n="upload">사진 선택</p>
-                                </div>
-                            </label>
-                            <input type="file" id="fileInput" accept="image/*" style="display:none;">
-
-                            <div id="fileInfoArea" class="file-info-area hidden">
-                                <div class="mini-preview-wrapper">
-                                    <span id="fileName">filename.jpg</span>
-                                    <button id="removeImgBtn" class="text-btn-danger">삭제</button>
-                                </div>
-                            </div>
-                        </section>
-
                         <section class="card list-card list-card-expanded">
                             <div class="card-header">
                                 <h3 data-i18n="displayItems">표시 항목</h3>
@@ -115,6 +97,23 @@
                     </div>
 
                     <div class="panel-right">
+                        <section class="card upload-card">
+                            <label id="uploadBox" for="fileInput" class="upload-area small-mode">
+                                <div class="upload-placeholder">
+                                    <i class="ri-add-circle-line upload-icon"></i>
+                                    <p data-i18n="upload">사진 선택</p>
+                                </div>
+                            </label>
+                            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+
+                            <div id="fileInfoArea" class="file-info-area hidden">
+                                <div class="mini-preview-wrapper">
+                                    <span id="fileName">filename.jpg</span>
+                                    <button id="removeImgBtn" class="text-btn-danger">삭제</button>
+                                </div>
+                            </div>
+                        </section>
+
                         <section class="card preview-card">
                             <div class="card-header">
                                 <h3 data-i18n="preview">미리보기</h3>
@@ -167,13 +166,13 @@
                 <i class="ri-instagram-line"></i>
                 <span data-i18n="preview">미리보기</span>
             </button>
-            <button class="nav-item" data-target="settings">
-                <i class="ri-settings-4-line"></i>
-                <span data-i18n="settings">설정</span>
-            </button>
             <button class="nav-item" data-target="edit">
                 <i class="ri-edit-2-line"></i>
                 <span data-i18n="edit">편집</span>
+            </button>
+            <button class="nav-item" data-target="settings">
+                <i class="ri-settings-4-line"></i>
+                <span data-i18n="settings">설정</span>
             </button>
         </nav>
 
