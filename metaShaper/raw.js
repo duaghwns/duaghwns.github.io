@@ -2,6 +2,12 @@
 let currentMetadata = {};
 let fieldOrder = [];
 let outputFormat = 'multiline';
+let currentLang = 'ko'; // 기본 언어
+
+// 번역 함수 (translations는 i18n.js에서 불러옴)
+function t(key) {
+    return translations[currentLang][key] || key;
+}
 
 // 모든 옵션 복구 (Make, Camera, Lens, FocalLength, Aperture, ShutterSpeed, ISO, Flash, Date, Location, Software, Copyright)
 const defaultFields = [
@@ -45,16 +51,18 @@ const elements = {
 };
 
 function init() {
+    loadLanguage();
     loadSettings();
     loadPresets();
     setupEventListeners();
     setupMobileNav();
     applyTheme();
     renderMetadataList();
-    
+    updateUILanguage();
+
     // 초기 탭 설정 (미리보기)
     document.body.setAttribute('data-view', 'preview');
-    
+
     handleFormatChange(outputFormat);
     updatePreview();
 }
@@ -231,7 +239,9 @@ async function readExifData(file) {
         currentMetadata = {
             camera, make, lens, focalLength: focal, aperture, shutterSpeed: shutter, iso, flash,
             dateTime: dateStr, location, software,
-            copyright: '' // ID로 자동 생성
+            copyright: '', // ID로 자동 생성
+            latitude: output.latitude || null,
+            longitude: output.longitude || null
         };
 
         console.log('currentMetadata :: ',currentMetadata)
@@ -249,8 +259,17 @@ async function readExifData(file) {
 
 async function getAddressFromCoordinates(lat, lng) {
     try {
+        // 현재 언어에 따라 accept-language 설정
+        const langMap = {
+            'ko': 'ko',
+            'en': 'en',
+            'zh': 'zh',
+            'ja': 'ja'
+        };
+        const acceptLang = langMap[currentLang] || 'en';
+
         const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=ko`,
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=${acceptLang}`,
             { headers: { 'User-Agent': 'MetaShaper/1.0' } }
         );
         if (!response.ok) return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
@@ -709,6 +728,64 @@ function addDragEvents(item) {
         this.classList.remove('dragging');
         document.querySelectorAll('.metadata-item').forEach(item => item.classList.remove('over'));
     });
+}
+
+// 언어 변경 함수
+function changeLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('language', lang);
+    updateUILanguage();
+
+    // GPS 위치 정보가 있으면 다시 가져오기
+    if (currentMetadata.latitude && currentMetadata.longitude) {
+        getAddressFromCoordinates(currentMetadata.latitude, currentMetadata.longitude).then(location => {
+            currentMetadata.location = location;
+            document.querySelector('.insta-loc').textContent = location || "MetaShaper";
+            updateFieldValues();
+            generateText();
+        });
+    }
+}
+
+// UI 텍스트를 현재 언어로 업데이트
+function updateUILanguage() {
+    // data-i18n 속성을 가진 모든 요소 업데이트
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (key) {
+            el.textContent = t(key);
+        }
+    });
+
+    // placeholder 업데이트
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (key) {
+            el.placeholder = t(key);
+        }
+    });
+
+    // title 업데이트
+    document.querySelectorAll('[data-i18n-title]').forEach(el => {
+        const key = el.getAttribute('data-i18n-title');
+        if (key) {
+            el.title = t(key);
+        }
+    });
+
+    // 셀렉트 박스 값 설정
+    const langSelect = document.getElementById('langSelect');
+    if (langSelect) {
+        langSelect.value = currentLang;
+    }
+}
+
+// 설정 로드 시 언어도 함께 불러오기
+function loadLanguage() {
+    const saved = localStorage.getItem('language');
+    if (saved && translations[saved]) {
+        currentLang = saved;
+    }
 }
 
 document.addEventListener('DOMContentLoaded', init);

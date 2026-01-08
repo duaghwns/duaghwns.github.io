@@ -16,9 +16,17 @@
             <div class="logo-area">
                 <h1>MetaShaper</h1>
             </div>
-            <button id="themeToggle" class="icon-btn" aria-label="테마 변경">
-                <i class="ri-sun-line"></i>
-            </button>
+            <div class="header-controls">
+                <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="ko">KR</option>
+                    <option value="en">US</option>
+                    <option value="zh">CN</option>
+                    <option value="ja">JP</option>
+                </select>
+                <button id="themeToggle" class="icon-btn" aria-label="테마 변경">
+                    <i class="ri-sun-line"></i>
+                </button>
+            </div>
         </header>
 
         <main class="main-content">
@@ -31,7 +39,7 @@
                             <label id="uploadBox" for="fileInput" class="upload-area small-mode">
                                 <div class="upload-placeholder">
                                     <i class="ri-add-circle-line upload-icon"></i>
-                                    <p>사진 선택</p>
+                                    <p data-i18n="upload">사진 선택</p>
                                 </div>
                             </label>
                             <input type="file" id="fileInput" accept="image/*" style="display:none;">
@@ -46,7 +54,7 @@
 
                         <section class="card list-card list-card-expanded">
                             <div class="card-header">
-                                <h3>표시 항목</h3>
+                                <h3 data-i18n="displayItems">표시 항목</h3>
                                 <div class="header-actions">
                                     <div class="preset-group">
                                         <select id="presetSelect" class="preset-select">
@@ -55,7 +63,7 @@
                                         <button id="savePresetBtn" class="icon-btn-sm" title="프리셋 저장"><i class="ri-save-3-line"></i></button>
                                         <button id="deletePresetBtn" class="icon-btn-sm delete-btn" style="display: none;" title="프리셋 삭제"><i class="ri-delete-bin-line"></i></button>
                                     </div>
-                                    <button id="toggleAllBtn" class="text-btn active-text-btn">전체선택</button>
+                                    <button id="toggleAllBtn" class="text-btn active-text-btn" data-i18n="toggleAll">전체선택</button>
                                 </div>
                             </div>
                             <div id="metadataList" class="metadata-list"></div>
@@ -156,20 +164,21 @@
         <nav class="mobile-nav">
             <button class="nav-item active" data-target="preview">
                 <i class="ri-instagram-line"></i>
-                <span>미리보기</span>
+                <span data-i18n="preview">미리보기</span>
             </button>
             <button class="nav-item" data-target="settings">
                 <i class="ri-settings-4-line"></i>
-                <span>설정</span>
+                <span data-i18n="settings">설정</span>
             </button>
             <button class="nav-item" data-target="edit">
                 <i class="ri-edit-2-line"></i>
-                <span>편집</span>
+                <span data-i18n="edit">편집</span>
             </button>
         </nav>
 
         <div id="toast" class="toast">메시지</div>
     </div>
-    <script src="app.js"></script>
+    <script src="i18n.js"></script>
+    <script src="raw.js"></script>
 </body>
 </html>
