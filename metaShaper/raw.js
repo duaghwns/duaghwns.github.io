@@ -134,23 +134,55 @@ function setupEventListeners() {
     });
 
     document.querySelectorAll('input[name="outputFormat"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            outputFormat = e.target.value;
-            handleFormatChange(outputFormat);
-            saveSettings();
-            generateText();
+        radio.addEventListener('click', (e) => {
+            const newFormat = e.target.value;
+            const editor = elements.textEditor;
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+
+            // 선택된 텍스트가 있으면 해당 부분만 변환
+            if (start !== end) {
+                const selectedText = editor.value.substring(start, end);
+                const beforeText = editor.value.substring(0, start);
+                const afterText = editor.value.substring(end);
+
+                let convertedText;
+                if (newFormat === 'multiline') {
+                    // 선택된 부분을 줄바꿈으로 변환
+                    convertedText = selectedText.replace(/\s*\|\s*/g, '\n').replace(/,\s*/g, '\n');
+                } else {
+                    // 선택된 부분을 한 줄로 변환
+                    const sep = elements.separatorInput.value;
+                    convertedText = selectedText.split('\n').filter(line => line.trim()).join(sep);
+                }
+
+                editor.value = beforeText + convertedText + afterText;
+                // 변환된 텍스트를 다시 선택
+                editor.setSelectionRange(start, start + convertedText.length);
+
+                updatePreview();
+
+                // 라디오 버튼을 원래 설정으로 되돌림 (선택 부분만 변환했으므로)
+                e.preventDefault();
+                const currentRadio = document.querySelector(`input[name="outputFormat"][value="${outputFormat}"]`);
+                if (currentRadio) {
+                    currentRadio.checked = true;
+                }
+            } else {
+                // 선택된 텍스트가 없으면 전체 적용
+                outputFormat = newFormat;
+                handleFormatChange(outputFormat);
+                saveSettings();
+                generateText();
+            }
         });
     });
 }
 
 function handleFormatChange(format) {
-    if(format === 'inline') {
-        elements.separatorInput.disabled = false;
-        elements.separatorInput.style.opacity = '1';
-    } else {
-        elements.separatorInput.disabled = true;
-        elements.separatorInput.style.opacity = '0.5';
-    }
+    // 구분자는 부분 수정에서도 사용될 수 있으므로 상시 활성화
+    elements.separatorInput.disabled = false;
+    elements.separatorInput.style.opacity = '1';
 }
 
 async function handleDrop(e) {
