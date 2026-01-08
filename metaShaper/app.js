@@ -254,18 +254,31 @@ async function getAddressFromCoordinates(lat, lng) {
             { headers: { 'User-Agent': 'MetaShaper/1.0' } }
         );
         if (!response.ok) return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-        
+
         const data = await response.json();
         const addr = data.address;
-        
+
         let parts = [];
+
+        // 국가 정보 추가
+        if (addr.country) {
+            parts.push(addr.country);
+        }
+
+        // 도시 정보 추가 (state, province, city, town 등)
+        if (addr.state || addr.province) {
+            parts.push(addr.state || addr.province);
+        }
+
         // 시/군/구 동/읍/면 추출
-        if (addr.city || addr.county) parts.push(addr.city || addr.county);
+        if (addr.city || addr.county || addr.town) {
+            parts.push(addr.city || addr.county || addr.town);
+        }
         if (addr.borough || addr.district) parts.push(addr.borough || addr.district);
         if (addr.suburb || addr.neighbourhood || addr.hamlet || addr.village) {
             parts.push(addr.suburb || addr.neighbourhood || addr.hamlet || addr.village);
         }
-        
+
         return parts.length > 0 ? parts.join(' ') : (data.display_name.split(',')[0] || "");
     } catch (e) {
         console.error(e);
