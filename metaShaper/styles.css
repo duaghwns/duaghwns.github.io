@@ -75,7 +75,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 }
 
 /* Layout */
-.desktop-split { display: grid; grid-template-columns: 350px 1fr; gap: 24px; padding: 0 1.5rem 2rem; align-items: start; }
+.desktop-split { display: grid; grid-template-columns: 300px 400px 1fr; gap: 20px; padding: 0 1.5rem 2rem; align-items: start; }
 .card { background: var(--bg-card); border-radius: 16px; padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border: 1px solid var(--border); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 .header-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex: 1; margin-left: 12px; }
@@ -195,8 +195,8 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .radio-chip span { display: inline-block; padding: 5px 10px; border-radius: 15px; border: 1px solid var(--border); font-size: 0.8rem; cursor: pointer; color: var(--text-sub); transition: 0.2s; }
 .radio-chip input:checked + span { background: var(--primary); color: white; border-color: var(--primary); }
 
-/* Editor */
-#textEditor { width: 100%; height: calc(100vh - 350px); background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; color: var(--text-main); font-size: 0.95rem; resize: none; outline: none; margin-bottom: 15px; line-height: 1.5; white-space: pre-wrap; font-family: inherit; }
+/* Editor 텍스트 편집 */
+#textEditor { width: 100%; height: 400px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 15px; color: var(--text-main); font-size: 0.95rem; resize: none; outline: none; margin-bottom: 15px; line-height: 1.5; white-space: pre-wrap; font-family: inherit; }
 .action-row { display: flex; justify-content: space-between; align-items: center; }
 .tag-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 4px; }
 .btn-primary { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
@@ -371,6 +371,11 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     .list-card-expanded .metadata-list {
         max-height: calc(100vh - 260px);
         min-height: 320px;
+    }
+
+    /* 모바일에서 텍스트 에디터 높이 조정 */
+    #textEditor {
+        height: calc(100vh - 350px);
     }
 
     /* 모바일에서 화살표 버튼 표시, 드래그 핸들 숨김 */

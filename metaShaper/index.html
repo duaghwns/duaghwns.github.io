@@ -32,9 +32,9 @@
         <main class="main-content">
             <div id="view-editor" class="view-section active">
                 <div class="desktop-split">
-                    
+
                     <div class="panel-left">
-                        
+
                         <section class="card upload-card">
                             <label id="uploadBox" for="fileInput" class="upload-area small-mode">
                                 <div class="upload-placeholder">
@@ -70,48 +70,7 @@
                         </section>
                     </div>
 
-                    <div class="panel-right">
-                        
-                        <section class="card preview-card">
-                            <div class="card-header">
-                                <h3 data-i18n="preview">미리보기</h3>
-                                <button id="downloadWatermarkBtn" class="btn-secondary-sm">
-                                    <i class="ri-download-2-line"></i> <span data-i18n="downloadImage">이미지 저장</span>
-                                </button>
-                            </div>
-                            
-                            <div class="insta-mockup">
-                                <div class="insta-header">
-                                    <div class="insta-profile-pic"></div>
-                                    <div class="insta-info">
-                                        <span id="previewUsername" class="insta-username">username</span>
-                                        <span class="insta-loc">MetaShaper</span>
-                                    </div>
-                                    <i class="ri-more-fill ml-auto icon-more"></i>
-                                </div>
-                                
-                                <div class="insta-photo-container">
-                                    <img id="instagramPreviewImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
-                                </div>
-
-                                <div class="insta-actions">
-                                    <div class="left-icons">
-                                        <i class="ri-heart-line"></i>
-                                        <i class="ri-chat-3-line"></i>
-                                        <i class="ri-send-plane-fill"></i>
-                                    </div>
-                                    <i class="ri-bookmark-line"></i>
-                                </div>
-
-                                <div class="insta-caption-area">
-                                    <div class="caption-wrapper">
-                                        <span id="captionUsername" class="insta-username-bold">username</span>
-                                        <span id="captionText" class="caption-text"></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
+                    <div class="panel-center">
                         <section class="card result-card">
                             <div class="card-header">
                                 <h3 data-i18n="textEdit">텍스트 편집</h3>
@@ -153,9 +112,51 @@
                                 </div>
                             </div>
                         </section>
-
                     </div>
-                </div> 
+
+                    <div class="panel-right">
+                        <section class="card preview-card">
+                            <div class="card-header">
+                                <h3 data-i18n="preview">미리보기</h3>
+                                <button id="downloadWatermarkBtn" class="btn-secondary-sm">
+                                    <i class="ri-download-2-line"></i> <span data-i18n="downloadImage">이미지 저장</span>
+                                </button>
+                            </div>
+
+                            <div class="insta-mockup">
+                                <div class="insta-header">
+                                    <div class="insta-profile-pic"></div>
+                                    <div class="insta-info">
+                                        <span id="previewUsername" class="insta-username">username</span>
+                                        <span class="insta-loc">MetaShaper</span>
+                                    </div>
+                                    <i class="ri-more-fill ml-auto icon-more"></i>
+                                </div>
+
+                                <div class="insta-photo-container">
+                                    <img id="instagramPreviewImg" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="">
+                                </div>
+
+                                <div class="insta-actions">
+                                    <div class="left-icons">
+                                        <i class="ri-heart-line"></i>
+                                        <i class="ri-chat-3-line"></i>
+                                        <i class="ri-send-plane-fill"></i>
+                                    </div>
+                                    <i class="ri-bookmark-line"></i>
+                                </div>
+
+                                <div class="insta-caption-area">
+                                    <div class="caption-wrapper">
+                                        <span id="captionUsername" class="insta-username-bold">username</span>
+                                        <span id="captionText" class="caption-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                </div>
             </div>
             
             <div class="mobile-spacer"></div>
