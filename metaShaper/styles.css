@@ -332,24 +332,10 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 2000; }
 .toast.show { opacity: 1; }
 
-/* 태블릿 가로 모드 (아이패드 Landscape) - 데스크탑과 동일 */
-@media (min-width: 1024px) and (orientation: landscape) {
-    .mobile-nav { display: none; }
-    .mobile-spacer { display: none; }
-    .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: block !important; }
-}
-
-/* 태블릿 세로 모드 (아이패드 Portrait) - 모바일과 동일하게 탭 네비게이션 */
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
-    .desktop-split { display: block; padding: 0 10rem; }
+/* 모든 세로 모드 (Portrait) - 모바일 레이아웃 적용 */
+@media (orientation: portrait) and (max-width: 1024px) {
+    .desktop-split { display: block; padding: 0 17rem; }
     .mobile-nav { display: flex; }
-
-    /* 카드 사이즈 모바일과 동일하게 */
-    .card {
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-    }
 
     .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: none; margin-bottom: 16px; }
 
@@ -387,6 +373,13 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     .drag-handle {
         display: none;
     }
+}
+
+/* 태블릿 가로 모드 (아이패드 Landscape) - 데스크탑과 동일 */
+@media (min-width: 1024px) and (orientation: landscape) {
+    .mobile-nav { display: none; }
+    .mobile-spacer { display: none; }
+    .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: block !important; }
 }
 
 /* 모바일 레이아웃 */
