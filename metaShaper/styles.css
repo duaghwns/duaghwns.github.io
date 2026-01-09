@@ -75,7 +75,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 }
 
 /* Layout */
-.desktop-split { display: grid; grid-template-columns: 420px 1fr 380px; gap: 20px; padding: 0 1.5rem 2rem; align-items: start; }
+.desktop-split { display: grid; grid-template-columns: 420px 1fr 420px; gap: 20px; padding: 0 1.5rem 2rem; align-items: start; }
 .card { background: var(--bg-card); border-radius: 12px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid var(--border); }
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .header-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex: 1; margin-left: 12px; }
