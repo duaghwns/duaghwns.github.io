@@ -334,7 +334,7 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 
 /* 모든 세로 모드 (Portrait) - 모바일 레이아웃 적용 */
 @media (orientation: portrait) and (max-width: 1024px) {
-    .desktop-split { display: block; padding: 0 17rem; }
+    .desktop-split { display: block; padding: 0 12rem; }
     .mobile-nav { display: flex; }
 
     .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: none; margin-bottom: 16px; }
