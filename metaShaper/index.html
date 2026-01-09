@@ -97,23 +97,6 @@
                     </div>
 
                     <div class="panel-right">
-                        <section class="card upload-card">
-                            <label id="uploadBox" for="fileInput" class="upload-area small-mode">
-                                <div class="upload-placeholder">
-                                    <i class="ri-add-circle-line upload-icon"></i>
-                                    <p data-i18n="upload">사진 선택</p>
-                                </div>
-                            </label>
-                            <input type="file" id="fileInput" accept="image/*" style="display:none;">
-
-                            <div id="fileInfoArea" class="file-info-area hidden">
-                                <div class="mini-preview-wrapper">
-                                    <span id="fileName">filename.jpg</span>
-                                    <button id="removeImgBtn" class="text-btn-danger">삭제</button>
-                                </div>
-                            </div>
-                        </section>
-
                         <section class="card preview-card">
                             <div class="card-header">
                                 <h3 data-i18n="preview">미리보기</h3>
@@ -150,6 +133,23 @@
                                         <span id="captionUsername" class="insta-username-bold">username</span>
                                         <span id="captionText" class="caption-text"></span>
                                     </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="card upload-card">
+                            <label id="uploadBox" for="fileInput" class="upload-area small-mode">
+                                <div class="upload-placeholder">
+                                    <i class="ri-add-circle-line upload-icon"></i>
+                                    <p data-i18n="upload">사진 선택</p>
+                                </div>
+                            </label>
+                            <input type="file" id="fileInput" accept="image/*" style="display:none;">
+
+                            <div id="fileInfoArea" class="file-info-area hidden">
+                                <div class="mini-preview-wrapper">
+                                    <span id="fileName">filename.jpg</span>
+                                    <button id="removeImgBtn" class="text-btn-danger">삭제</button>
                                 </div>
                             </div>
                         </section>
