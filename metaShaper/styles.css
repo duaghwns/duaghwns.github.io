@@ -332,6 +332,67 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
 .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 2000; }
 .toast.show { opacity: 1; }
 
+/* 태블릿 (아이패드) 레이아웃 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .app-container { max-width: 100%; padding: 0 1rem; }
+
+    /* 2단 레이아웃: 왼쪽(표시항목+편집), 오른쪽(업로드+미리보기) */
+    .desktop-split {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 20px;
+        padding: 0 1rem 2rem;
+        align-items: start;
+    }
+
+    /* 왼쪽 패널을 수직으로 배치 */
+    .panel-left {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    /* 중앙 패널도 왼쪽에 포함 */
+    .panel-center {
+        order: 2;
+    }
+
+    .panel-left {
+        order: 1;
+    }
+
+    .panel-right {
+        order: 3;
+    }
+
+    /* 표시항목 높이 조정 */
+    .list-card-expanded .metadata-list {
+        max-height: 400px;
+        min-height: 400px;
+        height: 400px;
+    }
+
+    /* 텍스트 에디터 높이 조정 */
+    #textEditor {
+        height: 450px;
+    }
+
+    /* 미리보기 이미지 크기 조정 */
+    .insta-mockup {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .insta-photo-container img {
+        max-height: 475px;
+    }
+
+    .mobile-nav { display: none; }
+    .mobile-spacer { display: none; }
+    .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: block !important; }
+}
+
+/* 모바일 레이아웃 */
 @media (max-width: 768px) {
     .desktop-split { display: block; padding: 0 1rem; }
     .mobile-nav { display: flex; }
@@ -390,7 +451,8 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     }
 }
 
-@media (min-width: 769px) {
+/* 데스크탑 레이아웃 */
+@media (min-width: 1025px) {
     .mobile-spacer { display: none; }
     .upload-card, .setting-card, .list-card, .result-card, .preview-card { display: block !important; }
 }
