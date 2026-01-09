@@ -353,16 +353,21 @@ body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, Roboto, san
     .mobile-spacer { height: 70px; }
     .insta-mockup { width: 100%; }
 
-    /* 표시 항목 리스트 높이 조정 */
-    .list-card-expanded .metadata-list {
-        max-height: calc(100vh - 280px);
-        min-height: calc(100vh - 280px);
-        height: calc(100vh - 280px);
+    /* 미리보기 이미지 높이 증가 */
+    .insta-photo-container img {
+        max-height: 600px !important;
     }
 
-    /* 텍스트 에디터 높이 조정 */
+    /* 표시 항목 리스트 높이 줄임 */
+    .list-card-expanded .metadata-list {
+        max-height: calc(100vh - 350px);
+        min-height: calc(100vh - 350px);
+        height: calc(100vh - 350px);
+    }
+
+    /* 텍스트 에디터 높이 줄임 */
     #textEditor {
-        height: calc(100vh - 390px);
+        height: calc(100vh - 460px);
     }
 
     /* 화살표 버튼 표시, 드래그 핸들 숨김 */
