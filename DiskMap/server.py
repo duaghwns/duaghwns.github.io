@@ -453,13 +453,19 @@ class Handler(SimpleHTTPRequestHandler):
         if not target.exists():
             self.send_error_json(HTTPStatus.BAD_REQUEST, f"Path does not exist: {target}")
             return
+        is_dir = target.is_dir()
         try:
             if sys.platform == "darwin":
-                subprocess.run(["open", "-R", str(target)], check=False)
+                # 폴더는 그 폴더를 열고, 파일은 Finder에서 위치를 선택합니다.
+                subprocess.run(["open", str(target)] if is_dir else ["open", "-R", str(target)], check=False)
             elif sys.platform == "win32":
-                subprocess.run(["explorer", f"/select,{target}"], check=False)
+                # 폴더는 그 폴더를 열고, 파일은 탐색기에서 선택합니다.
+                if is_dir:
+                    subprocess.run(["explorer", str(target)], check=False)
+                else:
+                    subprocess.run(["explorer", f"/select,{target}"], check=False)
             else:
-                subprocess.run(["xdg-open", str(target.parent)], check=False)
+                subprocess.run(["xdg-open", str(target if is_dir else target.parent)], check=False)
         except OSError as exc:
             self.send_error_json(HTTPStatus.INTERNAL_SERVER_ERROR, str(exc))
             return
