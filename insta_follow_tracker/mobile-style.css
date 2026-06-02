@@ -2,6 +2,28 @@
   body {
     padding: 16px;
   }
+  .intro-section,
+  .content-section {
+    max-width: 100%;
+    margin-top: 24px;
+  }
+  .intro-section {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .intro-lead {
+    padding: 16px;
+    font-size: 0.97em;
+  }
+  .content-section {
+    gap: 16px;
+  }
+  .content-section article {
+    padding: 16px 18px;
+  }
+  .content-section h2 {
+    font-size: 1.12em;
+  }
   .upload-section {
     flex-direction: column;
     gap: 16px;
@@ -64,8 +86,13 @@
     border-radius: 15px;
   }
 
-  .ads-area{
-    display: none;
+  /* 모바일에서도 광고 노출 + 화면 폭에 맞춰 반응형 */
+  .intro-section .ads-area {
+    display: flex;
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: 90px;
+    margin: 0;
   }
 }
 
@@ -97,9 +124,6 @@
     font-size: 0.98em;
     padding: 8px 14px;
     border-radius: 15px;
-  }
-  .ads-area{
-    display: none;
   }
 }
 

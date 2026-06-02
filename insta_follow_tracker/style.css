@@ -325,3 +325,121 @@ h3 {
   margin-bottom: 0px;
   padding-top: 25px;
 }
+
+/* ===== 정적 콘텐츠 (소개/가이드/FAQ) ===== */
+.intro-section {
+  max-width: 1000px;
+  margin: 0 0 28px 0;
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+.intro-lead {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  font-size: 1.02em;
+  line-height: 1.75;
+  color: #333;
+  margin: 0;
+  flex: 1 1 auto;
+}
+.intro-section .ads-area {
+  flex: 0 0 300px;
+  width: 300px;
+  height: auto;
+  min-height: 130px;
+  margin: 0;
+}
+.content-section {
+  max-width: 1000px;
+  margin: 48px 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.content-section article {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+.content-section h2 {
+  font-size: 1.25em;
+  margin: 0 0 14px 0;
+  color: #222;
+  border-left: 4px solid #4285f4;
+  padding-left: 10px;
+}
+.content-section p {
+  line-height: 1.8;
+  color: #333;
+  margin: 0 0 12px 0;
+}
+.content-section p:last-child {
+  margin-bottom: 0;
+}
+.content-section ul,
+.content-section ol {
+  line-height: 1.9;
+  padding-left: 22px;
+  margin: 0;
+  color: #333;
+}
+.content-section li {
+  margin-bottom: 7px;
+}
+.feature-list {
+  list-style: none;
+  padding-left: 0 !important;
+}
+.faq-item {
+  margin-bottom: 18px;
+}
+.faq-item:last-child {
+  margin-bottom: 0;
+}
+.faq-q {
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 6px 0 !important;
+}
+.faq-q::before {
+  content: "Q. ";
+  color: #4285f4;
+  font-weight: 700;
+}
+.faq-a {
+  margin: 0 !important;
+  color: #555;
+}
+.faq-a::before {
+  content: "A. ";
+  color: #ea4335;
+  font-weight: 700;
+}
+
+/* ===== 푸터 ===== */
+.site-footer {
+  max-width: 1000px;
+  margin: 40px 0 8px 0;
+  padding: 20px 0 0 0;
+  border-top: 1px solid #e5e5e5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.85em;
+  color: #999;
+}
+.site-footer a {
+  color: #666;
+  font-weight: 500;
+}
+.site-footer a:hover {
+  color: #1e88e5;
+}
+.site-footer span {
+  margin-left: auto;
+}
