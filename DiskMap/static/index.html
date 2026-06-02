@@ -59,11 +59,6 @@
             <button id="listTab" class="tab">Candidates</button>
           </div>
           <div id="breadcrumb" class="breadcrumb"></div>
-          <div class="view-actions">
-            <button id="zoomOutBtn" title="이전 위치">뒤로가기</button>
-            <button id="resetViewBtn" title="처음 위치">처음</button>
-            <button id="zoomInBtn" title="상위 폴더">상위</button>
-          </div>
         </div>
 
         <div id="loading" class="loading hidden">
@@ -74,6 +69,14 @@
 
         <section id="mindmapView" class="visual-panel lens-panel">
           <aside class="folder-panel">
+            <div class="folder-nav">
+              <button id="zoomOutBtn" class="nav-btn" type="button" title="뒤로가기" aria-label="뒤로가기" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6" /></svg>
+              </button>
+              <button id="resetViewBtn" class="nav-btn" type="button" title="처음으로" aria-label="처음으로" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5" /><path d="M5 9.5V20h5v-6h4v6h5V9.5" /></svg>
+              </button>
+            </div>
             <div class="folder-heading" id="folderHeading">
               <div class="folder-icon">□</div>
               <div>

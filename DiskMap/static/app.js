@@ -30,7 +30,6 @@ const els = {
   candidateList: document.querySelector("#candidateList"),
   mindmapTab: document.querySelector("#mindmapTab"),
   listTab: document.querySelector("#listTab"),
-  zoomIn: document.querySelector("#zoomInBtn"),
   zoomOut: document.querySelector("#zoomOutBtn"),
   resetView: document.querySelector("#resetViewBtn"),
   toast: document.querySelector("#toast"),
@@ -100,7 +99,6 @@ function bindEvents() {
   els.visualChildren.addEventListener("change", renderMindmap);
   els.mindmapTab.addEventListener("click", () => setTab("mindmap"));
   els.listTab.addEventListener("click", () => setTab("list"));
-  els.zoomIn.addEventListener("click", focusParent);
   els.zoomOut.addEventListener("click", goBack);
   els.resetView.addEventListener("click", goRoot);
   window.addEventListener("resize", () => {
@@ -1022,8 +1020,8 @@ function drawEmpty(svg) {
 function renderFocusCrumb(focusRoot) {
   const focused = state.focusPath && state.tree && state.focusPath !== state.tree.path;
   els.focusUp.disabled = !focused;
-  els.zoomIn.disabled = !focused;
   els.zoomOut.disabled = !state.history.length;
+  els.resetView.disabled = !focused;
   if (!state.selected && focusRoot) state.selected = focusRoot;
 }
 

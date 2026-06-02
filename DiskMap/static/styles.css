@@ -315,13 +315,9 @@ button:focus-visible {
   color: #fff;
 }
 
-.view-actions {
-  display: flex;
-  gap: 8px;
-}
-
 .breadcrumb {
   min-width: 0;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,8 +380,33 @@ button:focus-visible {
   box-shadow: var(--shadow);
   color: var(--ink);
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
+}
+
+.folder-nav {
+  display: flex;
+  gap: 8px;
+  padding: 14px 14px 0;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .folder-heading {
