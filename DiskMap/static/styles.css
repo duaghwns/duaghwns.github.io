@@ -141,6 +141,11 @@ button:focus-visible {
   font-weight: 800;
 }
 
+.pick-btn {
+  width: 100%;
+  min-height: 44px;
+}
+
 .preset-grid {
   display: flex;
   flex-wrap: wrap;
@@ -793,8 +798,39 @@ button:focus-visible {
   animation: spin 0.9s linear infinite;
 }
 
+.scan-progress {
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
 .hidden {
   display: none !important;
+}
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(12px);
+  background: var(--ink);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 20;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 @keyframes spin {

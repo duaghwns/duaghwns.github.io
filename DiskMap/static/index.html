@@ -18,12 +18,9 @@
         </header>
 
         <section class="control-group">
-          <label for="pathInput">스캔할 폴더</label>
-          <div class="path-row">
-            <input id="pathInput" spellcheck="false" />
-            <button id="scanBtn" class="primary">Scan</button>
-          </div>
-          <div id="presets" class="preset-grid"></div>
+          <label>스캔할 폴더</label>
+          <button id="scanBtn" class="primary pick-btn">폴더 선택</button>
+          <div id="pickedFolder" class="scan-note">아직 선택된 폴더가 없습니다.</div>
         </section>
 
         <section class="control-group compact">
@@ -72,6 +69,7 @@
         <div id="loading" class="loading hidden">
           <div class="spinner"></div>
           <p>스캔 중입니다. 큰 폴더는 시간이 조금 걸릴 수 있습니다.</p>
+          <p id="scanProgress" class="scan-progress"></p>
         </div>
 
         <section id="mindmapView" class="visual-panel lens-panel">
@@ -97,16 +95,17 @@
         <footer class="detail-bar" id="detailBar">
           <div>
             <strong>선택된 항목 없음</strong>
-            <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 Finder에서 열립니다.</span>
+            <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 경로가 복사됩니다.</span>
           </div>
           <div class="detail-actions">
             <button id="focusUpBtn" disabled>상위</button>
             <button id="focusBtn" disabled>집중</button>
-            <button id="revealBtn" disabled>Finder에서 보기</button>
+            <button id="revealBtn" disabled>경로 복사</button>
           </div>
         </footer>
       </section>
     </main>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <script src="app.js"></script>
   </body>
 </html>

@@ -250,15 +250,15 @@
         <a class="back" href="../index.html">← Projects</a>
 
         <section class="hero">
-            <div class="eyebrow">Local macOS Utility</div>
+            <div class="eyebrow">In-Browser Disk Visualizer</div>
             <h1>DiskMap</h1>
             <p class="lead">
-                저장 공간을 차지하는 폴더와 파일을 버블 맵으로 시각화하는 읽기 전용 로컬 도구입니다.
-                큰 항목부터 클릭해 안으로 들어가며, Finder에서 위치를 바로 열 수 있습니다.
+                저장 공간을 차지하는 폴더와 파일을 버블 맵으로 시각화하는 읽기 전용 도구입니다.
+                폴더를 선택하면 브라우저 안에서만 분석하며, 큰 항목부터 클릭해 안으로 들어갈 수 있습니다.
             </p>
             <div class="actions">
-                <a class="btn primary" href="static/index.html">UI 미리보기</a>
-                <a class="btn" href="README.md">실행 방법</a>
+                <a class="btn primary" href="static/index.html">앱 실행하기</a>
+                <a class="btn" href="README.md">사용 방법</a>
             </div>
         </section>
 
@@ -286,17 +286,25 @@
             </div>
             <div class="card">
                 <h3>Local Only</h3>
-                <p>파일 내용은 업로드하지 않고 로컬 서버에서 읽기 전용으로 스캔합니다.</p>
+                <p>파일 내용은 업로드하지 않고 브라우저 안에서만 읽기 전용으로 스캔합니다.</p>
             </div>
             <div class="card">
-                <h3>Finder Reveal</h3>
-                <p>확인한 항목은 Finder에서 바로 위치를 열 수 있습니다.</p>
+                <h3>Path Copy</h3>
+                <p>확인한 항목은 경로를 복사해 파일 탐색기에서 바로 찾을 수 있습니다.</p>
             </div>
         </section>
 
         <section class="run">
-            <h2>로컬 실행</h2>
-            <p>GitHub Pages에서는 디스크를 직접 읽을 수 없으므로 저장소를 내려받아 로컬에서 실행합니다.</p>
+            <h2>사용 방법</h2>
+            <p>
+                설치 없이 브라우저에서 바로 실행됩니다. <strong>앱 실행하기</strong>를 누른 뒤
+                <strong>폴더 선택</strong>으로 분석할 폴더를 고르면 됩니다.
+                폴더 접근 권한을 묻는 File System Access API를 사용하므로
+                <strong>Chrome</strong> 또는 <strong>Edge</strong>에서 열어주세요. (Safari·Firefox 미지원)
+            </p>
+            <p class="lead" style="font-size:1rem;margin-top:14px;">
+                macOS Finder 연동이 필요하면 저장소를 내려받아 로컬 서버로도 실행할 수 있습니다.
+            </p>
             <pre><code>cd DiskMap
 python3 server.py
 # http://127.0.0.1:8788</code></pre>

@@ -6,17 +6,15 @@ const state = {
   clickTimer: null,
   zoom: 1,
   activeTab: "mindmap",
-  presets: [],
 };
 
 const els = {
-  path: document.querySelector("#pathInput"),
   depth: document.querySelector("#depthInput"),
   childLimit: document.querySelector("#childLimitInput"),
   visualChildren: document.querySelector("#visualChildrenInput"),
   hidden: document.querySelector("#hiddenInput"),
   scan: document.querySelector("#scanBtn"),
-  presets: document.querySelector("#presets"),
+  picked: document.querySelector("#pickedFolder"),
   summary: document.querySelector("#summary"),
   breadcrumb: document.querySelector("#breadcrumb"),
   folderHeading: document.querySelector("#folderHeading"),
@@ -35,6 +33,8 @@ const els = {
   zoomIn: document.querySelector("#zoomInBtn"),
   zoomOut: document.querySelector("#zoomOutBtn"),
   resetView: document.querySelector("#resetViewBtn"),
+  toast: document.querySelector("#toast"),
+  progress: document.querySelector("#scanProgress"),
 };
 
 const colors = {
@@ -48,20 +48,47 @@ const colors = {
   document: "#48735f",
 };
 
+const ARCHIVE_EXTS = new Set([
+  ".zip", ".rar", ".7z", ".tar", ".gz", ".tgz", ".bz2", ".xz", ".dmg", ".pkg", ".iso",
+]);
+const MEDIA_EXTS = new Set([
+  ".mov", ".mp4", ".m4v", ".avi", ".mkv", ".hevc", ".mp3", ".wav", ".aiff", ".flac",
+]);
+const IMAGE_EXTS = new Set([".jpg", ".jpeg", ".png", ".heic", ".raw", ".tiff", ".gif", ".webp"]);
+const DOC_EXTS = new Set([".pdf", ".ppt", ".pptx", ".doc", ".docx", ".xls", ".xlsx", ".key"]);
+const DEV_DIRS = new Set([
+  "node_modules", ".gradle", ".npm", ".pnpm-store", ".yarn", ".cargo", ".rustup",
+  ".pub-cache", "Pods", ".build", "build", "dist", ".next", ".turbo", "DerivedData",
+]);
+const CACHE_DIRS = new Set([
+  "Caches", ".cache", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache",
+  ".parcel-cache", ".vite",
+]);
+
+const MAX_ENTRIES = 240000;
+
+let toastTimer = null;
+
 init();
 
-async function init() {
+function init() {
   bindEvents();
-  await loadPresets();
+  if (!window.showDirectoryPicker) {
+    els.scan.disabled = true;
+    els.summary.innerHTML = `
+      <div class="empty-copy">이 브라우저는 폴더 스캔(File System Access API)을 지원하지 않습니다. <strong>Chrome</strong> 또는 <strong>Edge</strong>에서 열어주세요.</div>
+    `;
+    return;
+  }
+  els.summary.innerHTML = `
+    <div class="empty-copy">폴더를 선택하면 브라우저 안에서만 크기를 분석합니다. 파일 내용은 어디에도 전송되지 않습니다.</div>
+  `;
 }
 
 function bindEvents() {
   els.scan.addEventListener("click", scan);
-  els.path.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") scan();
-  });
   els.reveal.addEventListener("click", () => {
-    if (state.selected) revealPath(state.selected.path);
+    if (state.selected) copyPath(state.selected.path);
   });
   els.focus.addEventListener("click", () => {
     if (!canFocusNode(state.selected)) return;
@@ -81,70 +108,391 @@ function bindEvents() {
   });
 }
 
-async function loadPresets() {
-  let data;
-  try {
-    const res = await fetch("/api/presets");
-    data = await res.json();
-  } catch {
-    data = {
-      presets: [
-        { label: "Local app only", path: "~/Downloads" },
-      ],
-    };
-    els.summary.innerHTML = `
-      <div class="empty-copy">DiskMap은 로컬 파일을 읽는 도구라서 GitHub Pages에서는 스캔을 실행할 수 없습니다. 저장소를 내려받고 <code>python3 server.py</code>로 실행하세요.</div>
-    `;
-  }
-  state.presets = data.presets || [];
-  const homePreset = state.presets.find((item) => item.label === "Downloads") || state.presets[0];
-  if (homePreset) els.path.value = homePreset.path;
-  els.presets.innerHTML = "";
-  for (const preset of state.presets) {
-    const button = document.createElement("button");
-    button.textContent = preset.label;
-    button.addEventListener("click", () => {
-      els.path.value = preset.path;
-      scan();
-    });
-    els.presets.append(button);
-  }
-}
-
 async function scan() {
-  const path = els.path.value.trim();
-  if (!path) return;
-  setLoading(true);
+  if (!window.showDirectoryPicker) return;
+
+  let dirHandle;
   try {
-    const params = new URLSearchParams({
-      path,
-      maxDepth: els.depth.value,
-      childLimit: els.childLimit.value,
-      hidden: els.hidden.checked ? "1" : "0",
-    });
-    const res = await fetch(`/api/scan?${params.toString()}`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Scan failed");
+    dirHandle = await window.showDirectoryPicker({ mode: "read" });
+  } catch (error) {
+    if (error && error.name === "AbortError") return;
+    els.summary.innerHTML = `<div class="empty-copy">${escapeHtml(error.message || "폴더를 열 수 없습니다.")}</div>`;
+    return;
+  }
+
+  setLoading(true);
+  if (els.progress) els.progress.textContent = "";
+  // 로딩 화면이 먼저 그려지도록 한 프레임 양보합니다.
+  await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+  try {
+    const options = {
+      maxDepth: boundedNumber(els.depth.value, 1, 20, 9),
+      childLimit: boundedNumber(els.childLimit.value, 8, 100, 36),
+      includeHidden: els.hidden.checked,
+      maxEntries: MAX_ENTRIES,
+    };
+    const data = await buildTree(dirHandle, options);
     state.tree = data;
     state.selected = data;
     state.focusPath = data.path;
     state.history = [];
     state.zoom = 1;
+    els.picked.textContent = `선택됨: ${dirHandle.name}`;
     renderSummary();
     renderCandidates();
     renderMindmap();
     renderDetail();
   } catch (error) {
-    els.summary.innerHTML = `<div class="empty-copy">${escapeHtml(error.message)}</div>`;
+    els.summary.innerHTML = `<div class="empty-copy">${escapeHtml(error.message || "스캔에 실패했습니다.")}</div>`;
   } finally {
     setLoading(false);
   }
 }
 
+async function buildTree(rootHandle, options) {
+  const scanState = {
+    entries: 0,
+    permissionErrors: 0,
+    truncated: false,
+    skippedHidden: 0,
+    maxEntries: options.maxEntries,
+    totalTop: 0,
+    doneTop: 0,
+    currentTop: "",
+    lastYield: performance.now(),
+  };
+
+  // 최상위 항목을 기준으로 진행률을 표시하며 한 번에 스캔합니다.
+  updateProgress(scanState);
+  const started = performance.now();
+  const rootNode = await scanEntry(rootHandle, rootHandle.name, 0, options, scanState);
+  const candidates = collectCandidates(rootNode);
+  rootNode.scan = {
+    durationMs: Math.round(performance.now() - started),
+    entries: scanState.entries,
+    permissionErrors: scanState.permissionErrors,
+    permissionPaths: [],
+    truncated: scanState.truncated,
+    skippedHidden: scanState.skippedHidden,
+    root: rootHandle.name,
+    displayRoot: rootHandle.name,
+  };
+  rootNode.candidates = candidates;
+  return rootNode;
+}
+
+// 진행률 텍스트를 갱신하고, 80ms마다 한 번 양보해 화면이 멈추지 않게 합니다.
+async function maybeYield(scanState) {
+  const now = performance.now();
+  if (now - scanState.lastYield >= 80) {
+    scanState.lastYield = now;
+    updateProgress(scanState);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+  }
+}
+
+function updateProgress(scanState) {
+  if (!els.progress) return;
+  const total = scanState.totalTop || 0;
+  const done = scanState.doneTop || 0;
+  const items = scanState.entries || 0;
+  if (total > 0) {
+    const pct = Math.min(100, Math.floor((done / total) * 100));
+    const current = scanState.currentTop ? ` · ${truncateMiddle(scanState.currentTop, 22)}` : "";
+    els.progress.textContent = `${pct}%  ·  ${formatNumber(items)}개${current}`;
+  } else {
+    els.progress.textContent = `${formatNumber(items)}개 스캔됨`;
+  }
+}
+
+async function scanEntry(handle, relPath, depth, options, scanState) {
+  if (scanState.entries >= options.maxEntries) {
+    scanState.truncated = true;
+    return placeholderNode(relPath, "항목 수 제한에 도달");
+  }
+  scanState.entries += 1;
+  const lowerPath = relPath.toLowerCase();
+
+  if (handle.kind === "file") {
+    let file;
+    try {
+      file = await handle.getFile();
+    } catch {
+      scanState.permissionErrors += 1;
+      return placeholderNode(relPath, "읽을 수 없음", false);
+    }
+    const size = file.size;
+    const ext = extensionOf(handle.name);
+    const { kind, flags, score } = classify(handle.name, lowerPath, ext, false, size);
+    return {
+      name: handle.name,
+      path: relPath,
+      displayPath: relPath,
+      size,
+      kind,
+      isDir: false,
+      modified: file.lastModified ? file.lastModified / 1000 : null,
+      flags,
+      score,
+      children: [],
+      entryCount: 1,
+    };
+  }
+
+  // 디렉터리: 깊이 제한에 도달하면 크기만 측정합니다.
+  if (depth >= options.maxDepth) {
+    const [total, measured] = await measureSubtree(handle, options, scanState);
+    const { kind, flags, score } = classify(handle.name, lowerPath, "", true, total);
+    return {
+      name: handle.name,
+      path: relPath,
+      displayPath: relPath,
+      size: total,
+      kind,
+      isDir: true,
+      modified: null,
+      flags: [...flags, "깊이 제한"],
+      score,
+      children: [],
+      entryCount: measured,
+      limited: true,
+    };
+  }
+
+  let entries;
+  try {
+    entries = [];
+    for await (const child of handle.values()) entries.push(child);
+  } catch {
+    scanState.permissionErrors += 1;
+    const { kind, flags, score } = classify(handle.name, lowerPath, "", true, 0);
+    return {
+      name: handle.name,
+      path: relPath,
+      displayPath: relPath,
+      size: 0,
+      kind,
+      isDir: true,
+      modified: null,
+      flags,
+      score,
+      children: [],
+      entryCount: 1,
+      error: "읽을 수 없음",
+    };
+  }
+
+  let total = 0;
+  let entryCount = 1;
+  const children = [];
+  const unreadable = [];
+
+  // 최상위 폴더의 직속 항목 수를 진행률 분모로 사용합니다.
+  const isRoot = depth === 0;
+  if (isRoot) {
+    scanState.totalTop = entries.filter(
+      (child) => options.includeHidden || !child.name.startsWith("."),
+    ).length;
+    scanState.doneTop = 0;
+  }
+
+  for (const child of entries) {
+    if (!options.includeHidden && child.name.startsWith(".")) {
+      scanState.skippedHidden += 1;
+      continue;
+    }
+    if (isRoot) scanState.currentTop = child.name;
+    const childNode = await scanEntry(child, `${relPath}/${child.name}`, depth + 1, options, scanState);
+    total += childNode.size || 0;
+    entryCount += childNode.entryCount || 1;
+    if (childNode.error) unreadable.push(childNode.name);
+    children.push(childNode);
+    if (isRoot) scanState.doneTop += 1;
+    if (scanState.truncated) break;
+    await maybeYield(scanState);
+  }
+  if (isRoot) scanState.currentTop = "";
+
+  children.sort((a, b) => (b.size || 0) - (a.size || 0));
+  const omitted = children.slice(options.childLimit);
+  const visibleChildren = children.slice(0, options.childLimit);
+  const omittedSize = omitted.reduce((sum, item) => sum + (item.size || 0), 0);
+  let { kind, flags, score } = classify(handle.name, lowerPath, "", true, total);
+  if (unreadable.length) {
+    flags = [...new Set([...flags, "일부 읽지 못함"])].sort();
+  }
+
+  return {
+    name: handle.name,
+    path: relPath,
+    displayPath: relPath,
+    size: total,
+    kind,
+    isDir: true,
+    modified: null,
+    flags,
+    score,
+    children: visibleChildren,
+    entryCount,
+    childCount: children.length,
+    omittedCount: omitted.length,
+    omittedSize,
+  };
+}
+
+async function measureSubtree(handle, options, scanState) {
+  let total = 0;
+  let entryCount = 1;
+  let entries;
+  try {
+    entries = [];
+    for await (const child of handle.values()) entries.push(child);
+  } catch {
+    scanState.permissionErrors += 1;
+    return [0, entryCount];
+  }
+
+  for (const child of entries) {
+    if (scanState.entries >= options.maxEntries) {
+      scanState.truncated = true;
+      break;
+    }
+    if (!options.includeHidden && child.name.startsWith(".")) {
+      scanState.skippedHidden += 1;
+      continue;
+    }
+    scanState.entries += 1;
+    entryCount += 1;
+    if (child.kind === "directory") {
+      const [childTotal, childEntries] = await measureSubtree(child, options, scanState);
+      total += childTotal;
+      entryCount += Math.max(0, childEntries - 1);
+    } else {
+      try {
+        const file = await child.getFile();
+        total += file.size;
+      } catch {
+        scanState.permissionErrors += 1;
+      }
+    }
+    await maybeYield(scanState);
+  }
+  return [total, entryCount];
+}
+
+function classify(name, lowerPath, ext, isDir, size) {
+  let kind = isDir ? "folder" : "file";
+  const flags = [];
+  let score = 0;
+
+  if (isDir && CACHE_DIRS.has(name)) {
+    kind = "cache";
+    flags.push("cache");
+    score += 4;
+  }
+  if (isDir && DEV_DIRS.has(name)) {
+    kind = "dev-artifact";
+    flags.push("developer artifact");
+    score += 3;
+  }
+  if (lowerPath.includes("/library/caches/") || lowerPath.endsWith("/library/caches")) {
+    kind = "cache";
+    flags.push("cache");
+    score += 4;
+  }
+  if (lowerPath.includes("/downloads/")) {
+    flags.push("download");
+    score += 1;
+  }
+  if (!isDir && ARCHIVE_EXTS.has(ext)) {
+    kind = "archive";
+    flags.push("archive/installer");
+    score += 3;
+  }
+  if (!isDir && MEDIA_EXTS.has(ext)) {
+    kind = "media";
+    flags.push("large media");
+    score += 1;
+  }
+  if (!isDir && IMAGE_EXTS.has(ext)) {
+    kind = "image";
+  }
+  if (!isDir && DOC_EXTS.has(ext)) {
+    kind = "document";
+  }
+  if (lowerPath.includes("xcode/deriveddata")) {
+    kind = "dev-artifact";
+    flags.push("Xcode DerivedData");
+    score += 4;
+  }
+  if (lowerPath.includes("/trash/") || lowerPath.includes("/.trash/")) {
+    flags.push("trash");
+    score += 5;
+  }
+  if (size >= 5 * 1024 ** 3) {
+    flags.push("very large");
+    score += 3;
+  } else if (size >= 1024 ** 3) {
+    flags.push("large");
+    score += 2;
+  }
+
+  return { kind, flags: [...new Set(flags)].sort(), score };
+}
+
+function collectCandidates(root) {
+  const items = [];
+  const walk = (node) => {
+    const size = node.size || 0;
+    const score = node.score || 0;
+    if (size >= 300 * 1024 ** 2 || score >= 3) {
+      items.push({
+        name: node.name,
+        path: node.path,
+        displayPath: node.displayPath,
+        size,
+        kind: node.kind,
+        isDir: node.isDir,
+        flags: node.flags || [],
+        score,
+        modified: node.modified,
+      });
+    }
+    for (const child of node.children || []) walk(child);
+  };
+  walk(root);
+  items.sort((a, b) => b.score - a.score || b.size - a.size);
+  return items.slice(0, 120);
+}
+
+function placeholderNode(relPath, error, isDir = true) {
+  const name = relPath.split("/").pop() || relPath;
+  return {
+    name,
+    path: relPath,
+    displayPath: relPath,
+    size: 0,
+    kind: isDir ? "folder" : "file",
+    isDir,
+    modified: null,
+    flags: [],
+    score: 0,
+    children: [],
+    entryCount: 1,
+    error,
+  };
+}
+
+function extensionOf(name) {
+  const index = String(name || "").lastIndexOf(".");
+  return index > 0 ? name.slice(index).toLowerCase() : "";
+}
+
 function renderSummary() {
   const scanInfo = state.tree.scan || {};
   const warnings = [];
-  if (scanInfo.permissionErrors) warnings.push(`${scanInfo.permissionErrors}개 위치는 권한 때문에 건너뜀`);
+  if (scanInfo.permissionErrors) warnings.push(`${scanInfo.permissionErrors}개 항목은 읽지 못해 건너뜀`);
   if (scanInfo.truncated) warnings.push("항목 수 제한에 도달해 일부만 표시");
   if (scanInfo.skippedHidden) warnings.push(`숨김 항목 ${scanInfo.skippedHidden}개 제외`);
 
@@ -157,26 +505,6 @@ function renderSummary() {
     </div>
     <div class="scan-note">${escapeHtml(scanInfo.displayRoot || state.tree.displayPath)}</div>
     ${warnings.length ? `<div class="scan-note">${warnings.map(escapeHtml).join(" · ")}</div>` : ""}
-    ${scanInfo.permissionErrors ? renderPermissionNotice(scanInfo) : ""}
-  `;
-  const permissionButton = els.summary.querySelector("#openPrivacyBtn");
-  if (permissionButton) {
-    permissionButton.addEventListener("click", openPrivacySettings);
-  }
-}
-
-function renderPermissionNotice(scanInfo) {
-  const paths = scanInfo.permissionPaths || [];
-  const pathList = paths.length
-    ? `<ul>${paths.slice(0, 5).map((path) => `<li>${escapeHtml(path)}</li>`).join("")}</ul>`
-    : "";
-  return `
-    <div class="permission-card">
-      <strong>일부 폴더를 읽지 못했습니다.</strong>
-      <p>macOS 보호 폴더는 파일을 읽는 앱에 권한을 줘야 정확히 스캔됩니다. 설정을 열고 Codex 또는 터미널 앱에 전체 디스크 접근 권한을 켠 뒤 다시 스캔하세요.</p>
-      ${pathList}
-      <button id="openPrivacyBtn" type="button">권한 설정 열기</button>
-    </div>
   `;
 }
 
@@ -410,7 +738,7 @@ function bindItemActions(element, node) {
 
   element.addEventListener("dblclick", () => {
     clearPendingClick();
-    if (!node.synthetic) revealPath(node.path);
+    if (!node.synthetic) copyPath(node.path);
   });
 }
 
@@ -563,10 +891,10 @@ function renderCandidates() {
       <div class="badge-row">${badges.join("") || `<span class="badge">${escapeHtml(candidate.kind)}</span>`}</div>
       <div class="candidate-row">
         <span class="candidate-meta">${candidate.isDir ? "Folder" : "File"} · ${formatDate(candidate.modified)}</span>
-        <button type="button">Finder</button>
+        <button type="button">경로 복사</button>
       </div>
     `;
-    card.querySelector("button").addEventListener("click", () => revealPath(candidate.path));
+    card.querySelector("button").addEventListener("click", () => copyPath(candidate.path));
     card.addEventListener("click", (event) => {
       if (event.target.tagName === "BUTTON") return;
       state.selected = candidate;
@@ -584,7 +912,7 @@ function renderDetail() {
   if (!node) {
     els.detail.querySelector("div").innerHTML = `
       <strong>선택된 항목 없음</strong>
-      <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 Finder에서 열립니다.</span>
+      <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 경로가 복사됩니다.</span>
     `;
     return;
   }
@@ -595,13 +923,22 @@ function renderDetail() {
   `;
 }
 
-async function revealPath(path) {
-  const params = new URLSearchParams({ path });
-  await fetch(`/api/reveal?${params.toString()}`);
+async function copyPath(path) {
+  const text = path || "";
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("경로를 복사했습니다");
+  } catch {
+    showToast("복사할 수 없습니다");
+  }
 }
 
-async function openPrivacySettings() {
-  await fetch("/api/open-privacy");
+function showToast(message) {
+  if (!els.toast) return;
+  els.toast.textContent = message;
+  els.toast.classList.add("show");
+  if (toastTimer) window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => els.toast.classList.remove("show"), 1600);
 }
 
 function setTab(tab) {
@@ -680,25 +1017,6 @@ function drawEmpty(svg) {
   });
   text.textContent = "스캔할 폴더를 선택하세요.";
   svg.append(text);
-}
-
-function maxVisibleDepth(root) {
-  let max = 0;
-  const visit = (node, depth) => {
-    max = Math.max(max, depth);
-    for (const child of node.children || []) visit(child, depth + 1);
-  };
-  visit(root, 0);
-  return Math.min(max, 7);
-}
-
-function shouldShowLabel(item, nodeCount, rootSize, isSelected) {
-  if (isSelected || item.depth === 0) return true;
-  if (item.node.synthetic) return item.depth <= 2;
-  const share = (item.node.size || 0) / rootSize;
-  if (nodeCount > 120) return item.depth <= 1 || item.node.score >= 3 || share >= 0.08;
-  if (nodeCount > 70) return item.depth <= 2 || item.node.score >= 3 || share >= 0.05;
-  return item.depth <= 3 || item.r >= 18 || item.node.score >= 3;
 }
 
 function renderFocusCrumb(focusRoot) {
