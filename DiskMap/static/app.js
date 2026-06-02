@@ -15,6 +15,10 @@ const els = {
   hidden: document.querySelector("#hiddenInput"),
   scan: document.querySelector("#scanBtn"),
   picked: document.querySelector("#pickedFolder"),
+  serverScan: document.querySelector("#serverScan"),
+  path: document.querySelector("#pathInput"),
+  scanPath: document.querySelector("#scanPathBtn"),
+  presets: document.querySelector("#presets"),
   summary: document.querySelector("#summary"),
   breadcrumb: document.querySelector("#breadcrumb"),
   folderHeading: document.querySelector("#folderHeading"),
@@ -67,27 +71,80 @@ const CACHE_DIRS = new Set([
 const MAX_ENTRIES = 240000;
 
 let toastTimer = null;
+let serverMode = false;
+let presets = [];
 
 init();
 
-function init() {
+async function init() {
   bindEvents();
-  if (!window.showDirectoryPicker) {
+  await detectServerMode();
+
+  const canPick = !!window.showDirectoryPicker;
+  if (!canPick) {
     els.scan.disabled = true;
+    els.picked.textContent = "이 브라우저는 폴더 선택을 지원하지 않습니다 (Chrome/Edge 권장).";
+  }
+
+  if (serverMode) {
+    els.summary.innerHTML = `
+      <div class="empty-copy">로컬 서버 모드입니다. 폴더를 선택하거나 경로를 입력해 스캔하세요. 권한이 닿는 시스템 폴더까지 읽을 수 있습니다.</div>
+    `;
+  } else if (canPick) {
+    els.summary.innerHTML = `
+      <div class="empty-copy">폴더를 선택하면 브라우저 안에서만 크기를 분석합니다. 파일 내용은 어디에도 전송되지 않습니다.</div>
+    `;
+  } else {
     els.summary.innerHTML = `
       <div class="empty-copy">이 브라우저는 폴더 스캔(File System Access API)을 지원하지 않습니다. <strong>Chrome</strong> 또는 <strong>Edge</strong>에서 열어주세요.</div>
     `;
-    return;
   }
-  els.summary.innerHTML = `
-    <div class="empty-copy">폴더를 선택하면 브라우저 안에서만 크기를 분석합니다. 파일 내용은 어디에도 전송되지 않습니다.</div>
-  `;
+}
+
+// 로컬 server.py가 제공하는 /api/presets 응답이 있으면 서버 모드로 동작합니다.
+// GitHub Pages 등 일반 웹에서는 404가 떨어져 브라우저 전용으로 남습니다.
+async function detectServerMode() {
+  try {
+    const res = await fetch("/api/presets", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    serverMode = true;
+    presets = Array.isArray(data.presets) ? data.presets : [];
+    enableServerScanUI();
+  } catch {
+    // 서버 없음 → 브라우저 전용 유지
+  }
+}
+
+function enableServerScanUI() {
+  if (els.serverScan) els.serverScan.classList.remove("hidden");
+  if (els.reveal) els.reveal.textContent = "Finder에서 보기";
+
+  if (els.presets) {
+    els.presets.innerHTML = "";
+    for (const preset of presets) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = preset.label;
+      button.addEventListener("click", () => {
+        els.path.value = preset.path;
+        scanServer();
+      });
+      els.presets.append(button);
+    }
+  }
+  const home = presets.find((item) => item.label === "Downloads") || presets[0];
+  if (home && els.path && !els.path.value) els.path.value = home.path;
 }
 
 function bindEvents() {
   els.scan.addEventListener("click", scan);
+  els.scanPath.addEventListener("click", scanServer);
+  els.path.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") scanServer();
+  });
   els.reveal.addEventListener("click", () => {
-    if (state.selected) copyPath(state.selected.path);
+    if (state.selected) revealOrCopy(state.selected.path);
   });
   els.focus.addEventListener("click", () => {
     if (!canFocusNode(state.selected)) return;
@@ -137,6 +194,42 @@ async function scan() {
     state.history = [];
     state.zoom = 1;
     els.picked.textContent = `선택됨: ${dirHandle.name}`;
+    renderSummary();
+    renderCandidates();
+    renderMindmap();
+    renderDetail();
+  } catch (error) {
+    els.summary.innerHTML = `<div class="empty-copy">${escapeHtml(error.message || "스캔에 실패했습니다.")}</div>`;
+  } finally {
+    setLoading(false);
+  }
+}
+
+// 로컬 서버 모드: server.py가 직접 스캔한 결과(트리)를 받아 그립니다.
+async function scanServer() {
+  if (!serverMode) return;
+  const path = els.path.value.trim();
+  if (!path) return;
+
+  setLoading(true);
+  if (els.progress) els.progress.textContent = "";
+
+  try {
+    const params = new URLSearchParams({
+      path,
+      maxDepth: String(boundedNumber(els.depth.value, 1, 20, 9)),
+      childLimit: String(boundedNumber(els.childLimit.value, 8, 100, 36)),
+      hidden: els.hidden.checked ? "1" : "0",
+    });
+    const res = await fetch(`/api/scan?${params.toString()}`, { cache: "no-store" });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "스캔에 실패했습니다.");
+    state.tree = data;
+    state.selected = data;
+    state.focusPath = data.path;
+    state.history = [];
+    state.zoom = 1;
+    els.picked.textContent = `스캔됨: ${data.scan?.displayRoot || data.displayPath || path}`;
     renderSummary();
     renderCandidates();
     renderMindmap();
@@ -503,6 +596,25 @@ function renderSummary() {
     </div>
     <div class="scan-note">${escapeHtml(scanInfo.displayRoot || state.tree.displayPath)}</div>
     ${warnings.length ? `<div class="scan-note">${warnings.map(escapeHtml).join(" · ")}</div>` : ""}
+    ${serverMode && scanInfo.permissionErrors ? renderPermissionNotice(scanInfo) : ""}
+  `;
+
+  const permissionButton = els.summary.querySelector("#openPrivacyBtn");
+  if (permissionButton) permissionButton.addEventListener("click", openPrivacySettings);
+}
+
+function renderPermissionNotice(scanInfo) {
+  const paths = scanInfo.permissionPaths || [];
+  const pathList = paths.length
+    ? `<ul>${paths.slice(0, 5).map((path) => `<li>${escapeHtml(path)}</li>`).join("")}</ul>`
+    : "";
+  return `
+    <div class="permission-card">
+      <strong>일부 폴더를 읽지 못했습니다.</strong>
+      <p>macOS 보호 폴더는 스캔하는 앱(터미널 등)에 전체 디스크 접근 권한이 있어야 정확히 읽힙니다. 설정을 연 뒤 권한을 켜고 다시 스캔하세요.</p>
+      ${pathList}
+      <button id="openPrivacyBtn" type="button">권한 설정 열기</button>
+    </div>
   `;
 }
 
@@ -736,7 +848,7 @@ function bindItemActions(element, node) {
 
   element.addEventListener("dblclick", () => {
     clearPendingClick();
-    if (!node.synthetic) copyPath(node.path);
+    if (!node.synthetic) revealOrCopy(node.path);
   });
 }
 
@@ -889,10 +1001,10 @@ function renderCandidates() {
       <div class="badge-row">${badges.join("") || `<span class="badge">${escapeHtml(candidate.kind)}</span>`}</div>
       <div class="candidate-row">
         <span class="candidate-meta">${candidate.isDir ? "Folder" : "File"} · ${formatDate(candidate.modified)}</span>
-        <button type="button">경로 복사</button>
+        <button type="button">${serverMode ? "Finder" : "경로 복사"}</button>
       </div>
     `;
-    card.querySelector("button").addEventListener("click", () => copyPath(candidate.path));
+    card.querySelector("button").addEventListener("click", () => revealOrCopy(candidate.path));
     card.addEventListener("click", (event) => {
       if (event.target.tagName === "BUTTON") return;
       state.selected = candidate;
@@ -908,9 +1020,12 @@ function renderDetail() {
   els.focus.disabled = !canFocusNode(node);
   els.focusUp.disabled = !state.tree || !state.focusPath || state.focusPath === state.tree.path;
   if (!node) {
+    const hint = serverMode
+      ? "폴더는 한 번 클릭하면 들어가고, 더블클릭하면 Finder에서 열립니다."
+      : "폴더는 한 번 클릭하면 들어가고, 더블클릭하면 경로가 복사됩니다.";
     els.detail.querySelector("div").innerHTML = `
       <strong>선택된 항목 없음</strong>
-      <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 경로가 복사됩니다.</span>
+      <span>${hint}</span>
     `;
     return;
   }
@@ -921,13 +1036,31 @@ function renderDetail() {
   `;
 }
 
-async function copyPath(path) {
-  const text = path || "";
+// 서버 모드면 Finder에서 위치를 열고, 아니면 경로를 클립보드에 복사합니다.
+async function revealOrCopy(path) {
+  if (!path) return;
+  if (serverMode) {
+    try {
+      await fetch(`/api/reveal?${new URLSearchParams({ path }).toString()}`, { cache: "no-store" });
+      showToast("Finder에서 열었습니다");
+    } catch {
+      showToast("열 수 없습니다");
+    }
+    return;
+  }
   try {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(path);
     showToast("경로를 복사했습니다");
   } catch {
     showToast("복사할 수 없습니다");
+  }
+}
+
+async function openPrivacySettings() {
+  try {
+    await fetch("/api/open-privacy", { cache: "no-store" });
+  } catch {
+    showToast("설정을 열 수 없습니다");
   }
 }
 

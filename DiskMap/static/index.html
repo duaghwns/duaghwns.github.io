@@ -21,6 +21,15 @@
           <label>스캔할 폴더</label>
           <button id="scanBtn" class="primary pick-btn">폴더 선택</button>
           <div id="pickedFolder" class="scan-note">아직 선택된 폴더가 없습니다.</div>
+
+          <div id="serverScan" class="server-scan hidden">
+            <div class="server-scan-label">또는 경로로 스캔 · 로컬 서버 (시스템 폴더 포함)</div>
+            <div class="path-row">
+              <input id="pathInput" spellcheck="false" placeholder="예: /Users/me/Library" />
+              <button id="scanPathBtn">스캔</button>
+            </div>
+            <div id="presets" class="preset-grid"></div>
+          </div>
         </section>
 
         <section class="control-group compact">

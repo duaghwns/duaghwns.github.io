@@ -146,6 +146,20 @@ button:focus-visible {
   min-height: 44px;
 }
 
+.server-scan {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line);
+}
+
+.server-scan-label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .preset-grid {
   display: flex;
   flex-wrap: wrap;
