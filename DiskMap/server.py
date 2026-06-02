@@ -7,7 +7,10 @@ import json
 import os
 import stat as stat_module
 import subprocess
+import sys
+import threading
 import time
+import webbrowser
 from dataclasses import dataclass
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -16,8 +19,12 @@ from typing import Any
 from urllib.parse import parse_qs, unquote, urlparse
 
 
-APP_DIR = Path(__file__).resolve().parent
-STATIC_DIR = APP_DIR / "static"
+# PyInstaller로 패키징되면 정적 파일은 임시 추출 경로(_MEIPASS)에 들어갑니다.
+if getattr(sys, "frozen", False):
+    BASE_DIR = Path(getattr(sys, "_MEIPASS", Path(sys.executable).resolve().parent))
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+STATIC_DIR = BASE_DIR / "static"
 
 ARCHIVE_EXTS = {
     ".zip",
@@ -389,6 +396,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_json(
                 {
                     "home": str(Path.home()),
+                    "platform": sys.platform,
                     "presets": preset_paths(),
                 }
             )
@@ -401,6 +409,10 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if parsed.path == "/api/open-privacy":
             self.handle_open_privacy()
+            return
+        if parsed.path == "/api/quit":
+            self.send_json({"ok": True})
+            threading.Thread(target=self.server.shutdown, daemon=True).start()
             return
         for cache_header in ("If-Modified-Since", "If-None-Match"):
             if cache_header in self.headers:
@@ -442,7 +454,12 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_error_json(HTTPStatus.BAD_REQUEST, f"Path does not exist: {target}")
             return
         try:
-            subprocess.run(["open", "-R", str(target)], check=False)
+            if sys.platform == "darwin":
+                subprocess.run(["open", "-R", str(target)], check=False)
+            elif sys.platform == "win32":
+                subprocess.run(["explorer", f"/select,{target}"], check=False)
+            else:
+                subprocess.run(["xdg-open", str(target.parent)], check=False)
         except OSError as exc:
             self.send_error_json(HTTPStatus.INTERNAL_SERVER_ERROR, str(exc))
             return
@@ -502,19 +519,35 @@ def preset_paths() -> list[dict[str, str]]:
     return [{"label": label, "path": str(path)} for label, path in candidates if path.exists()]
 
 
+def serve_with_fallback(host: str, port: int, attempts: int = 12) -> tuple[ThreadingHTTPServer, int]:
+    last_error: OSError | None = None
+    for candidate in range(port, port + attempts):
+        try:
+            return ThreadingHTTPServer((host, candidate), Handler), candidate
+        except OSError as exc:
+            last_error = exc
+    raise SystemExit(f"사용 가능한 포트를 찾지 못했습니다: {last_error}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Local DiskMap disk usage tool")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8788)
+    parser.add_argument("--no-open", action="store_true", help="브라우저를 자동으로 열지 않습니다.")
     args = parser.parse_args()
 
-    server = ThreadingHTTPServer((args.host, args.port), Handler)
-    print(f"DiskMap running at http://{args.host}:{args.port}")
-    print("Press Ctrl-C to stop.")
+    server, port = serve_with_fallback(args.host, args.port)
+    url = f"http://{args.host}:{port}"
+    print(f"DiskMap running at {url}")
+    print("이 창을 닫거나 Ctrl-C를 누르면 종료됩니다. (앱 화면의 '종료' 버튼으로도 종료할 수 있어요)")
+    if not args.no_open:
+        threading.Timer(0.6, lambda: webbrowser.open(url)).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nStopping.")
+    finally:
+        server.server_close()
 
 
 if __name__ == "__main__":

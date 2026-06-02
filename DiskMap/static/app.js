@@ -19,6 +19,7 @@ const els = {
   path: document.querySelector("#pathInput"),
   scanPath: document.querySelector("#scanPathBtn"),
   presets: document.querySelector("#presets"),
+  quit: document.querySelector("#quitBtn"),
   summary: document.querySelector("#summary"),
   breadcrumb: document.querySelector("#breadcrumb"),
   folderHeading: document.querySelector("#folderHeading"),
@@ -72,6 +73,7 @@ const MAX_ENTRIES = 240000;
 
 let toastTimer = null;
 let serverMode = false;
+let serverPlatform = "";
 let presets = [];
 
 init();
@@ -109,6 +111,7 @@ async function detectServerMode() {
     if (!res.ok) return;
     const data = await res.json();
     serverMode = true;
+    serverPlatform = data.platform || "";
     presets = Array.isArray(data.presets) ? data.presets : [];
     enableServerScanUI();
   } catch {
@@ -116,9 +119,28 @@ async function detectServerMode() {
   }
 }
 
+// 서버 OS에 맞춰 "파일 위치 열기" 동작의 이름을 정합니다.
+function revealLabel() {
+  if (serverPlatform === "darwin") return "Finder에서 보기";
+  if (serverPlatform === "win32") return "탐색기에서 보기";
+  return "파일 위치 열기";
+}
+
+function revealShort() {
+  if (serverPlatform === "darwin") return "Finder";
+  if (serverPlatform === "win32") return "탐색기";
+  return "위치 열기";
+}
+
+function revealHint() {
+  if (serverPlatform === "darwin") return "더블클릭하면 Finder에서 열립니다";
+  if (serverPlatform === "win32") return "더블클릭하면 탐색기에서 열립니다";
+  return "더블클릭하면 파일 위치가 열립니다";
+}
+
 function enableServerScanUI() {
   if (els.serverScan) els.serverScan.classList.remove("hidden");
-  if (els.reveal) els.reveal.textContent = "Finder에서 보기";
+  if (els.reveal) els.reveal.textContent = revealLabel();
 
   if (els.presets) {
     els.presets.innerHTML = "";
@@ -143,6 +165,7 @@ function bindEvents() {
   els.path.addEventListener("keydown", (event) => {
     if (event.key === "Enter") scanServer();
   });
+  els.quit.addEventListener("click", quitApp);
   els.reveal.addEventListener("click", () => {
     if (state.selected) revealOrCopy(state.selected.path);
   });
@@ -1001,7 +1024,7 @@ function renderCandidates() {
       <div class="badge-row">${badges.join("") || `<span class="badge">${escapeHtml(candidate.kind)}</span>`}</div>
       <div class="candidate-row">
         <span class="candidate-meta">${candidate.isDir ? "Folder" : "File"} · ${formatDate(candidate.modified)}</span>
-        <button type="button">${serverMode ? "Finder" : "경로 복사"}</button>
+        <button type="button">${serverMode ? revealShort() : "경로 복사"}</button>
       </div>
     `;
     card.querySelector("button").addEventListener("click", () => revealOrCopy(candidate.path));
@@ -1020,12 +1043,10 @@ function renderDetail() {
   els.focus.disabled = !canFocusNode(node);
   els.focusUp.disabled = !state.tree || !state.focusPath || state.focusPath === state.tree.path;
   if (!node) {
-    const hint = serverMode
-      ? "폴더는 한 번 클릭하면 들어가고, 더블클릭하면 Finder에서 열립니다."
-      : "폴더는 한 번 클릭하면 들어가고, 더블클릭하면 경로가 복사됩니다.";
+    const tail = serverMode ? revealHint() : "더블클릭하면 경로가 복사됩니다";
     els.detail.querySelector("div").innerHTML = `
       <strong>선택된 항목 없음</strong>
-      <span>${hint}</span>
+      <span>폴더는 한 번 클릭하면 들어가고, ${tail}.</span>
     `;
     return;
   }
@@ -1042,7 +1063,8 @@ async function revealOrCopy(path) {
   if (serverMode) {
     try {
       await fetch(`/api/reveal?${new URLSearchParams({ path }).toString()}`, { cache: "no-store" });
-      showToast("Finder에서 열었습니다");
+      const where = serverPlatform === "win32" ? "탐색기" : serverPlatform === "darwin" ? "Finder" : "파일 위치";
+      showToast(`${where}에서 열었습니다`);
     } catch {
       showToast("열 수 없습니다");
     }
@@ -1061,6 +1083,24 @@ async function openPrivacySettings() {
     await fetch("/api/open-privacy", { cache: "no-store" });
   } catch {
     showToast("설정을 열 수 없습니다");
+  }
+}
+
+// 로컬 서버를 종료하고 안내 화면으로 전환합니다.
+async function quitApp() {
+  try {
+    await fetch("/api/quit", { cache: "no-store" });
+  } catch {
+    // 서버가 이미 종료되며 응답이 끊길 수 있으므로 무시합니다.
+  }
+  const shell = document.querySelector(".app-shell");
+  if (shell) {
+    shell.innerHTML = `
+      <div class="quit-screen">
+        <h1>DiskMap을 종료했습니다.</h1>
+        <p>이 탭(창)을 닫으세요. 다시 사용하려면 DiskMap을 한 번 더 실행하면 됩니다.</p>
+      </div>
+    `;
   }
 }
 
