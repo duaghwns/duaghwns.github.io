@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DiskMap</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar">
+        <header class="brand">
+          <div class="brand-mark">DM</div>
+          <div>
+            <h1>DiskMap</h1>
+            <p>큰 파일과 정리 후보를 시각화합니다.</p>
+          </div>
+        </header>
+
+        <section class="control-group">
+          <label for="pathInput">스캔할 폴더</label>
+          <div class="path-row">
+            <input id="pathInput" spellcheck="false" />
+            <button id="scanBtn" class="primary">Scan</button>
+          </div>
+          <div id="presets" class="preset-grid"></div>
+        </section>
+
+        <section class="control-group compact">
+          <div class="field-row">
+            <label for="visualChildrenInput" title="현재 폴더에서 큰 항목 몇 개를 버블로 보여줄지 정합니다. 나머지는 기타 항목으로 묶입니다.">한 화면에 보여줄 항목</label>
+            <input id="visualChildrenInput" type="number" min="4" max="30" value="12" />
+          </div>
+          <label class="toggle-row">
+            <input id="hiddenInput" type="checkbox" checked />
+            숨김 폴더 포함
+          </label>
+          <details class="advanced-settings">
+            <summary>고급 설정</summary>
+            <div class="advanced-fields">
+              <div class="field-row">
+                <label for="depthInput" title="스캔할 때 하위 폴더를 몇 단계까지 읽을지 정합니다.">스캔 범위</label>
+                <input id="depthInput" type="number" min="1" max="20" value="9" />
+              </div>
+              <div class="field-row">
+                <label for="childLimitInput" title="각 폴더에서 큰 항목 몇 개까지 스캔 결과에 남길지 정합니다.">폴더별 저장 수</label>
+                <input id="childLimitInput" type="number" min="8" max="100" value="36" />
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="summary" id="summary">
+          <div class="empty-copy">Downloads부터 스캔하면 빠르게 감을 잡을 수 있습니다.</div>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="toolbar">
+          <div class="tabs" role="tablist">
+            <button id="mindmapTab" class="tab active">Lens</button>
+            <button id="listTab" class="tab">Candidates</button>
+          </div>
+          <div id="breadcrumb" class="breadcrumb"></div>
+          <div class="view-actions">
+            <button id="zoomOutBtn" title="이전 위치">뒤로가기</button>
+            <button id="resetViewBtn" title="처음 위치">처음</button>
+            <button id="zoomInBtn" title="상위 폴더">상위</button>
+          </div>
+        </div>
+
+        <div id="loading" class="loading hidden">
+          <div class="spinner"></div>
+          <p>스캔 중입니다. 큰 폴더는 시간이 조금 걸릴 수 있습니다.</p>
+        </div>
+
+        <section id="mindmapView" class="visual-panel lens-panel">
+          <aside class="folder-panel">
+            <div class="folder-heading" id="folderHeading">
+              <div class="folder-icon">□</div>
+              <div>
+                <h2>스캔할 폴더를 선택하세요</h2>
+                <p>큰 항목을 렌즈처럼 보여줍니다.</p>
+              </div>
+            </div>
+            <div id="folderList" class="folder-list"></div>
+          </aside>
+          <div class="bubble-stage">
+            <svg id="mindmap" role="img" aria-label="disk usage bubble lens"></svg>
+          </div>
+        </section>
+
+        <section id="listView" class="candidate-panel hidden">
+          <div id="candidateList" class="candidate-list"></div>
+        </section>
+
+        <footer class="detail-bar" id="detailBar">
+          <div>
+            <strong>선택된 항목 없음</strong>
+            <span>폴더는 한 번 클릭하면 들어가고, 더블클릭하면 Finder에서 열립니다.</span>
+          </div>
+          <div class="detail-actions">
+            <button id="focusUpBtn" disabled>상위</button>
+            <button id="focusBtn" disabled>집중</button>
+            <button id="revealBtn" disabled>Finder에서 보기</button>
+          </div>
+        </footer>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

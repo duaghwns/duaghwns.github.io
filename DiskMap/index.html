@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DiskMap - macOS 저장 공간을 버블 맵으로 시각화하는 로컬 디스크 분석 도구">
+    <title>DiskMap - Local Disk Visualizer</title>
+    <link rel="icon" type="image/png" href="../icon.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --ink: #1f2528;
+            --muted: #677176;
+            --line: #d9ded8;
+            --bg: #f7f6f2;
+            --panel: #ffffff;
+            --accent: #1f7a8c;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.7;
+        }
+
+        .wrap {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 72px 28px;
+        }
+
+        .back {
+            color: var(--muted);
+            display: inline-block;
+            margin-bottom: 42px;
+            text-decoration: none;
+        }
+
+        .hero {
+            display: grid;
+            gap: 28px;
+            margin-bottom: 64px;
+        }
+
+        .eyebrow {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 6.5rem);
+            font-weight: 300;
+            letter-spacing: 0.03em;
+            line-height: 1;
+        }
+
+        .lead {
+            color: var(--muted);
+            font-size: clamp(1.08rem, 2vw, 1.35rem);
+            max-width: 760px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .btn {
+            border: 1px solid var(--ink);
+            border-radius: 8px;
+            color: var(--ink);
+            font-weight: 700;
+            padding: 12px 18px;
+            text-decoration: none;
+        }
+
+        .btn.primary {
+            background: var(--ink);
+            color: #fff;
+        }
+
+        .preview {
+            background: #f1f3ef;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: 420px;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.82);
+            border-right: 1px solid var(--line);
+            padding: 28px;
+        }
+
+        .panel h2 {
+            font-size: 1.4rem;
+            margin-bottom: 6px;
+        }
+
+        .panel p {
+            color: var(--muted);
+        }
+
+        .items {
+            display: grid;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+        .item {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 38px 1fr auto;
+            gap: 12px;
+        }
+
+        .folder {
+            background: linear-gradient(#7fc7ee, #509ecb);
+            border-radius: 7px;
+            height: 30px;
+        }
+
+        .item span {
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .map {
+            min-height: 420px;
+            position: relative;
+        }
+
+        .bubble {
+            align-items: center;
+            background: radial-gradient(circle at 38% 24%, #f4fbf8, #cfe5dc);
+            border: 2px solid rgba(31, 122, 140, 0.26);
+            border-radius: 999px;
+            box-shadow: 0 18px 34px rgba(34, 43, 46, 0.12);
+            display: grid;
+            justify-items: center;
+            padding: 24px;
+            position: absolute;
+            text-align: center;
+        }
+
+        .bubble strong {
+            font-size: 1.15rem;
+            line-height: 1.2;
+        }
+
+        .bubble span {
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .b1 {
+            height: 210px;
+            left: 17%;
+            top: 24%;
+            width: 210px;
+        }
+
+        .b2 {
+            height: 150px;
+            right: 18%;
+            top: 15%;
+            width: 150px;
+        }
+
+        .b3 {
+            bottom: 16%;
+            height: 130px;
+            right: 28%;
+            width: 130px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 22px;
+            grid-template-columns: repeat(3, 1fr);
+            margin-top: 34px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .card h3 {
+            font-size: 1.05rem;
+            margin-bottom: 10px;
+        }
+
+        .card p,
+        .run p {
+            color: var(--muted);
+        }
+
+        .run {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            margin-top: 34px;
+            padding: 26px;
+        }
+
+        pre {
+            background: #1f2528;
+            border-radius: 8px;
+            color: #fff;
+            margin-top: 16px;
+            overflow: auto;
+            padding: 18px;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, monospace;
+        }
+
+        @media (max-width: 820px) {
+            .preview,
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel {
+                border-right: 0;
+                border-bottom: 1px solid var(--line);
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="wrap">
+        <a class="back" href="../index.html">← Projects</a>
+
+        <section class="hero">
+            <div class="eyebrow">Local macOS Utility</div>
+            <h1>DiskMap</h1>
+            <p class="lead">
+                저장 공간을 차지하는 폴더와 파일을 버블 맵으로 시각화하는 읽기 전용 로컬 도구입니다.
+                큰 항목부터 클릭해 안으로 들어가며, Finder에서 위치를 바로 열 수 있습니다.
+            </p>
+            <div class="actions">
+                <a class="btn primary" href="static/index.html">UI 미리보기</a>
+                <a class="btn" href="README.md">실행 방법</a>
+            </div>
+        </section>
+
+        <section class="preview" aria-label="DiskMap preview">
+            <aside class="panel">
+                <h2>Downloads</h2>
+                <p>6.0 GB · 57개의 항목</p>
+                <div class="items">
+                    <div class="item"><div class="folder"></div><strong>Photos</strong><span>3.6 GB</span></div>
+                    <div class="item"><div class="folder"></div><strong>Archive.zip</strong><span>1.1 GB</span></div>
+                    <div class="item"><div class="folder"></div><strong>Project</strong><span>940 MB</span></div>
+                </div>
+            </aside>
+            <div class="map">
+                <div class="bubble b1"><strong>Photos</strong><span>3.6 GB</span></div>
+                <div class="bubble b2"><strong>Archive.zip</strong><span>1.1 GB</span></div>
+                <div class="bubble b3"><strong>Project</strong><span>940 MB</span></div>
+            </div>
+        </section>
+
+        <section class="grid">
+            <div class="card">
+                <h3>Bubble Map</h3>
+                <p>큰 항목을 겹치지 않는 버블 맵으로 보여줍니다.</p>
+            </div>
+            <div class="card">
+                <h3>Local Only</h3>
+                <p>파일 내용은 업로드하지 않고 로컬 서버에서 읽기 전용으로 스캔합니다.</p>
+            </div>
+            <div class="card">
+                <h3>Finder Reveal</h3>
+                <p>확인한 항목은 Finder에서 바로 위치를 열 수 있습니다.</p>
+            </div>
+        </section>
+
+        <section class="run">
+            <h2>로컬 실행</h2>
+            <p>GitHub Pages에서는 디스크를 직접 읽을 수 없으므로 저장소를 내려받아 로컬에서 실행합니다.</p>
+            <pre><code>cd DiskMap
+python3 server.py
+# http://127.0.0.1:8788</code></pre>
+        </section>
+    </main>
+</body>
+</html>
