@@ -31,6 +31,7 @@ const els = {
   focus: document.querySelector("#focusBtn"),
   focusUp: document.querySelector("#focusUpBtn"),
   mindmapView: document.querySelector("#mindmapView"),
+  bubbleStage: document.querySelector(".bubble-stage"),
   listView: document.querySelector("#listView"),
   candidateList: document.querySelector("#candidateList"),
   mindmapTab: document.querySelector("#mindmapTab"),
@@ -1150,7 +1151,7 @@ function goRoot() {
 function transitionToNode(node, direction = "forward") {
   if (!node) return;
 
-  const stage = els.mindmapView;
+  const stage = els.bubbleStage;
   const dirClass = direction === "back" ? "lens-back" : "lens-forward";
   stage.classList.remove("lens-enter", "lens-exit", "lens-forward", "lens-back");
   // 강제 리플로우로 같은 애니메이션이 매번 다시 재생되도록 합니다.
@@ -1167,8 +1168,8 @@ function transitionToNode(node, direction = "forward") {
     stage.classList.add("lens-enter", dirClass);
     window.setTimeout(() => {
       stage.classList.remove("lens-enter", "lens-forward", "lens-back");
-    }, 320);
-  }, 200);
+    }, 240);
+  }, 140);
 }
 
 function drawEmpty(svg) {
