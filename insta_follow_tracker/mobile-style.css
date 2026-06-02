@@ -4,18 +4,15 @@
   }
   .intro-section,
   .content-section {
-    max-width: 100%;
+    width: 100%;
     margin-top: 24px;
-  }
-  .intro-section {
-    flex-direction: column;
-    gap: 12px;
   }
   .intro-lead {
     padding: 16px;
     font-size: 0.97em;
   }
   .content-section {
+    grid-template-columns: 1fr;
     gap: 16px;
   }
   .content-section article {
@@ -44,7 +41,7 @@
     min-height: 70px;
     height: auto;
     font-size: 0.93em;
-    margin: 8px 0 0 0;
+    margin: 0;
   }
   .lists {
     flex-direction: column;
@@ -87,7 +84,7 @@
   }
 
   /* 모바일에서도 광고 노출 + 화면 폭에 맞춰 반응형 */
-  .intro-section .ads-area {
+  .dropzones .ads-area {
     display: flex;
     width: 100%;
     flex: 0 0 auto;
