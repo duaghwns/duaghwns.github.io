@@ -1149,19 +1149,13 @@ function goRoot() {
 
 function transitionToNode(node, direction = "forward") {
   if (!node) return;
-  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
-  if (reduceMotion) {
-    state.focusPath = node.path;
-    state.selected = node;
-    state.zoom = 1;
-    renderMindmap();
-    renderDetail();
-    return;
-  }
 
   const stage = els.mindmapView;
+  const dirClass = direction === "back" ? "lens-back" : "lens-forward";
   stage.classList.remove("lens-enter", "lens-exit", "lens-forward", "lens-back");
-  stage.classList.add("lens-exit", direction === "back" ? "lens-back" : "lens-forward");
+  // 강제 리플로우로 같은 애니메이션이 매번 다시 재생되도록 합니다.
+  void stage.offsetWidth;
+  stage.classList.add("lens-exit", dirClass);
   window.setTimeout(() => {
     state.focusPath = node.path;
     state.selected = node;
@@ -1169,11 +1163,12 @@ function transitionToNode(node, direction = "forward") {
     renderMindmap();
     renderDetail();
     stage.classList.remove("lens-exit");
-    stage.classList.add("lens-enter", direction === "back" ? "lens-back" : "lens-forward");
+    void stage.offsetWidth;
+    stage.classList.add("lens-enter", dirClass);
     window.setTimeout(() => {
       stage.classList.remove("lens-enter", "lens-forward", "lens-back");
-    }, 260);
-  }, 140);
+    }, 320);
+  }, 200);
 }
 
 function drawEmpty(svg) {

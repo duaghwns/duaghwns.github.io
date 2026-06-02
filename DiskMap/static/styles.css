@@ -396,11 +396,11 @@ button:focus-visible {
 }
 
 .lens-panel.lens-exit {
-  animation: lens-exit-forward 140ms ease-in forwards;
+  animation: lens-exit-forward 200ms ease-in forwards;
 }
 
 .lens-panel.lens-enter {
-  animation: lens-enter-forward 260ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation: lens-enter-forward 320ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
 .lens-panel.lens-back.lens-exit {
@@ -501,11 +501,17 @@ button:focus-visible {
   color: var(--ink);
   text-align: left;
   animation: row-rise 240ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  transition: background 0.16s ease, box-shadow 0.16s ease;
 }
 
 .folder-row:hover,
 .folder-row.active {
   background: #eef4f1;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.folder-row:hover .row-name {
+  color: var(--accent);
 }
 
 .row-check {
@@ -579,6 +585,21 @@ button:focus-visible {
   stroke: rgba(31, 122, 140, 0.28);
   stroke-width: 2;
   filter: drop-shadow(0 14px 20px rgba(34, 43, 46, 0.13));
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: stroke 0.18s ease, stroke-width 0.18s ease, filter 0.2s ease,
+    transform 0.2s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.bubble:hover .bubble-circle {
+  stroke: var(--accent);
+  stroke-width: 3.5;
+  transform: scale(1.06);
+  filter: drop-shadow(0 22px 32px rgba(34, 43, 46, 0.26));
+}
+
+.bubble:hover .bubble-label {
+  fill: var(--accent);
 }
 
 .bubble.active .bubble-circle {
@@ -609,39 +630,42 @@ button:focus-visible {
   font-size: 16px;
 }
 
+/* 폴더로 들어갈 때: 현재 화면이 앞으로 확대되며 사라지고(다이브 인),
+   새 화면이 살짝 작은 상태에서 제자리로 자리 잡습니다. */
 @keyframes lens-exit-forward {
   to {
     opacity: 0;
-    transform: scale(0.965) translateY(8px);
+    transform: scale(1.1);
   }
 }
 
 @keyframes lens-enter-forward {
   from {
     opacity: 0;
-    transform: scale(1.035) translateY(-8px);
+    transform: scale(0.9);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
+/* 뒤로/상위로 갈 때: 줌아웃하며 빠져나오는 반대 방향 모션 */
 @keyframes lens-exit-back {
   to {
     opacity: 0;
-    transform: scale(1.025) translateY(-8px);
+    transform: scale(0.9);
   }
 }
 
 @keyframes lens-enter-back {
   from {
     opacity: 0;
-    transform: scale(0.965) translateY(8px);
+    transform: scale(1.1);
   }
   to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
@@ -668,7 +692,6 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lens-panel,
   .bubble,
   .folder-row {
     animation: none !important;
