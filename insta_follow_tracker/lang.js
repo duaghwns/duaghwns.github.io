@@ -1,1 +1,369 @@
-function _0x1cd2(_0x28d341,_0x498420){const _0x3c2a59=_0x3c2a();return _0x1cd2=function(_0x1cd280,_0x5255a6){_0x1cd280=_0x1cd280-0xd9;let _0x29febf=_0x3c2a59[_0x1cd280];return _0x29febf;},_0x1cd2(_0x28d341,_0x498420);}const _0xeca5ab=_0x1cd2;(function(_0x9c2536,_0x2790fd){const _0x421be0=_0x1cd2,_0x1ec8bd=_0x9c2536();while(!![]){try{const _0x3a910c=parseInt(_0x421be0(0x10e))/0x1*(-parseInt(_0x421be0(0xfa))/0x2)+parseInt(_0x421be0(0xf7))/0x3+parseInt(_0x421be0(0xda))/0x4+-parseInt(_0x421be0(0x11c))/0x5+-parseInt(_0x421be0(0xe2))/0x6+parseInt(_0x421be0(0xe3))/0x7+-parseInt(_0x421be0(0xfd))/0x8;if(_0x3a910c===_0x2790fd)break;else _0x1ec8bd['push'](_0x1ec8bd['shift']());}catch(_0x1fd052){_0x1ec8bd['push'](_0x1ec8bd['shift']());}}}(_0x3c2a,0x5e64c));const guideContent={'ko':_0xeca5ab(0x117),'en':_0xeca5ab(0xf0),'ja':'<p>✔️\x20<strong>フォロワー・フォローJSONファイルのダウンロード方法</strong></p>\x0a\x20\x20<ul>\x0a\x20\x20\x20\x20<li>1️⃣\x20InstagramのPC版にログインし、<a\x20href=\x22https://accountscenter.instagram.com/?entry_point=app_settings\x22\x20target=\x22_blank\x22>アカウントセンター</a>へ</li>\x0a\x20\x20\x20\x20<li>2️⃣\x20情報と権限\x20→\x20情報をダウンロード</li>\x0a\x20\x20\x20\x20<li>3️⃣\x20上部「情報をダウンロードまたは転送」→\x20アカウント選択し「次へ」</li>\x0a\x20\x20\x20\x20<li>4️⃣\x20一部の情報\x20→\x20<strong>フォロワーとフォロー中</strong>\x20→\x20<strong>デバイスにダウンロード</strong></li>\x0a\x20\x20\x20\x20<li>5️⃣\x20<strong>全期間</strong>＋フォーマット<strong>JSON</strong>＋品質<strong>低</strong>→リクエスト送信</li>\x0a\x20\x20\x20\x20<li>6️⃣\x20メール受信後ダウンロード(時間かかる場合あり)</li>\x0a\x20\x20\x20\x20<li>7️⃣\x20ダウンロードしたzipをアップロード<br>👉\x20<strong>(過去zipはバックアップ用)</strong></li>\x0a\x20\x20\x20\x20<li>8️⃣\x20現在のzipをアップロードし、下部で自動分析</li>\x0a\x20\x20</ul>','zh':_0xeca5ab(0xde)},I18N={'ko':{'title':'인스타\x20팔로우\x20추적','ads':_0xeca5ab(0x10a),'drop_past':_0xeca5ab(0x104),'drop_now':_0xeca5ab(0x12b),'search':_0xeca5ab(0xdf),'empty':'없음','lists':[{'id':_0xeca5ab(0xdc),'title':_0xeca5ab(0x125)},{'id':_0xeca5ab(0x101),'title':'🔁\x20나만\x20팔로우\x20중'},{'id':_0xeca5ab(0x109),'title':_0xeca5ab(0xef)},{'id':'newFollowers','title':_0xeca5ab(0x10b)},{'id':'mutuals','title':'🤝\x20맞팔(상호\x20팔로우)\x20계정'}],'follow':'✅\x20내가\x20팔로우함','notfollow':'❌\x20팔로우\x20안함','sort':{'follow':_0xeca5ab(0xff),'date':'날짜'},'chart':[_0xeca5ab(0x129),_0xeca5ab(0x11a),_0xeca5ab(0xe1),_0xeca5ab(0xf4),_0xeca5ab(0x116),_0xeca5ab(0x10c)],'chartTabs':[{'key':'follow','label':_0xeca5ab(0xea)},{'key':_0xeca5ab(0xe5),'label':_0xeca5ab(0xec)},{'key':_0xeca5ab(0x119),'label':_0xeca5ab(0x12a)}],'all':'전체'},'en':{'title':'Instagram\x20Follow\x20Tracker','ads':_0xeca5ab(0xdd),'drop_past':'Past\x20ZIP\x20(includes\x20followers_1.json)<br><input\x20type=\x27file\x27\x20id=\x27pastInput\x27\x20accept=\x27.zip\x27>','drop_now':_0xeca5ab(0x102),'search':_0xeca5ab(0xd9),'empty':_0xeca5ab(0x107),'lists':[{'id':'unfollowers','title':_0xeca5ab(0xf6)},{'id':_0xeca5ab(0x101),'title':_0xeca5ab(0x118)},{'id':_0xeca5ab(0x109),'title':_0xeca5ab(0x115)},{'id':_0xeca5ab(0x11e),'title':'🆕\x20New\x20Followers'},{'id':'mutuals','title':'🤝\x20Mutual\x20Follows'}],'follow':_0xeca5ab(0x112),'notfollow':'❌\x20Not\x20Following','sort':{'follow':'Follow','date':_0xeca5ab(0x105)},'chart':[_0xeca5ab(0x113),_0xeca5ab(0xe6),'Followers',_0xeca5ab(0xf2),_0xeca5ab(0x127),'Only\x20They\x20Follow'],'chartTabs':[{'key':'follow','label':_0xeca5ab(0x11f)},{'key':_0xeca5ab(0xe5),'label':'Unfollower/New\x20Follower\x20Ratio'},{'key':_0xeca5ab(0x119),'label':_0xeca5ab(0x11b)}],'all':'All'},'ja':{'title':'インスタフォロー追跡','ads':_0xeca5ab(0xe9),'drop_past':_0xeca5ab(0xed),'drop_now':_0xeca5ab(0x123),'search':_0xeca5ab(0x122),'empty':'なし','lists':[{'id':_0xeca5ab(0xdc),'title':_0xeca5ab(0x10f)},{'id':_0xeca5ab(0x101),'title':_0xeca5ab(0xf8)},{'id':_0xeca5ab(0x109),'title':_0xeca5ab(0xe0)},{'id':_0xeca5ab(0x11e),'title':_0xeca5ab(0x103)},{'id':'mutuals','title':'🤝\x20相互フォロー'}],'follow':'✅\x20フォロー中','notfollow':_0xeca5ab(0xfe),'sort':{'follow':_0xeca5ab(0xeb),'date':'日付'},'chart':[_0xeca5ab(0x111),_0xeca5ab(0x128),_0xeca5ab(0xdb),_0xeca5ab(0x120),_0xeca5ab(0xf5),_0xeca5ab(0xf1)],'chartTabs':[{'key':_0xeca5ab(0xee),'label':_0xeca5ab(0x121)},{'key':_0xeca5ab(0xe5),'label':_0xeca5ab(0x11d)},{'key':'oneway','label':'一方フォロー比率'}],'all':_0xeca5ab(0xf3)},'zh':{'title':_0xeca5ab(0x100),'ads':_0xeca5ab(0xe7),'drop_past':_0xeca5ab(0x110),'drop_now':_0xeca5ab(0xf9),'search':'搜索ID','empty':'无','lists':[{'id':'unfollowers','title':_0xeca5ab(0xe8)},{'id':_0xeca5ab(0x101),'title':_0xeca5ab(0xfb)},{'id':_0xeca5ab(0x109),'title':_0xeca5ab(0xe4)},{'id':_0xeca5ab(0x11e),'title':_0xeca5ab(0xfc)},{'id':_0xeca5ab(0x114),'title':'🤝\x20互相关注'}],'follow':_0xeca5ab(0x10d),'notfollow':'❌\x20未关注','sort':{'follow':'关注','date':'日期'},'chart':['取关','新粉丝','粉丝','关注','仅我关注',_0xeca5ab(0x108)],'chartTabs':[{'key':_0xeca5ab(0xee),'label':_0xeca5ab(0x124)},{'key':_0xeca5ab(0xe5),'label':_0xeca5ab(0x126)},{'key':_0xeca5ab(0x119),'label':_0xeca5ab(0x106)}],'all':'全部'}};function _0x3c2a(){const _0x31bf10=['Search\x20ID','1924128gsWxKH','フォロワー','unfollowers','(\x20Ads\x20Area\x20)','<p>✔️\x20<strong>下载粉丝/关注者JSON文件的方法</strong></p>\x0a\x20\x20<ul>\x0a\x20\x20\x20\x20<li>1️⃣\x20登录Instagram电脑版，进入<a\x20href=\x22https://accountscenter.instagram.com/?entry_point=app_settings\x22\x20target=\x22_blank\x22>账户中心</a></li>\x0a\x20\x20\x20\x20<li>2️⃣\x20进入“你的信息和权限”→“下载你的信息”</li>\x0a\x20\x20\x20\x20<li>3️⃣\x20顶部“下载或转移你的信息”→\x20选择账号，下一步</li>\x0a\x20\x20\x20\x20<li>4️⃣\x20选择部分信息\x20→\x20<strong>粉丝和关注</strong>\x20→\x20<strong>下载到设备</strong></li>\x0a\x20\x20\x20\x20<li>5️⃣\x20<strong>所有时间</strong>＋格式<strong>JSON</strong>＋质量<strong>低</strong>→提交请求</li>\x0a\x20\x20\x20\x20<li>6️⃣\x20邮件收到后下载（可能需等待）</li>\x0a\x20\x20\x20\x20<li>7️⃣\x20上传已下载的zip文件<br>👉\x20<strong>（过去的zip是之前备份）</strong></li>\x0a\x20\x20\x20\x20<li>8️⃣\x20上传当前zip，自动分析并展示结果</li>\x0a\x20\x20</ul>','아이디\x20검색','🙋\x20相手だけフォロー','팔로워','989724yHOYsx','2215031wBtIyv','🙋\x20仅对方关注我','diff','New\x20Followers','（广告位）','📉\x20取消关注的账号','（広告エリア）','팔로워/팔로잉\x20비율','フォロー','언팔로우/새팔로워\x20비율','過去ZIP（followers_1.json含む）<br><input\x20type=\x27file\x27\x20id=\x27pastInput\x27\x20accept=\x27.zip\x27>','follow','🙋\x20상대만\x20나를\x20팔로우','<p>✔️\x20<strong>How\x20to\x20download\x20follower/following\x20JSON\x20files</strong></p>\x0a\x20\x20<ul>\x0a\x20\x20\x20\x20<li>1️⃣\x20Log\x20in\x20to\x20Instagram\x20PC\x20version,\x20go\x20to\x20<a\x20href=\x22https://accountscenter.instagram.com/?entry_point=app_settings\x22\x20target=\x22_blank\x22>Accounts\x20Center</a></li>\x0a\x20\x20\x20\x20<li>2️⃣\x20Go\x20to\x20\x27Your\x20information\x20&\x20permissions\x27\x20→\x20\x27Download\x20your\x20information\x27</li>\x0a\x20\x20\x20\x20<li>3️⃣\x20Top:\x20\x27Download\x20or\x20transfer\x20your\x20information\x27\x20→\x20Select\x20account,\x20Next</li>\x0a\x20\x20\x20\x20<li>4️⃣\x20\x27Some\x20information\x27\x20→\x20<strong>Followers\x20&\x20Following</strong>\x20→\x20<strong>Download\x20to\x20device</strong></li>\x0a\x20\x20\x20\x20<li>5️⃣\x20<strong>All\x20time</strong>\x20+\x20Format\x20<strong>JSON</strong>\x20+\x20Quality\x20<strong>Low</strong>\x20→\x20Submit\x20request</li>\x0a\x20\x20\x20\x20<li>6️⃣\x20Download\x20via\x20email\x20(may\x20take\x20time)</li>\x0a\x20\x20\x20\x20<li>7️⃣\x20Upload\x20downloaded\x20zip\x20file<br>👉\x20<strong>(Past\x20zip\x20=\x20previous\x20reference\x20backup)</strong></li>\x0a\x20\x20\x20\x20<li>8️⃣\x20Upload\x20current\x20zip\x20to\x20auto-analyze\x20below</li>\x0a\x20\x20</ul>','相手だけフォロー','Following','すべて','팔로잉','自分だけフォロー','📉\x20Unfollowed\x20Accounts','598101EsAbxy','🔁\x20自分だけフォロー中','当前ZIP（包含followers_1.json和following.json）<br><input\x20type=\x27file\x27\x20id=\x27currentInput\x27\x20accept=\x27.zip\x27>','437068uhyeXd','🔁\x20仅我关注','🆕\x20新粉丝','336048fSOKSV','❌\x20フォローしていない','팔로우','Instagram\x20粉丝追踪','onlyIFollow','Current\x20ZIP\x20(includes\x20followers_1.json\x20+\x20following.json)<br><input\x20type=\x27file\x27\x20id=\x27currentInput\x27\x20accept=\x27.zip\x27>','🆕\x20新しいフォロワー','과거\x20ZIP\x20(followers_1.json\x20포함)<br><input\x20type=\x27file\x27\x20id=\x27pastInput\x27\x20accept=\x27.zip\x27>','Date','单向关注比例','Empty','仅对方关注','onlyTheyFollow','(\x20광고\x20영역\x20)','🆕\x20새로운\x20팔로워','상대만\x20팔로우','✅\x20我已关注','1kOeBfE','📉\x20アンフォローしたアカウント','过去ZIP（包含followers_1.json）<br><input\x20type=\x27file\x27\x20id=\x27pastInput\x27\x20accept=\x27.zip\x27>','アンフォロー','✅\x20I\x20Follow','Unfollowers','mutuals','🙋\x20Only\x20They\x20Follow\x20Me','나만\x20팔로우','<p>✔️\x20<strong>팔로워,\x20팔로잉\x20JSON\x20파일\x20다운로드\x20방법</strong></p>\x0a\x20\x20<ul>\x0a\x20\x20\x20\x20<li>1️⃣\x20인스타그램\x20PC버전\x20로그인\x20후\x20<a\x20href=\x22https://accountscenter.instagram.com/?entry_point=app_settings\x22\x20target=\x22_blank\x22>계정센터</a>\x20접속</li>\x0a\x20\x20\x20\x20<li>2️⃣\x20내\x20정보\x20및\x20권한\x20→\x20내\x20정보\x20다운로드</li>\x0a\x20\x20\x20\x20<li>3️⃣\x20상단에\x20<strong>정보\x20다운로드\x20또는\x20전송</strong>\x20→\x20계정\x20선택\x20후\x20다음</li>\x0a\x20\x20\x20\x20<li>4️⃣\x20일부\x20정보\x20→\x20<strong>팔로워\x20및\x20팔로잉</strong>\x20체크\x20→\x20<strong>기기에\x20다운로드</strong></li>\x0a\x20\x20\x20\x20<li>5️⃣\x20<strong>전체\x20기간</strong>\x20+\x20형식\x20<strong>JSON</strong>\x20+\x20품질\x20<strong>낮음</strong>\x20→\x20요청\x20제출</li>\x0a\x20\x20\x20\x20<li>6️⃣\x20이메일\x20수신\x20후\x20다운로드\x20(소요시간\x20다름)</li>\x0a\x20\x20\x20\x20<li>7️⃣\x20다운로드된\x20zip\x20파일\x20업로드<br>👉\x20<strong>(과거\x20zip은\x20이전에\x20다운\x20받아놓았던\x20기준이\x20될\x20zip\x20파일)</strong></li>\x0a\x20\x20\x20\x20<li>8️⃣\x20현재\x20zip\x20업로드\x20시\x20아래\x20분석\x20결과\x20자동\x20표시됨</li>\x0a\x20\x20</ul>','🔁\x20Only\x20I\x20Follow','oneway','새\x20팔로워','One-way\x20Follows','923510lxtOvB','アンフォロー/新フォロワー比率','newFollowers','Followers/Following','フォロー中','フォロワー/フォロー中','ID検索','現在ZIP（followers_1.json＋following.json含む）<br><input\x20type=\x27file\x27\x20id=\x27currentInput\x27\x20accept=\x27.zip\x27>','粉丝/关注比例','📉\x20언팔로우한\x20계정','取关/新粉丝比例','Only\x20I\x20Follow','新しいフォロワー','언팔로우','일방팔로우\x20비율','현재\x20ZIP\x20(followers_1.json\x20+\x20following.json\x20포함)<br><input\x20type=\x27file\x27\x20id=\x27currentInput\x27\x20accept=\x27.zip\x27>'];_0x3c2a=function(){return _0x31bf10;};return _0x3c2a();}
+const guideContent = {
+  ko: `<p>✔️ <strong>팔로워, 팔로잉 JSON 파일 다운로드 방법</strong></p>
+  <ul>
+    <li>1️⃣ 인스타그램 PC버전 로그인 후 <a href="https://accountscenter.instagram.com/?entry_point=app_settings" target="_blank">계정센터</a> 접속</li>
+    <li>2️⃣ 내 정보 및 권한 → 내 정보 다운로드</li>
+    <li>3️⃣ 상단에 <strong>정보 다운로드 또는 전송</strong> → 계정 선택 후 다음</li>
+    <li>4️⃣ 일부 정보 → <strong>팔로워 및 팔로잉</strong> 체크 → <strong>기기에 다운로드</strong></li>
+    <li>5️⃣ <strong>전체 기간</strong> + 형식 <strong>JSON</strong> + 품질 <strong>낮음</strong> → 요청 제출</li>
+    <li>6️⃣ 이메일 수신 후 다운로드 (소요시간 다름)</li>
+    <li>7️⃣ 다운로드된 zip 파일 업로드<br>👉 <strong>(과거 zip은 이전에 다운 받아놓았던 기준이 될 zip 파일)</strong></li>
+    <li>8️⃣ 현재 zip 업로드 시 아래 분석 결과 자동 표시됨</li>
+    <li>9️⃣ 언팔로우 목록에는 계정 상태가 표시돼요. ⚠️ 비활성·탈퇴 추정 계정은 링크를 눌러도 '페이지를 찾을 수 없음'으로 나올 수 있으니, 상태 버튼으로 <strong>✅ 언팔 (계정 활성)</strong>만 골라 보세요.</li>
+  </ul>`,
+  en: `<p>✔️ <strong>How to download follower/following JSON files</strong></p>
+  <ul>
+    <li>1️⃣ Log in to Instagram PC version, go to <a href="https://accountscenter.instagram.com/?entry_point=app_settings" target="_blank">Accounts Center</a></li>
+    <li>2️⃣ Go to 'Your information & permissions' → 'Download your information'</li>
+    <li>3️⃣ Top: 'Download or transfer your information' → Select account, Next</li>
+    <li>4️⃣ 'Some information' → <strong>Followers & Following</strong> → <strong>Download to device</strong></li>
+    <li>5️⃣ <strong>All time</strong> + Format <strong>JSON</strong> + Quality <strong>Low</strong> → Submit request</li>
+    <li>6️⃣ Download via email (may take time)</li>
+    <li>7️⃣ Upload downloaded zip file<br>👉 <strong>(Past zip = previous reference backup)</strong></li>
+    <li>8️⃣ Upload current zip to auto-analyze below</li>
+    <li>9️⃣ The unfollow list shows each account's status. ⚠️ Likely-deactivated accounts may open as 'Page not found', so use the status buttons to show only <strong>✅ Unfollowed (active)</strong>.</li>
+  </ul>`,
+  ja: `<p>✔️ <strong>フォロワー・フォローJSONファイルのダウンロード方法</strong></p>
+  <ul>
+    <li>1️⃣ InstagramのPC版にログインし、<a href="https://accountscenter.instagram.com/?entry_point=app_settings" target="_blank">アカウントセンター</a>へ</li>
+    <li>2️⃣ 情報と権限 → 情報をダウンロード</li>
+    <li>3️⃣ 上部「情報をダウンロードまたは転送」→ アカウント選択し「次へ」</li>
+    <li>4️⃣ 一部の情報 → <strong>フォロワーとフォロー中</strong> → <strong>デバイスにダウンロード</strong></li>
+    <li>5️⃣ <strong>全期間</strong>＋フォーマット<strong>JSON</strong>＋品質<strong>低</strong>→リクエスト送信</li>
+    <li>6️⃣ メール受信後ダウンロード(時間かかる場合あり)</li>
+    <li>7️⃣ ダウンロードしたzipをアップロード<br>👉 <strong>(過去zipはバックアップ用)</strong></li>
+    <li>8️⃣ 現在のzipをアップロードし、下部で自動分析</li>
+    <li>9️⃣ アンフォロー一覧にはアカウントの状態が表示されます。⚠️ 無効化の可能性があるアカウントは「ページが見つかりません」と表示されることがあるため、状態ボタンで<strong>✅ アンフォロー (有効)</strong>だけを絞り込めます。</li>
+  </ul>`,
+  zh: `<p>✔️ <strong>下载粉丝/关注者JSON文件的方法</strong></p>
+  <ul>
+    <li>1️⃣ 登录Instagram电脑版，进入<a href="https://accountscenter.instagram.com/?entry_point=app_settings" target="_blank">账户中心</a></li>
+    <li>2️⃣ 进入“你的信息和权限”→“下载你的信息”</li>
+    <li>3️⃣ 顶部“下载或转移你的信息”→ 选择账号，下一步</li>
+    <li>4️⃣ 选择部分信息 → <strong>粉丝和关注</strong> → <strong>下载到设备</strong></li>
+    <li>5️⃣ <strong>所有时间</strong>＋格式<strong>JSON</strong>＋质量<strong>低</strong>→提交请求</li>
+    <li>6️⃣ 邮件收到后下载（可能需等待）</li>
+    <li>7️⃣ 上传已下载的zip文件<br>👉 <strong>（过去的zip是之前备份）</strong></li>
+    <li>8️⃣ 上传当前zip，自动分析并展示结果</li>
+    <li>9️⃣ 取关列表会显示账号状态。⚠️ 疑似停用的账号点开可能显示“找不到页面”，可用状态按钮只查看<strong>✅ 取关 (账号正常)</strong>。</li>
+  </ul>`,
+};
+
+const I18N = {
+  ko: {
+    title: "인스타 팔로우 추적",
+    ads: "( 광고 영역 )",
+    drop_past:
+      "과거 ZIP (followers_1.json + following.json 포함)<br><input type='file' id='pastInput' accept='.zip'>",
+    drop_now:
+      "현재 ZIP (followers_1.json + following.json 포함)<br><input type='file' id='currentInput' accept='.zip'>",
+    search: "아이디 검색",
+    empty: "없음",
+    lists: [
+      {
+        id: "unfollowers",
+        title: "📉 언팔로우한 계정",
+      },
+      {
+        id: "onlyIFollow",
+        title: "🔁 나만 팔로우 중",
+      },
+      {
+        id: "onlyTheyFollow",
+        title: "🙋 상대만 나를 팔로우",
+      },
+      {
+        id: "newFollowers",
+        title: "🆕 새로운 팔로워",
+      },
+      {
+        id: "mutuals",
+        title: "🤝 맞팔(상호 팔로우) 계정",
+      },
+    ],
+    follow: "✅ 내가 팔로우함",
+    notfollow: "❌ 팔로우 안함",
+    sort: {
+      follow: "팔로우",
+      date: "날짜",
+      status: "상태",
+    },
+    chart: [
+      "언팔로우",
+      "새 팔로워",
+      "팔로워",
+      "팔로잉",
+      "나만 팔로우",
+      "상대만 팔로우",
+    ],
+    chartTabs: [
+      {
+        key: "follow",
+        label: "팔로워/팔로잉 비율",
+      },
+      {
+        key: "diff",
+        label: "언팔로우/새팔로워 비율",
+      },
+      {
+        key: "oneway",
+        label: "일방팔로우 비율",
+      },
+    ],
+    all: "전체",
+    status: {
+      unfollowed: "✅ 언팔 (계정 활성)",
+      iUnfollowed: "↩️ 내가 먼저 언팔",
+      unknown: "❓ 확인 불가",
+      gone: "⚠️ 비활성·탈퇴 추정",
+      blocked: "🚫 내가 차단",
+    },
+    statusHelp: {
+      unfollowed:
+        "내가 아직 팔로우 중이라 계정이 살아 있습니다. 상대가 직접 언팔로우했습니다.",
+      iUnfollowed:
+        "내 최근 언팔로우 기록에 있는 계정입니다. 계정이 지금 활성인지는 알 수 없습니다.",
+      unknown:
+        "원래 내가 팔로우하지 않던 계정이라 데이터만으로는 상태를 알 수 없습니다.",
+      gone: "과거엔 내가 팔로우했는데 내 팔로잉에서도 사라졌습니다. 비활성화·탈퇴·아이디 변경 또는 상대가 나를 차단했을 가능성이 높습니다.",
+      blocked: "현재 ZIP의 차단 목록(blocked_profiles.json)에 있는 계정입니다.",
+    },
+    statusNoPastFollowing:
+      "과거 ZIP에 following.json이 없어 '비활성·탈퇴 추정'을 판별하지 못했습니다.",
+  },
+  en: {
+    title: "Instagram Follow Tracker",
+    ads: "( Ads Area )",
+    drop_past:
+      "Past ZIP (includes followers_1.json + following.json)<br><input type='file' id='pastInput' accept='.zip'>",
+    drop_now:
+      "Current ZIP (includes followers_1.json + following.json)<br><input type='file' id='currentInput' accept='.zip'>",
+    search: "Search ID",
+    empty: "Empty",
+    lists: [
+      {
+        id: "unfollowers",
+        title: "📉 Unfollowed Accounts",
+      },
+      {
+        id: "onlyIFollow",
+        title: "🔁 Only I Follow",
+      },
+      {
+        id: "onlyTheyFollow",
+        title: "🙋 Only They Follow Me",
+      },
+      {
+        id: "newFollowers",
+        title: "🆕 New Followers",
+      },
+      {
+        id: "mutuals",
+        title: "🤝 Mutual Follows",
+      },
+    ],
+    follow: "✅ I Follow",
+    notfollow: "❌ Not Following",
+    sort: {
+      follow: "Follow",
+      date: "Date",
+      status: "Status",
+    },
+    chart: [
+      "Unfollowers",
+      "New Followers",
+      "Followers",
+      "Following",
+      "Only I Follow",
+      "Only They Follow",
+    ],
+    chartTabs: [
+      {
+        key: "follow",
+        label: "Followers/Following",
+      },
+      {
+        key: "diff",
+        label: "Unfollower/New Follower Ratio",
+      },
+      {
+        key: "oneway",
+        label: "One-way Follows",
+      },
+    ],
+    all: "All",
+    status: {
+      unfollowed: "✅ Unfollowed (active)",
+      iUnfollowed: "↩️ I unfollowed first",
+      unknown: "❓ Unknown",
+      gone: "⚠️ Likely deactivated",
+      blocked: "🚫 Blocked by me",
+    },
+    statusHelp: {
+      unfollowed:
+        "You still follow this account, so it exists. They unfollowed you themselves.",
+      iUnfollowed:
+        "This account is in your recently unfollowed list. Its current status is unknown.",
+      unknown:
+        "You never followed this account, so its status can't be determined from the data.",
+      gone: "You used to follow this account but it also disappeared from your following. It was likely deactivated, deleted, renamed, or blocked you.",
+      blocked:
+        "This account is in the block list (blocked_profiles.json) of your current ZIP.",
+    },
+    statusNoPastFollowing:
+      "The past ZIP has no following.json, so 'Likely deactivated' couldn't be detected.",
+  },
+  ja: {
+    title: "インスタフォロー追跡",
+    ads: "（広告エリア）",
+    drop_past:
+      "過去ZIP（followers_1.json＋following.json含む）<br><input type='file' id='pastInput' accept='.zip'>",
+    drop_now:
+      "現在ZIP（followers_1.json＋following.json含む）<br><input type='file' id='currentInput' accept='.zip'>",
+    search: "ID検索",
+    empty: "なし",
+    lists: [
+      {
+        id: "unfollowers",
+        title: "📉 アンフォローしたアカウント",
+      },
+      {
+        id: "onlyIFollow",
+        title: "🔁 自分だけフォロー中",
+      },
+      {
+        id: "onlyTheyFollow",
+        title: "🙋 相手だけフォロー",
+      },
+      {
+        id: "newFollowers",
+        title: "🆕 新しいフォロワー",
+      },
+      {
+        id: "mutuals",
+        title: "🤝 相互フォロー",
+      },
+    ],
+    follow: "✅ フォロー中",
+    notfollow: "❌ フォローしていない",
+    sort: {
+      follow: "フォロー",
+      date: "日付",
+      status: "状態",
+    },
+    chart: [
+      "アンフォロー",
+      "新しいフォロワー",
+      "フォロワー",
+      "フォロー中",
+      "自分だけフォロー",
+      "相手だけフォロー",
+    ],
+    chartTabs: [
+      {
+        key: "follow",
+        label: "フォロワー/フォロー中",
+      },
+      {
+        key: "diff",
+        label: "アンフォロー/新フォロワー比率",
+      },
+      {
+        key: "oneway",
+        label: "一方フォロー比率",
+      },
+    ],
+    all: "すべて",
+    status: {
+      unfollowed: "✅ アンフォロー (有効)",
+      iUnfollowed: "↩️ 自分が先に解除",
+      unknown: "❓ 判定不可",
+      gone: "⚠️ 無効化・退会の可能性",
+      blocked: "🚫 自分がブロック",
+    },
+    statusHelp: {
+      unfollowed:
+        "まだフォロー中なのでアカウントは存在します。相手がフォローを外しました。",
+      iUnfollowed:
+        "最近フォロー解除した記録にあるアカウントです。現在の状態はわかりません。",
+      unknown:
+        "もともとフォローしていないアカウントのため、データだけでは状態がわかりません。",
+      gone: "以前はフォローしていたのに、フォロー中一覧からも消えています。無効化・退会・ID変更、または相手にブロックされた可能性が高いです。",
+      blocked:
+        "現在ZIPのブロック一覧(blocked_profiles.json)にあるアカウントです。",
+    },
+    statusNoPastFollowing:
+      "過去ZIPにfollowing.jsonがないため「無効化・退会の可能性」を判定できませんでした。",
+  },
+  zh: {
+    title: "Instagram 粉丝追踪",
+    ads: "（广告位）",
+    drop_past:
+      "过去ZIP（包含followers_1.json和following.json）<br><input type='file' id='pastInput' accept='.zip'>",
+    drop_now:
+      "当前ZIP（包含followers_1.json和following.json）<br><input type='file' id='currentInput' accept='.zip'>",
+    search: "搜索ID",
+    empty: "无",
+    lists: [
+      {
+        id: "unfollowers",
+        title: "📉 取消关注的账号",
+      },
+      {
+        id: "onlyIFollow",
+        title: "🔁 仅我关注",
+      },
+      {
+        id: "onlyTheyFollow",
+        title: "🙋 仅对方关注我",
+      },
+      {
+        id: "newFollowers",
+        title: "🆕 新粉丝",
+      },
+      {
+        id: "mutuals",
+        title: "🤝 互相关注",
+      },
+    ],
+    follow: "✅ 我已关注",
+    notfollow: "❌ 未关注",
+    sort: {
+      follow: "关注",
+      date: "日期",
+      status: "状态",
+    },
+    chart: ["取关", "新粉丝", "粉丝", "关注", "仅我关注", "仅对方关注"],
+    chartTabs: [
+      {
+        key: "follow",
+        label: "粉丝/关注比例",
+      },
+      {
+        key: "diff",
+        label: "取关/新粉丝比例",
+      },
+      {
+        key: "oneway",
+        label: "单向关注比例",
+      },
+    ],
+    all: "全部",
+    status: {
+      unfollowed: "✅ 取关 (账号正常)",
+      iUnfollowed: "↩️ 我先取关",
+      unknown: "❓ 无法判断",
+      gone: "⚠️ 疑似停用/注销",
+      blocked: "🚫 我已拉黑",
+    },
+    statusHelp: {
+      unfollowed: "我仍在关注该账号，说明账号存在，是对方主动取关。",
+      iUnfollowed: "该账号在我最近取关的记录中，目前状态未知。",
+      unknown: "我原本没有关注该账号，仅凭数据无法判断状态。",
+      gone: "以前我关注过，但现在也从我的关注列表中消失了。很可能已停用、注销、改名或拉黑了我。",
+      blocked: "该账号在当前ZIP的黑名单(blocked_profiles.json)中。",
+    },
+    statusNoPastFollowing:
+      "过去ZIP中没有following.json，无法判断“疑似停用/注销”。",
+  },
+};

@@ -441,3 +441,55 @@ h3 {
 .site-footer span {
   margin-left: auto;
 }
+
+/* 언팔로우 목록 상태 필터·배지 */
+.status-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.status-chip {
+  border: 1.5px solid #bbb;
+  background: #fafbfd;
+  color: #333;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 0.78em;
+  cursor: pointer;
+}
+.status-chip.selected {
+  background: #222;
+  color: #fff;
+  border-color: #222;
+}
+.status-note {
+  margin: 4px 0 0;
+  font-size: 0.78em;
+  color: #8a6d00;
+}
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.85em;
+  background: #f1f3f4;
+  color: #444;
+}
+.status-badge.status-unfollowed {
+  background: #e6f4ea;
+  color: #1e6b34;
+}
+.status-badge.status-gone {
+  background: #fff4d6;
+  color: #8a6d00;
+}
+.status-badge.status-blocked {
+  background: #fde8e7;
+  color: #a12a22;
+}
+/* 링크가 열리지 않을 가능성이 높은 계정은 흐리게 */
+.status-row-gone a,
+.status-row-blocked a {
+  color: #9aa0a6;
+}
