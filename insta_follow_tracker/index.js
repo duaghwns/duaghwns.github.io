@@ -25,6 +25,8 @@ let currentChartTab = 0;
 let unfollowerFilter = "all";
 let searchQueries = {};
 let pastHasFollowing = true;
+let previewMode = loadPreviewMode();
+let previewWin = null;
 
 const DATE_SORT_LISTS = ["onlyIFollow", "onlyTheyFollow", "mutuals"];
 // 언팔로우 목록 상태 (정렬 순서 = 배열 순서)
@@ -71,6 +73,7 @@ function renderAllI18n() {
   document.getElementById("pastDrop").innerHTML = getText("drop_past");
   document.getElementById("currentDrop").innerHTML = getText("drop_now");
   document.querySelector(".ads-area-text").innerText = getText("ads");
+  renderPreviewOption();
   renderListToggles();
   renderLists(listDataCache);
   renderLangSelect();
@@ -204,6 +207,56 @@ function renderListToggles() {
   allListsVisible = getListConfig().every((l) => visibleLists[l.id]);
   allBtn.classList.toggle("selected", allListsVisible);
 }
+
+// ---------- 미리보기 창 ----------
+// 인스타그램은 iframe 임베드를 막기 때문에(X-Frame-Options: DENY) 작은 팝업 창 하나를 재사용한다
+
+function loadPreviewMode() {
+  try {
+    return localStorage.getItem("previewMode") === "on";
+  } catch (e) {
+    return false;
+  }
+}
+
+function renderPreviewOption() {
+  document.getElementById("previewOption").innerHTML = `
+    <label class="preview-switch">
+      <input type="checkbox" ${previewMode ? "checked" : ""} onchange="setPreviewMode(this.checked)">
+      <span class="preview-slider"></span>
+      <span>${getText("previewToggle")}</span>
+    </label>
+    ${previewMode ? `<p class="preview-hint">${getText("previewHint")}</p>` : ""}`;
+}
+
+window.setPreviewMode = function (on) {
+  previewMode = on;
+  try {
+    localStorage.setItem("previewMode", on ? "on" : "off");
+  } catch (e) {}
+  renderPreviewOption();
+};
+
+function openPreview(href) {
+  const w = 420;
+  const h = Math.min(780, screen.availHeight - 80);
+  const left = window.screenX + window.outerWidth - w - 20;
+  const top = window.screenY + 60;
+  // 같은 이름의 창을 쓰면 새 창 대신 기존 미리보기 창의 주소만 바뀐다
+  previewWin = window.open(href, "instaPreview", `popup,width=${w},height=${h},left=${left},top=${top}`);
+  if (previewWin) previewWin.focus();
+  return !!previewWin;
+}
+
+document.getElementById("lists").addEventListener("click", (e) => {
+  const link = e.target.closest("td a");
+  if (!previewMode || !link) return;
+  // 팝업이 막히면 기본 동작(새 탭)으로 둔다
+  if (!openPreview(link.href)) return;
+  e.preventDefault();
+  document.querySelectorAll("#lists tr.previewing").forEach((tr) => tr.classList.remove("previewing"));
+  link.closest("tr").classList.add("previewing");
+});
 
 // ---------- 파일 업로드 ----------
 

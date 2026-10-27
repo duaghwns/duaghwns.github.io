@@ -130,6 +130,9 @@ const I18N = {
     },
     statusNoPastFollowing:
       "과거 ZIP에 following.json이 없어 '비활성·탈퇴 추정'을 판별하지 못했습니다.",
+    previewToggle: "🔍 미리보기 창으로 열기",
+    previewHint:
+      "아이디를 누르면 작은 창 하나에서 차례로 열려요. 로그인 상태에서 '페이지를 찾을 수 없음'인데 시크릿 창에서는 프로필이 보인다면 상대가 나를 차단한 거예요. 시크릿 창에서도 안 보이면 비활성화·탈퇴·아이디 변경이에요.",
   },
   en: {
     title: "Instagram Follow Tracker",
@@ -212,6 +215,9 @@ const I18N = {
     },
     statusNoPastFollowing:
       "The past ZIP has no following.json, so 'Likely deactivated' couldn't be detected.",
+    previewToggle: "🔍 Open in preview window",
+    previewHint:
+      "Clicking an ID opens it in one small window. If a profile shows 'Page not found' while logged in but appears in a private window, that account blocked you. If it's missing in a private window too, it was deactivated, deleted, or renamed.",
   },
   ja: {
     title: "インスタフォロー追跡",
@@ -294,6 +300,9 @@ const I18N = {
     },
     statusNoPastFollowing:
       "過去ZIPにfollowing.jsonがないため「無効化・退会の可能性」を判定できませんでした。",
+    previewToggle: "🔍 プレビューウィンドウで開く",
+    previewHint:
+      "IDをクリックすると小さなウィンドウ1つで順に開きます。ログイン中は「ページが見つかりません」なのにシークレットウィンドウでは表示される場合、相手にブロックされています。シークレットでも表示されなければ無効化・退会・ID変更です。",
   },
   zh: {
     title: "Instagram 粉丝追踪",
@@ -365,5 +374,8 @@ const I18N = {
     },
     statusNoPastFollowing:
       "过去ZIP中没有following.json，无法判断“疑似停用/注销”。",
+    previewToggle: "🔍 在预览窗口中打开",
+    previewHint:
+      "点击ID会在同一个小窗口中依次打开。如果登录状态下显示“找不到页面”，但在无痕窗口中能看到主页，说明对方拉黑了我。无痕窗口也看不到则是停用、注销或改名。",
   },
 };
