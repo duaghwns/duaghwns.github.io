@@ -12,19 +12,27 @@ class FileHandler {
             const conversations = [];
 
             // inbox 폴더 내의 모든 message_*.json 파일 찾기
-            const messageFiles = Object.keys(zip.files).filter(filename =>
-                filename.includes('inbox/') &&
-                filename.endsWith('message_1.json')
-            );
+            // 대화가 길면 message_1.json, message_2.json ... 으로 나뉘므로 대화방 폴더별로 묶는다
+            const threadFiles = new Map();
+            Object.keys(zip.files)
+                .filter(filename => filename.includes('inbox/') && /message_\d+\.json$/.test(filename))
+                .forEach(filename => {
+                    const folder = filename.slice(0, filename.lastIndexOf('/'));
+                    if (!threadFiles.has(folder)) threadFiles.set(folder, []);
+                    threadFiles.get(folder).push(filename);
+                });
 
-            for (const filename of messageFiles) {
+            for (const [folder, filenames] of threadFiles) {
                 try {
-                    const fileData = await zip.files[filename].async('string');
-                    const data = JSON.parse(fileData);
+                    const parts = await Promise.all(
+                        filenames.map(async filename => JSON.parse(await zip.files[filename].async('string')))
+                    );
+                    // 참여자·제목은 첫 파일 기준, 메시지는 모든 파일을 합친다
+                    const data = { ...parts[0], messages: parts.flatMap(p => p.messages || []) };
 
-                    // 파일 경로에서 대화방 ID 추출
+                    // 폴더명에서 대화방 ID 추출
                     // 예: "your_instagram_activity/messages/inbox/username_123/message_1.json"
-                    const pathParts = filename.split('/');
+                    const pathParts = folder.split('/');
                     let threadId = '';
 
                     // inbox 다음의 폴더명이 대화방 ID
@@ -39,7 +47,7 @@ class FileHandler {
                     const conversation = this.decodeConversation(data, threadId);
                     conversations.push(conversation);
                 } catch (error) {
-                    console.error(`Error processing ${filename}:`, error);
+                    console.error(`Error processing ${folder}:`, error);
                 }
             }
 

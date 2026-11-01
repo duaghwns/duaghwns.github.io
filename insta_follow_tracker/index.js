@@ -72,7 +72,6 @@ function renderAllI18n() {
   renderGuide();
   document.getElementById("pastDrop").innerHTML = getText("drop_past");
   document.getElementById("currentDrop").innerHTML = getText("drop_now");
-  document.querySelector(".ads-area-text").innerText = getText("ads");
   renderPreviewOption();
   renderListToggles();
   renderLists(listDataCache);

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="인스타그램 계정 센터에서 팔로워·팔로잉과 메시지 데이터를 JSON 형식으로 내려받는 순서, ZIP 안의 파일 구조, 한글이 깨져 보이는 이유와 자주 하는 실수를 정리했습니다.">
+    <meta name="author" content="YEOM HOJOON (@duaghwns)">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://duaghwns.github.io/guides/instagram-data-download.html">
+    <title>인스타그램 내 정보 다운로드 방법 총정리 - YEOM HOJOON</title>
+    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="stylesheet" href="/site-content.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7368916815606494"
+     crossorigin="anonymous"></script>
+</head>
+<body class="sc-body">
+    <main class="sc-page">
+        <div class="sc-topbar">
+            <a href="/guides/">← 가이드</a>
+            <span>가이드</span>
+        </div>
+
+        <h1>인스타그램 내 정보 다운로드 방법 총정리</h1>
+        <p class="sc-meta">2026년 11월 · YEOM HOJOON</p>
+
+        <div class="sc-card">
+            <p>인스타그램은 내 계정에 쌓인 기록을 파일로 내려받을 수 있는 기능을 제공합니다. 팔로워 명단, 주고받은 메시지, 좋아요와 댓글 기록, 검색 기록까지 꽤 많은 정보가 들어 있습니다. 이 글은 그중에서 실제로 쓸 일이 많은 <strong>팔로워·팔로잉</strong>과 <strong>메시지</strong> 데이터를 기준으로, 요청하는 순서부터 받은 ZIP 파일을 읽는 법, 자주 하는 실수까지 한 번에 정리한 것입니다.</p>
+            <p>제가 이 사이트에서 <a href="/insta_follow_tracker/">팔로우 트래커</a>와 <a href="/insta_message_search/">메시지 검색</a> 도구를 만들면서 직접 여러 번 내보내기를 해 보고, 사용자에게 가장 많이 받은 질문을 바탕으로 썼습니다.</p>
+
+            <h2>왜 내 정보를 내려받을까</h2>
+            <p>앱 안에서도 팔로워 목록은 볼 수 있지만, 몇백 명이 넘어가면 스크롤로 비교하는 것은 사실상 불가능합니다. 데이터를 파일로 받아 두면 다음과 같은 일을 할 수 있습니다.</p>
+            <ul>
+                <li><strong>팔로우 변화 확인</strong>: 한 달 전 파일과 오늘 파일을 비교하면 그사이 나를 언팔로우한 계정과 새로 팔로우한 계정을 정확히 알 수 있습니다.</li>
+                <li><strong>맞팔 정리</strong>: 내가 팔로우하지만 나를 팔로우하지 않는 계정, 반대로 나만 팔로우받는 계정을 목록으로 뽑을 수 있습니다.</li>
+                <li><strong>오래된 메시지 검색</strong>: 앱의 DM 검색은 대화 상대 이름 위주라서, 몇 년 전 대화에서 특정 단어를 찾기 어렵습니다. 파일로 받으면 본문 전체를 검색할 수 있습니다.</li>
+                <li><strong>백업</strong>: 계정을 정리하거나 탈퇴하기 전에 기록을 보관해 둘 수 있습니다.</li>
+            </ul>
+
+            <h2>다운로드 요청하는 순서</h2>
+            <div class="sc-note">인스타그램은 메뉴 이름과 위치를 종종 바꿉니다. 아래 표현은 2026년 기준 한국어 앱에서 확인한 것이며, 버전에 따라 단어가 조금 다를 수 있습니다. 흐름은 거의 같으니 비슷한 이름의 메뉴를 찾으면 됩니다.</div>
+            <ol>
+                <li>인스타그램 앱에서 내 프로필로 이동한 뒤 오른쪽 위 메뉴(☰)를 누르고 <strong>계정 센터</strong>로 들어갑니다. PC 웹에서는 왼쪽 아래 <strong>더 보기 → 설정 → 계정 센터</strong> 순서입니다.</li>
+                <li>계정 센터에서 <strong>내 정보 및 권한</strong>을 선택합니다.</li>
+                <li><strong>내 정보 다운로드</strong>를 누릅니다.</li>
+                <li><strong>정보 다운로드 또는 전송</strong>을 누릅니다.</li>
+                <li>계정 센터에 여러 계정(인스타그램, 페이스북)이 연결되어 있다면 데이터를 받을 <strong>인스타그램 계정</strong>만 선택합니다.</li>
+                <li>받을 범위로 <strong>일부 정보</strong>를 고릅니다. "사용 가능한 모든 정보"를 고르면 사진과 동영상까지 전부 포함되어 파일이 매우 커지고 준비 시간도 길어집니다.</li>
+                <li>필요한 항목에만 체크합니다. 팔로우 비교가 목적이면 <strong>팔로워 및 팔로잉</strong>, 메시지 검색이 목적이면 <strong>메시지</strong>를 선택합니다. 아래에서 자세히 설명합니다.</li>
+                <li>전송 방법은 <strong>기기에 다운로드</strong>를 선택합니다.</li>
+                <li>세부 옵션을 다음처럼 맞춥니다.
+                    <ul>
+                        <li>기간: <strong>전체 기간</strong></li>
+                        <li>형식: <strong>JSON</strong></li>
+                        <li>미디어 품질: <strong>낮음</strong></li>
+                    </ul>
+                </li>
+                <li><strong>요청 제출</strong>(버전에 따라 "파일 만들기")을 누르면 요청이 접수됩니다.</li>
+                <li>파일이 준비되면 계정에 등록된 이메일과 인스타그램 알림으로 안내가 옵니다. 같은 <strong>내 정보 다운로드</strong> 화면의 진행 상황 영역에서도 다운로드 버튼이 생깁니다. 보안을 위해 비밀번호를 다시 입력하라는 화면이 나올 수 있습니다.</li>
+            </ol>
+            <p>다운로드 링크는 영구적이지 않습니다. 준비가 끝난 뒤 며칠 동안만 받을 수 있고(안내 화면에 만료 날짜가 표시됩니다), 기간이 지나면 처음부터 다시 요청해야 합니다. 알림을 받으면 가능한 한 빨리 내려받아 두는 것이 좋습니다.</p>
+
+            <h2>형식은 왜 HTML이 아니라 JSON이어야 하나</h2>
+            <p>형식 선택지에는 HTML과 JSON이 있습니다. HTML은 브라우저로 열었을 때 사람이 읽기 좋게 꾸민 웹 페이지 형태이고, JSON은 프로그램이 읽기 좋은 구조화된 데이터입니다.</p>
+            <p>HTML 파일은 화면 표시용 태그와 스타일이 섞여 있고 버전마다 구조가 자주 바뀌어서, 분석 도구가 안정적으로 이름과 날짜를 뽑아낼 수 없습니다. 반면 JSON은 계정 이름, 프로필 주소, 팔로우한 시각 같은 값이 정해진 이름의 칸에 들어 있어 비교와 검색이 정확합니다. 이 사이트의 도구를 포함해 대부분의 분석 도구는 <strong>JSON만 지원</strong>합니다. 이미 HTML로 받았다면 아쉽지만 JSON으로 다시 요청해야 합니다.</p>
+
+            <h2>목적별로 어떤 항목을 고르면 될까</h2>
+            <table>
+                <thead>
+                    <tr><th>목적</th><th>선택할 항목</th><th>들어 있는 내용</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>언팔로우·맞팔 확인</td><td>팔로워 및 팔로잉 (보통 "연결" 묶음 안에 있음)</td><td>팔로워, 팔로잉, 차단, 최근 언팔로우, 친한 친구, 보낸 팔로우 요청 목록</td></tr>
+                    <tr><td>DM 검색·백업</td><td>메시지 (보통 "Instagram 활동" 묶음 안에 있음)</td><td>대화방별 메시지 본문, 보낸 사람, 시각, 첨부 미디어</td></tr>
+                </tbody>
+            </table>
+            <p>두 가지를 모두 할 생각이라면 한 번에 두 항목을 체크해도 됩니다. 다만 메시지는 사진·동영상 첨부가 함께 들어가서 용량이 커지므로, 팔로우 확인만 자주 할 예정이라면 팔로워 및 팔로잉만 따로 받는 편이 훨씬 빠릅니다.</p>
+
+            <h2>준비까지 걸리는 시간</h2>
+            <p>준비 시간은 선택한 데이터의 양에 따라 크게 다릅니다. 팔로워 및 팔로잉만 고르면 대개 몇 분에서 한두 시간 안에 끝나는 경우가 많습니다. 메시지처럼 양이 많은 항목이나 전체 정보를 고르면 하루 이상 걸리기도 하고, 인스타그램 안내에 따르면 최대 며칠이 걸릴 수 있습니다. 요청이 진행 중일 때 같은 요청을 반복해서 넣어도 빨라지지 않으니 알림을 기다리면 됩니다.</p>
+
+            <h2>ZIP 파일 안의 구조</h2>
+            <p>내려받은 파일은 하나의 ZIP 압축 파일입니다. 팔로워 및 팔로잉을 선택했다면 대략 다음과 같은 파일이 들어 있습니다.</p>
+            <table>
+                <thead>
+                    <tr><th>파일</th><th>내용</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>followers_1.json</code></td><td>나를 팔로우하는 계정. 팔로워가 많으면 <code>followers_2.json</code>, <code>followers_3.json</code>…으로 나뉩니다.</td></tr>
+                    <tr><td><code>following.json</code></td><td>내가 팔로우하는 계정</td></tr>
+                    <tr><td><code>blocked_profiles.json</code></td><td>내가 차단한 계정</td></tr>
+                    <tr><td><code>recently_unfollowed_profiles.json</code></td><td>내가 최근에 언팔로우한 계정</td></tr>
+                    <tr><td><code>close_friends.json</code></td><td>친한 친구 목록</td></tr>
+                    <tr><td><code>pending_follow_requests.json</code></td><td>내가 보냈지만 아직 수락되지 않은 팔로우 요청</td></tr>
+                    <tr><td><code>restricted_profiles.json</code></td><td>내가 제한한 계정</td></tr>
+                </tbody>
+            </table>
+            <p>이 파일들은 보통 <code>connections/followers_and_following/</code> 폴더 아래에 있습니다. 각 항목에는 계정 이름, 프로필 주소, 그리고 팔로우가 시작된 시각이 유닉스 시간(1970년 1월 1일부터 흐른 초) 숫자로 기록되어 있습니다.</p>
+            <p>메시지는 <code>your_instagram_activity/messages/inbox/</code> 아래에 대화방마다 폴더가 하나씩 생깁니다. 폴더 이름은 보통 상대 계정 이름 뒤에 숫자가 붙은 형태이고, 그 안의 <code>message_1.json</code>에 대화가 들어 있습니다. 대화가 아주 길면 <code>message_2.json</code>, <code>message_3.json</code>…으로 나뉘고, 사진이나 동영상을 주고받았다면 같은 폴더에 미디어 폴더가 함께 생깁니다. 메시지 요청함의 대화는 <code>message_requests</code>처럼 별도 폴더에 들어갑니다.</p>
+            <div class="sc-note">폴더 이름과 위치는 내보내기 시점에 따라 달라질 수 있습니다. 예전 파일에서는 <code>connections</code> 없이 <code>followers_and_following/</code>가 맨 위에 있거나, 메시지가 <code>messages/inbox/</code>에 바로 있는 경우도 있습니다. 그래서 잘 만든 도구는 정확한 경로가 아니라 <strong>파일 이름</strong>으로 찾습니다. 이 사이트의 도구도 ZIP 전체를 훑어 <code>followers_1.json</code>, <code>following.json</code>, <code>message_1.json</code> 같은 이름을 기준으로 파일을 찾습니다.</div>
+
+            <h2>JSON을 직접 열면 한글이 깨져 보이는 이유</h2>
+            <p>메모장이나 코드 편집기로 JSON 파일을 직접 열어 보면 한글 이름이나 메시지가 <code>ì\u0095\u0088ë\u0085\u0095</code> 같은 문자열로 보이고, JSON 뷰어에서는 <code>ì</code>, <code>ë</code> 같은 엉뚱한 라틴 문자가 섞인 글자로 나옵니다. 파일이 손상된 것처럼 보이지만 <strong>정상</strong>입니다.</p>
+            <p>원인은 인스타그램(메타)이 파일을 쓰는 방식에 있습니다. 한글 "안"은 UTF-8로 <code>EC 95 88</code> 세 바이트입니다. 정상적인 JSON이라면 <code>안</code>처럼 글자 하나로 적어야 하는데, 인스타그램은 이 세 바이트를 각각 별개의 글자인 것처럼 <code>ì\u0095\u0088</code>로 적어 둡니다. 그래서 일반 프로그램은 이를 라틴 문자 세 개로 해석하고, 화면에 깨진 글자가 나옵니다.</p>
+            <p>해결하려면 읽어 들인 문자열을 다시 바이트로 바꾼 뒤 UTF-8로 한 번 더 해석하면 됩니다. 메시지 검색 도구는 이 과정을 자동으로 처리하므로, 사용자가 따로 변환할 필요는 없습니다. 직접 스크립트를 짠다면 이 재해석 단계를 꼭 넣어야 합니다. 영어와 숫자는 이 문제가 없어서 계정 이름(영문)은 그대로 보이고 표시 이름이나 메시지 본문만 깨져 보이는 경우가 많습니다.</p>
+
+            <h2>자주 하는 실수</h2>
+            <ul>
+                <li><strong>형식을 HTML로 선택</strong>: 가장 흔한 실수입니다. 기본값이 HTML인 경우가 있으니 제출 전에 꼭 JSON인지 확인합니다.</li>
+                <li><strong>기간을 최근으로만 설정</strong>: 기간을 "지난 한 달"처럼 좁히면 그 기간에 새로 생긴 팔로우만 들어가서, 오래전부터 서로 팔로우하던 사람이 전부 빠집니다. 팔로우 비교에는 반드시 <strong>전체 기간</strong>을 씁니다.</li>
+                <li><strong>링크 만료</strong>: 알림을 늦게 확인해서 다운로드 기간이 지나면 다시 요청해야 합니다.</li>
+                <li><strong>압축을 푼 폴더를 올림</strong>: 컴퓨터에 따라 내려받은 ZIP이 자동으로 풀리기도 합니다. 도구는 ZIP 파일 하나를 받도록 만들어진 경우가 많으니 원본 ZIP을 올립니다. 이미 풀렸다면 원본 ZIP이 다운로드 폴더에 남아 있는지 확인하거나 다시 압축합니다.</li>
+                <li><strong>서로 다른 항목으로 받은 ZIP을 비교</strong>: 과거 파일은 메시지만, 현재 파일은 팔로워 및 팔로잉만 받았다면 비교할 대상이 없습니다. 비교할 두 파일은 같은 항목을 같은 설정으로 받아야 합니다.</li>
+                <li><strong>다른 계정의 데이터를 받음</strong>: 계정 센터에 여러 계정이 연결되어 있으면 엉뚱한 계정을 고르기 쉽습니다. ZIP 이름에 계정 이름이 들어가 있으니 확인해 봅니다.</li>
+            </ul>
+
+            <h2>개인정보 보호에 관하여</h2>
+            <p>이 ZIP 파일에는 나와 연결된 사람들의 계정 이름, 사적인 대화 내용, 활동 시각 같은 민감한 정보가 들어 있습니다. 출처를 알 수 없는 "언팔 확인 사이트"에 업로드하면 파일이 그 회사 서버로 전송되어 보관될 수 있습니다. 인스타그램 비밀번호를 직접 요구하는 서비스는 계정 도용 위험까지 있으니 피하는 것이 좋습니다.</p>
+            <p>이 사이트의 도구는 파일을 서버로 보내지 않고 <strong>브라우저 안에서만</strong> 처리합니다. 파일을 열면 내 컴퓨터의 메모리에서 분석이 끝나고, 페이지를 닫으면 내용이 남지 않습니다. 그래도 공용 컴퓨터에서 작업했다면 다운로드 폴더에 남은 ZIP 파일은 직접 지워 두는 것이 안전합니다.</p>
+
+            <h2>날짜별로 보관해 두면 좋은 이유</h2>
+            <p>언팔로우는 "두 시점의 차이"로만 알 수 있습니다. 인스타그램은 누가 나를 언팔로우했는지 따로 기록해 주지 않기 때문에, 비교할 <strong>기준 파일</strong>이 없으면 아무 도구로도 알 수 없습니다. 그래서 처음 받은 ZIP을 지우지 말고 <code>instagram_2026-11-01.zip</code>처럼 날짜를 넣은 이름으로 보관해 두는 것을 권합니다. 다음에 새로 받은 파일과 이 파일을 비교하면 그사이의 변화가 나옵니다. 한 달이나 분기에 한 번 정도 받아 두면 흐름을 보기에 충분합니다.</p>
+
+            <h2>자주 묻는 질문</h2>
+            <dl class="sc-faq">
+                <dt>요청하면 상대방에게 알림이 가나요?</dt>
+                <dd>아니요. 내 정보 다운로드는 내 계정의 기록을 내려받는 기능이라 팔로워나 대화 상대에게 아무 알림도 가지 않습니다.</dd>
+                <dt>몇 번까지 요청할 수 있나요?</dt>
+                <dd>횟수 제한이 공개되어 있지는 않습니다. 다만 진행 중인 요청이 있으면 끝날 때까지 기다려야 하는 경우가 있으니, 한 번에 필요한 항목을 모두 골라 요청하는 것이 편합니다.</dd>
+                <dt>삭제한 메시지도 들어 있나요?</dt>
+                <dd>일반적으로 내가 삭제했거나 전송 취소한 메시지는 포함되지 않습니다. 파일에는 다운로드 시점에 계정에 남아 있는 대화가 들어갑니다.</dd>
+                <dt>휴대폰에서 받아도 되나요?</dt>
+                <dd>요청과 다운로드 모두 휴대폰에서 할 수 있습니다. 다만 ZIP 파일을 다루고 비교하는 작업은 PC 브라우저가 더 편하므로, 요청은 휴대폰으로 하고 다운로드는 PC에서 해도 됩니다.</dd>
+                <dt>팔로워 파일에 실제 팔로워 수보다 적은 계정이 들어 있어요.</dt>
+                <dd>비활성화된 계정이나 인스타그램이 정리 중인 계정은 앱의 숫자와 파일 사이에 차이를 만들 수 있습니다. 또 팔로워가 많으면 <code>followers_2.json</code> 이후 파일로 나뉘므로 모든 파일을 합쳐서 세야 합니다.</dd>
+            </dl>
+
+            <div class="sc-related">
+                <h3>함께 보면 좋은 글과 도구</h3>
+                <ul>
+                    <li><a href="/insta_follow_tracker/">팔로우 트래커</a> — 과거·현재 ZIP을 비교해 언팔로우와 새 팔로워를 확인합니다.</li>
+                    <li><a href="/insta_message_search/">메시지 검색</a> — 메시지 ZIP에서 대화 내용을 단어로 검색합니다.</li>
+                    <li><a href="/guides/unfollow-page-not-found.html">언팔로우 목록에서 '페이지를 찾을 수 없음'이 뜨는 이유와 구분법</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="sc-footer">
+        <nav>
+            <a href="/">홈</a>
+            <a href="/insta_follow_tracker/">팔로우 트래커</a>
+            <a href="/insta_message_search/">메시지 검색</a>
+            <a href="/metaShaper/">MetaShaper</a>
+            <a href="/DiskMap/">DiskMap</a>
+            <a href="/guides/">가이드</a>
+            <a href="/about.html">소개</a>
+            <a href="/privacy.html">개인정보처리방침</a>
+        </nav>
+        <p>© YEOM HOJOON · 사이트의 모든 도구는 업로드한 파일을 브라우저 안에서만 처리합니다.</p>
+    </footer>
+</body>
+</html>

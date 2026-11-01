@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="맥 저장 공간이 부족할 때 시스템 데이터가 커지는 이유와 캐시, Xcode, iPhone 백업, Docker, node_modules, Time Machine 로컬 스냅샷처럼 용량을 많이 차지하는 위치를 안전하게 확인하고 정리하는 방법을 설명합니다.">
+    <meta name="author" content="YEOM HOJOON (@duaghwns)">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://duaghwns.github.io/guides/mac-storage-cleanup.html">
+    <title>맥 저장 공간이 부족할 때 먼저 확인할 폴더 - YEOM HOJOON</title>
+    <link rel="icon" type="image/png" href="/icon.png">
+    <link rel="stylesheet" href="/site-content.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7368916815606494"
+     crossorigin="anonymous"></script>
+</head>
+<body class="sc-body">
+    <main class="sc-page">
+        <div class="sc-topbar">
+            <a href="/guides/">← 가이드</a>
+            <span>가이드</span>
+        </div>
+
+        <h1>맥 저장 공간이 부족할 때 먼저 확인할 폴더</h1>
+        <p class="sc-meta">2026년 11월 · YEOM HOJOON</p>
+
+        <div class="sc-card">
+            <p>256GB나 512GB 맥을 쓰다 보면 어느 날 "디스크가 거의 꽉 찼습니다"라는 알림을 보게 됩니다. 사진과 영상을 다루고 개발 도구까지 설치해 쓰는 입장에서 이 상황을 여러 번 겪었고, 그때마다 확인한 위치는 거의 비슷했습니다. 이 글은 무엇이 공간을 차지하는지 먼저 파악하고, 지워도 되는 것과 건드리면 안 되는 것을 구분해 안전하게 정리하는 순서를 정리한 것입니다.</p>
+            <div class="sc-note">정리를 시작하기 전에 Time Machine이나 외장 드라이브에 최신 백업이 있는지 먼저 확인하세요. 대부분의 캐시는 다시 만들어지지만, 실수로 지운 문서나 사진은 백업이 없으면 되돌리기 어렵습니다.</div>
+
+            <h2>1. 먼저 사용량부터 확인하기</h2>
+            <p>macOS Ventura 이후 버전에서는 <code>시스템 설정 → 일반 → 저장 공간</code>에서, 그 이전 버전에서는 <code>이 Mac에 관하여 → 저장 공간 → 관리</code>에서 사용량을 볼 수 있습니다. 응용 프로그램, 문서, 사진, 메시지, iOS 파일, 시스템 데이터처럼 범주별로 막대가 표시되고, 각 범주 옆의 정보 버튼(ⓘ)을 누르면 큰 파일 목록을 확인할 수 있습니다.</p>
+            <p>상단의 권장 사항도 한 번 살펴볼 만합니다. iCloud에 파일과 사진을 저장하고 기기에는 최근 항목만 남기는 기능, 30일이 지난 휴지통 항목을 자동으로 비우는 기능, 큰 파일과 오래된 다운로드를 검토하는 기능이 있습니다. 이 화면만으로 해결되는 경우도 꽤 많습니다.</p>
+            <p>계산에는 시간이 걸리므로 화면을 연 직후의 값은 정확하지 않을 수 있습니다. 또 Finder에 표시되는 "사용 가능" 용량에는 시스템이 필요할 때 자동으로 비우는 "제거 가능(purgeable)" 공간이 포함되어 있어, 저장 공간 화면의 수치와 조금 다르게 보이는 것이 정상입니다.</p>
+
+            <h2>2. '시스템 데이터'가 큰 이유</h2>
+            <p>많은 사람이 가장 당황하는 항목이 시스템 데이터입니다. 이름과 달리 macOS 자체만 들어 있는 것이 아니라, 다른 범주로 분류되지 않은 거의 모든 것이 이곳에 합산됩니다. 대표적으로 다음과 같은 것들이 포함됩니다.</p>
+            <ul>
+                <li>앱과 시스템이 만든 캐시, 로그 파일</li>
+                <li>Time Machine 로컬 스냅샷</li>
+                <li>Xcode의 빌드 데이터와 시뮬레이터</li>
+                <li>Docker, 가상 머신(Parallels, UTM 등)의 디스크 이미지</li>
+                <li>메모리 부족 시 사용하는 스왑 파일과 잠자기 이미지</li>
+                <li>앱이 <code>~/Library</code> 아래에 저장하는 각종 데이터</li>
+            </ul>
+            <p>그래서 시스템 데이터가 100GB를 넘었다고 해서 macOS에 문제가 생긴 것은 아닙니다. 아래 위치들을 차례로 확인하면 대부분 원인을 찾을 수 있습니다. 참고로 <code>~</code>는 내 홈 폴더(<code>/Users/사용자이름</code>)를 뜻하고, Finder에서 <code>⌘⇧G</code>(폴더로 이동)에 경로를 붙여 넣으면 바로 열 수 있습니다. <code>~/Library</code>는 기본적으로 숨겨져 있어 이 방법이 가장 편합니다.</p>
+
+            <h2>3. 용량을 많이 차지하는 위치와 정리 방법</h2>
+            <table>
+                <thead>
+                    <tr><th>위치</th><th>무엇인가</th><th>정리 방법과 주의점</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>~/Library/Caches</code></td><td>브라우저, 디자인 툴, 메신저 등 앱이 빠르게 다시 쓰려고 저장한 임시 데이터</td><td>대체로 안전합니다. 해당 앱을 종료한 뒤 하위 폴더 안의 내용을 지우면 다음 실행 때 다시 만들어집니다. 캐시 폴더 자체를 통째로 지우기보다 큰 앱 폴더 위주로 정리하세요.</td></tr>
+                    <tr><td><code>~/Library/Developer/Xcode/DerivedData</code></td><td>Xcode 빌드 중간 결과물</td><td>안전합니다. 지우면 다음 빌드가 조금 오래 걸릴 뿐 자동으로 다시 생성됩니다.</td></tr>
+                    <tr><td><code>~/Library/Developer/CoreSimulator</code></td><td>iOS 시뮬레이터 기기와 데이터</td><td>직접 삭제하지 말고 터미널에서 <code>xcrun simctl delete unavailable</code>로 더 이상 쓸 수 없는 시뮬레이터를 지우세요. 안 쓰는 iOS 런타임은 Xcode 설정의 Platforms(Components) 항목에서 제거합니다.</td></tr>
+                    <tr><td><code>~/Library/Developer/Xcode/Archives</code></td><td>앱 배포용으로 만든 아카이브</td><td>배포한 버전의 크래시 로그를 해석하려면 해당 아카이브의 dSYM이 필요합니다. 아직 지원 중인 버전은 남기고 오래된 것만 Xcode의 Organizer에서 지우세요.</td></tr>
+                    <tr><td><code>~/Library/Developer/Xcode/iOS DeviceSupport</code></td><td>연결했던 기기의 iOS 버전별 디버깅 심볼</td><td>오래된 iOS 버전 폴더는 지워도 됩니다. 해당 기기를 다시 연결하면 필요한 만큼 다시 받습니다.</td></tr>
+                    <tr><td><code>~/Library/Application Support/MobileSync/Backup</code></td><td>Finder로 만든 iPhone·iPad 백업</td><td>폴더를 직접 지우지 말고 Finder 사이드바에서 기기를 선택한 뒤 <code>일반 → 백업 관리</code>에서 오래된 백업을 삭제하세요. 저장 공간 화면의 iOS 파일 항목에서도 정리할 수 있습니다.</td></tr>
+                    <tr><td>Docker Desktop 디스크 이미지</td><td>이미지, 컨테이너, 볼륨, 빌드 캐시가 들어 있는 가상 디스크 파일 (<code>Docker.raw</code>)</td><td><code>docker system df</code>로 사용량을 먼저 확인하고 <code>docker system prune</code>으로 정리합니다. 디스크 파일을 직접 지우면 모든 컨테이너와 데이터가 사라집니다.</td></tr>
+                    <tr><td><code>~/Downloads</code>, 영상 파일</td><td>설치 파일(.dmg, .pkg), 압축 파일, 촬영 원본 영상</td><td>설치를 마친 .dmg와 이미 푼 압축 파일은 지워도 됩니다. 영상은 외장 드라이브로 옮긴 뒤 원본을 지우세요.</td></tr>
+                    <tr><td>사진 보관함 (<code>~/Pictures/Photos Library.photoslibrary</code>)</td><td>사진 앱의 모든 사진과 영상</td><td>패키지 내부를 직접 건드리지 마세요. iCloud 사진을 쓰고 있다면 <code>사진 → 설정 → iCloud</code>에서 'Mac 저장 공간 최적화'를 켜면 원본은 iCloud에 두고 맥에는 작은 버전만 남깁니다.</td></tr>
+                    <tr><td>오래된 프로젝트의 <code>node_modules</code></td><td>JavaScript 프로젝트의 의존성 폴더</td><td>안전합니다. 프로젝트 폴더에서 <code>npm install</code> 등으로 언제든 다시 설치할 수 있습니다. 프로젝트가 많다면 합쳐서 수십 GB가 되기도 합니다.</td></tr>
+                    <tr><td>Time Machine 로컬 스냅샷</td><td>백업 디스크가 연결되지 않았을 때 맥 안에 임시로 남기는 스냅샷</td><td><code>tmutil listlocalsnapshots /</code>로 목록을 볼 수 있습니다. 공간이 필요하면 macOS가 자동으로 지우므로 보통은 그대로 두어도 됩니다.</td></tr>
+                    <tr><td>메일 첨부 파일</td><td>메일 앱이 내려받은 첨부 파일과 메일 데이터</td><td>메일 앱 설정의 일반 탭에서 편집하지 않은 다운로드 항목을 제거하는 시점을 정할 수 있습니다. <code>~/Library/Mail</code> 폴더는 직접 지우지 마세요.</td></tr>
+                    <tr><td>메시지 첨부 파일</td><td>iMessage로 주고받은 사진, 영상, 파일</td><td><code>메시지 → 설정 → 일반</code>에서 메시지 보관 기간을 30일이나 1년으로 바꾸거나, 저장 공간 화면의 메시지 항목에서 큰 첨부 파일을 골라 지웁니다.</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Docker는 옵션을 확인하고 정리하기</h3>
+            <p><code>docker system prune</code>은 중지된 컨테이너, 사용하지 않는 네트워크, 이름 없는(dangling) 이미지, 빌드 캐시를 지웁니다. 여기에 <code>-a</code>를 붙이면 실행 중인 컨테이너가 쓰지 않는 모든 이미지가 지워져 다음에 다시 내려받아야 하고, <code>--volumes</code>를 붙이면 데이터베이스 데이터처럼 볼륨에 저장된 내용까지 사라집니다. 로컬 개발용 DB 데이터를 볼륨에 두고 있다면 볼륨 옵션은 특히 조심하세요. 또 <code>Docker.raw</code>는 실제 사용량보다 크게 표시될 수 있는 파일이라, Finder에 보이는 크기와 실제로 차지하는 크기가 다를 수 있습니다. Docker Desktop 설정의 Resources 항목에서 가상 디스크 최대 크기를 줄일 수도 있습니다.</p>
+
+            <h3>메시지와 iCloud 동기화에 주의하기</h3>
+            <p>iCloud에 메시지 동기화를 켜 두었다면 맥에서 메시지나 첨부 파일을 지울 때 같은 Apple 계정을 쓰는 iPhone과 iPad에서도 함께 지워집니다. 사진 보관함도 iCloud 사진을 쓰는 경우 삭제가 모든 기기에 반영됩니다. 맥의 공간만 확보하고 싶다면 삭제보다는 저장 공간 최적화 옵션을 쓰는 것이 맞습니다.</p>
+
+            <h3>그 밖에 확인해 볼 만한 곳</h3>
+            <ul>
+                <li><strong>패키지 관리자 캐시</strong>: Homebrew는 <code>brew cleanup</code>으로 오래된 버전과 내려받은 설치 파일을 정리할 수 있고, npm 캐시는 <code>~/.npm</code>에 쌓입니다.</li>
+                <li><strong>가상 머신</strong>: Parallels나 UTM의 가상 디스크는 하나에 수십 GB가 흔합니다. 더 이상 쓰지 않는 가상 머신은 해당 앱 안에서 삭제하세요.</li>
+                <li><strong>영상 편집 앱의 캐시</strong>: Final Cut Pro의 렌더 파일, Premiere Pro와 DaVinci Resolve의 미디어 캐시는 각 앱의 메뉴에서 정리하는 것이 안전합니다.</li>
+            </ul>
+
+            <h2>4. 지우면 안 되는 것</h2>
+            <p>용량을 줄이려다 시스템을 망가뜨리는 경우는 대부분 정체를 모르는 파일을 지웠을 때입니다. 다음은 건드리지 않는 것을 원칙으로 하세요.</p>
+            <ul>
+                <li><code>/System</code> 폴더: macOS 본체입니다. 최신 macOS는 이 영역을 읽기 전용으로 보호하므로 애초에 지울 수도 없고, 지울 이유도 없습니다.</li>
+                <li><code>/Library</code>(홈 폴더가 아닌 최상위)의 시스템 파일: 드라이버, 시스템 확장, 공용 설정이 들어 있습니다. 앱을 지운 뒤 남은 폴더처럼 확실히 아는 것만 정리하세요.</li>
+                <li>앱 번들의 내부: <code>.app</code>을 우클릭해 '패키지 내용 보기'로 연 뒤 언어 파일 등을 지우는 방법이 떠돌지만, 앱 서명이 깨져 실행되지 않을 수 있습니다.</li>
+                <li>사진 보관함, 메일, 메시지의 내부 폴더: 데이터베이스와 파일이 서로 연결되어 있어 일부만 지우면 앱이 오류를 일으킵니다.</li>
+                <li>무엇인지 확인할 수 없는 모든 것: 이름으로 검색해 봐도 확신이 서지 않는다면 지우지 않는 것이 맞습니다.</li>
+            </ul>
+            <div class="sc-note">터미널의 <code>rm</code> 명령은 휴지통을 거치지 않고 바로 삭제합니다. 확신이 없을 때는 Finder에서 휴지통으로 옮겨 며칠 사용해 본 뒤 문제가 없으면 비우는 방식이 안전합니다.</div>
+
+            <h2>5. 큰 폴더를 찾는 방법</h2>
+            <h3>Finder로 확인하기</h3>
+            <p>폴더를 선택하고 <code>⌘I</code>(정보 가져오기)를 누르면 폴더 전체 크기를 볼 수 있습니다. 목록 보기에서 <code>보기 → 보기 옵션 보기</code>의 '모든 크기 계산'을 켜면 하위 폴더 크기가 함께 표시되어 크기순으로 정렬할 수 있습니다. 숨김 파일은 <code>⌘⇧.</code>로 보이게 할 수 있습니다.</p>
+            <h3>터미널로 확인하기</h3>
+            <p>여러 폴더의 크기를 한 번에 비교할 때는 <code>du</code> 명령이 빠릅니다. macOS의 <code>du -sh</code>는 각 항목의 총 크기(<code>-s</code>)를 읽기 쉬운 단위(<code>-h</code>)로 보여 줍니다.</p>
+            <ul>
+                <li>홈 폴더 아래 큰 항목 보기: <code>du -sh ~/* 2&gt;/dev/null | sort -h</code></li>
+                <li>Library 안에서 큰 폴더 20개: <code>du -sh ~/Library/* 2&gt;/dev/null | sort -h | tail -20</code></li>
+                <li>숨김 폴더까지 포함하기: <code>du -sh ~/.[!.]* 2&gt;/dev/null | sort -h</code></li>
+            </ul>
+            <p><code>sort -h</code>는 KB, MB, GB 단위를 이해해 크기순으로 정렬하므로 가장 큰 항목이 맨 아래에 나옵니다. 실행하면 <code>Operation not permitted</code>나 <code>Permission denied</code> 같은 오류가 섞여 나올 수 있습니다. 메일, 메시지, Safari 데이터처럼 macOS가 개인정보 보호를 위해 접근을 막아 둔 폴더이거나 다른 사용자의 파일이기 때문입니다. 위 예시의 <code>2&gt;/dev/null</code>은 이런 오류 메시지를 숨기는 부분이며, 그만큼 해당 폴더의 크기는 결과에서 빠진다는 점을 감안하면 됩니다. 크기를 확인하겠다고 <code>sudo</code>를 붙이거나 보안 설정을 바꿀 필요는 없습니다. 큰 폴더를 찾았다면 같은 명령을 그 폴더 안에 다시 실행해 한 단계씩 내려가면 됩니다.</p>
+            <p>여러 프로젝트에 흩어진 <code>node_modules</code>는 다음처럼 찾을 수 있습니다. 이 명령은 크기만 보여 주고 아무것도 지우지 않습니다.</p>
+            <p><code>find ~/Documents -name node_modules -type d -prune -exec du -sh {} + 2&gt;/dev/null | sort -h</code></p>
+            <h3>시각화 도구 사용하기</h3>
+            <p>숫자 목록보다 그림으로 보는 편이 빠를 때도 있습니다. 이 사이트의 <a href="/DiskMap/">DiskMap</a>은 폴더를 골라 큰 항목을 버블 지도로 보여 주는 읽기 전용 도구입니다. Chrome이나 Edge에서 File System Access API로 폴더를 읽기 때문에 파일이 업로드되지 않고, 아무것도 삭제하지 않습니다. 다만 브라우저는 보안상 <code>~/Library</code> 같은 시스템 폴더를 폴더 선택 창에서 막아 두므로, 이런 경로까지 보고 싶다면 DiskMap 페이지에서 받을 수 있는 앱 버전을 이용하면 됩니다. 어떤 도구를 쓰든 무엇이 큰지 찾는 것까지가 도구의 몫이고, 지울지 말지는 위 표처럼 정체를 확인한 뒤 결정하는 것이 좋습니다.</p>
+
+            <h2>6. 정리를 마친 뒤</h2>
+            <ol>
+                <li><strong>휴지통 비우기</strong>: Finder에서 지운 파일은 휴지통을 비우기 전까지 공간을 그대로 차지합니다.</li>
+                <li><strong>재시동하기</strong>: 재시동하면 스왑 파일과 임시 파일이 정리되고, 저장 공간 수치도 새로 계산됩니다.</li>
+                <li><strong>잠시 후 다시 확인하기</strong>: 로컬 스냅샷이나 제거 가능 공간이 정리되는 데 시간이 걸려, 몇 분 뒤에 남은 용량이 더 늘어나는 경우도 있습니다.</li>
+            </ol>
+            <p>정리가 끝났다면 같은 상황이 반복되지 않도록 휴지통 자동 비우기를 켜고, 사진과 영상 원본은 주기적으로 외장 드라이브로 옮기는 습관을 들이는 것을 권합니다.</p>
+
+            <h2>자주 묻는 질문</h2>
+            <dl class="sc-faq">
+                <dt>캐시를 지우면 앱 설정이나 로그인 정보도 사라지나요?</dt>
+                <dd><code>~/Library/Caches</code>의 내용은 다시 만들 수 있는 임시 데이터라 설정과 로그인 정보는 보통 유지됩니다. 설정은 <code>~/Library/Preferences</code>, 앱 데이터는 <code>~/Library/Application Support</code>에 따로 저장되므로 이 두 폴더는 함부로 지우지 마세요.</dd>
+                <dt>정리했는데 시스템 데이터가 줄지 않습니다.</dt>
+                <dd>휴지통을 비웠는지, 재시동했는지 먼저 확인하세요. 저장 공간 화면은 다시 계산하는 데 시간이 걸리고, 로컬 스냅샷이 지운 파일을 잠시 붙잡고 있을 수도 있습니다. 하루 정도 지난 뒤 다시 확인하면 줄어든 경우가 많습니다.</dd>
+                <dt>Time Machine 로컬 스냅샷을 직접 지워야 하나요?</dt>
+                <dd>보통은 그럴 필요가 없습니다. macOS는 공간이 부족해지면 오래된 로컬 스냅샷부터 자동으로 지웁니다. 큰 설치 작업 직전처럼 당장 공간이 필요할 때만 <code>tmutil</code>로 확인해 보세요.</dd>
+                <dt>저장 공간 정리 앱을 써도 괜찮나요?</dt>
+                <dd>무엇을 지우는지 목록으로 보여 주고 선택하게 하는 앱이라면 도움이 됩니다. 다만 '원클릭 최적화'처럼 무엇을 지우는지 알 수 없는 방식은 위에서 설명한 원칙에 맞지 않으므로 권하지 않습니다.</dd>
+                <dt>외장 SSD로 옮겨도 되는 것은 무엇인가요?</dt>
+                <dd>완성된 영상 프로젝트, 촬영 원본, 오래된 문서처럼 자주 쓰지 않는 파일이 가장 적합합니다. 사진 보관함도 사진 앱을 종료한 뒤 통째로 옮겨 열 수 있지만, iCloud 사진과 함께 쓸 때는 시스템 사진 보관함 설정을 확인해야 합니다.</dd>
+            </dl>
+
+            <div class="sc-related">
+                <p>관련 페이지</p>
+                <ul>
+                    <li><a href="/DiskMap/">DiskMap - 폴더 용량을 버블 지도로 보기</a></li>
+                    <li><a href="/guides/">다른 가이드 보기</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="sc-footer">
+        <nav>
+            <a href="/">홈</a>
+            <a href="/insta_follow_tracker/">팔로우 트래커</a>
+            <a href="/insta_message_search/">메시지 검색</a>
+            <a href="/metaShaper/">MetaShaper</a>
+            <a href="/DiskMap/">DiskMap</a>
+            <a href="/guides/">가이드</a>
+            <a href="/about.html">소개</a>
+            <a href="/privacy.html">개인정보처리방침</a>
+        </nav>
+        <p>© YEOM HOJOON · 사이트의 모든 도구는 업로드한 파일을 브라우저 안에서만 처리합니다.</p>
+    </footer>
+</body>
+</html>

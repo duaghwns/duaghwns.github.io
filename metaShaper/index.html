@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MetaShaper - EXIF to Text</title>
+    <meta name="description" content="사진의 EXIF 정보(카메라, 렌즈, 초점거리, 조리개, 셔터 속도, ISO)를 읽어 인스타그램 캡션용 텍스트로 만들어 주는 무료 도구입니다. 사진은 업로드되지 않고 브라우저 안에서만 처리됩니다.">
+    <meta name="author" content="YEOM HOJOON (@duaghwns)">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://duaghwns.github.io/metaShaper/">
+    <title>MetaShaper - 사진 EXIF 정보를 인스타그램 캡션으로</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/site-content.css">
     <link rel="icon" type="image/png" href="../icon.png">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7368916815606494"
      crossorigin="anonymous"></script>
@@ -162,6 +167,79 @@
             
             <div class="mobile-spacer"></div>
         </main>
+
+        <article class="sc-article">
+            <h2>MetaShaper란?</h2>
+            <p>
+                MetaShaper는 사진 파일 안에 저장된 촬영 정보(EXIF)를 읽어, 인스타그램 캡션에 바로 붙여 넣을 수 있는 텍스트로 정리해 주는 도구입니다.
+                인스타그램을 비롯한 대부분의 SNS는 사진을 올릴 때 EXIF 정보를 지우기 때문에, 보는 사람은 어떤 카메라와 설정으로 찍었는지 알 수 없습니다.
+                그래서 많은 사진가가 캡션에 "카메라 | 렌즈 | 초점거리 | 조리개 | 셔터 속도 | ISO"를 직접 적는데, 사진마다 값을 확인해 옮겨 적는 일은 꽤 번거롭습니다.
+                MetaShaper는 사진을 고르기만 하면 이 과정을 자동으로 처리합니다.
+            </p>
+
+            <h2>사용 방법</h2>
+            <ol>
+                <li><strong>사진 선택</strong>을 눌러 JPG 또는 아이폰 HEIC 사진을 고릅니다. 카메라에서 바로 옮긴 원본일수록 정보가 많이 남아 있습니다.</li>
+                <li>왼쪽 <strong>표시 항목</strong>에서 캡션에 넣을 정보를 켜고 끄고, 위아래 버튼으로 순서를 바꿉니다.</li>
+                <li>라벨 형식을 한국어·영어·아이콘 등으로 바꾸거나 값만 표시하도록 고르고, <strong>줄바꿈</strong> 또는 <strong>일렬로</strong> 형식을 선택합니다. 일렬 형식에서는 구분자(예: <code> | </code>)를 직접 정할 수 있습니다.</li>
+                <li>인스타그램 아이디를 입력하면 오른쪽 미리보기가 실제 게시물처럼 바뀝니다. 필요하면 <strong>해시태그 추가</strong>를 누른 뒤 <strong>복사</strong>해 캡션에 붙여 넣습니다.</li>
+                <li>자주 쓰는 항목 구성은 <strong>프리셋</strong>으로 저장해 두면 다음 사진부터 한 번에 적용할 수 있습니다.</li>
+            </ol>
+
+            <h2>캡션에 자주 넣는 촬영 정보</h2>
+            <table>
+                <thead><tr><th>항목</th><th>의미</th><th>예시</th></tr></thead>
+                <tbody>
+                    <tr><td>카메라</td><td>촬영한 기기 제조사와 모델명</td><td>SONY ILCE-7M4</td></tr>
+                    <tr><td>렌즈</td><td>사용한 렌즈 모델명(교환식 렌즈 카메라)</td><td>FE 35mm F1.8</td></tr>
+                    <tr><td>초점거리</td><td>화각을 결정하는 값. 숫자가 작을수록 넓게 찍힘</td><td>35mm</td></tr>
+                    <tr><td>조리개</td><td>빛이 들어오는 구멍 크기. f값이 작을수록 배경이 흐려짐</td><td>f/1.8</td></tr>
+                    <tr><td>셔터 속도</td><td>빛을 받는 시간. 빠를수록 움직임이 멈춰 보임</td><td>1/250s</td></tr>
+                    <tr><td>ISO</td><td>센서 감도. 높을수록 어두운 곳에서 밝지만 노이즈가 늘어남</td><td>ISO 100</td></tr>
+                </tbody>
+            </table>
+            <p>각 값이 사진에 어떤 영향을 주는지는 <a href="/guides/photo-exif-caption.html">사진 EXIF 정보 읽는 법과 인스타그램 캡션에 촬영 정보 적기</a>에서 더 자세히 설명합니다.</p>
+
+            <h2>사진은 어디로 전송되나요?</h2>
+            <p>
+                어디로도 전송되지 않습니다. 사진 파일과 그 안의 정보는 이용자의 브라우저 안에서만 읽고, 서버에 업로드하지 않습니다.
+                화면 설정과 프리셋만 다음 방문 때 다시 쓸 수 있도록 브라우저에 저장됩니다.
+                참고로 원본 사진의 EXIF에는 GPS 위치가 들어 있을 수 있으니, 원본 파일을 다른 곳에 공유할 때는 위치 정보를 지우는 것이 좋습니다.
+            </p>
+
+            <h2>자주 묻는 질문</h2>
+            <dl class="sc-faq">
+                <dt>사진을 넣었는데 정보가 거의 나오지 않아요.</dt>
+                <dd>메신저나 SNS에서 내려받은 사진, 스크린샷, 일부 편집 앱으로 내보낸 사진은 EXIF가 지워진 경우가 많습니다. 카메라나 휴대폰에서 바로 옮긴 원본으로 시도해 보세요.</dd>
+                <dt>렌즈 정보만 빠져 있어요.</dt>
+                <dd>수동 렌즈나 일부 어댑터를 쓰면 카메라가 렌즈 정보를 기록하지 못합니다. 이 경우 텍스트 편집 칸에서 직접 적어 넣으면 됩니다.</dd>
+                <dt>아이폰 사진도 되나요?</dt>
+                <dd>네. 아이폰의 HEIC 사진도 읽을 수 있으며, 휴대폰은 보통 '35mm 환산' 초점거리를 함께 기록합니다.</dd>
+            </dl>
+
+            <div class="sc-related">
+                <strong>함께 보면 좋은 글</strong>
+                <ul>
+                    <li><a href="/guides/photo-exif-caption.html">사진 EXIF 정보 읽는 법과 인스타그램 캡션에 촬영 정보 적기</a></li>
+                    <li><a href="/guides/">가이드 모음</a></li>
+                </ul>
+            </div>
+        </article>
+
+        <footer class="sc-footer sc-footer-card">
+            <nav>
+                <a href="/">홈</a>
+                <a href="/insta_follow_tracker/">팔로우 트래커</a>
+                <a href="/insta_message_search/">메시지 검색</a>
+                <a href="/metaShaper/">MetaShaper</a>
+                <a href="/DiskMap/">DiskMap</a>
+                <a href="/guides/">가이드</a>
+                <a href="/about.html">소개</a>
+                <a href="/privacy.html">개인정보처리방침</a>
+            </nav>
+            <p>© YEOM HOJOON · 사이트의 모든 도구는 업로드한 파일을 브라우저 안에서만 처리합니다.</p>
+        </footer>
+        <div class="mobile-spacer"></div>
 
         <nav class="mobile-nav">
             <button class="nav-item active" data-target="preview">
