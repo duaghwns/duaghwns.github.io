@@ -1,0 +1,342 @@
+[
+  {
+    "id": "tickit",
+    "name": "Tickit",
+    "category": "work",
+    "repo": "Tickit-releases",
+    "icon": "T",
+    "tone": "yellow",
+    "summary": "바탕화면에 붙여 두는, 할 일과 마감일.",
+    "description": "가볍게 떠 있는 스티커 메모에 할 일을 적고, 마감일과 완료 기록을 함께 관리합니다.",
+    "requirements": "Windows",
+    "platforms": [
+      "windows"
+    ],
+    "downloads": [
+      [
+        "Windows",
+        "Tickit-Setup-0.9.1.exe"
+      ]
+    ],
+    "version": "v0.9.1",
+    "published": "2026-11-02",
+    "releaseUrl": "https://github.com/duaghwns/Tickit-releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "Windows",
+        "name": "Tickit-Setup-0.9.1.exe",
+        "url": "https://github.com/duaghwns/Tickit-releases/releases/download/v0.9.1/Tickit-Setup-0.9.1.exe",
+        "size": 82123869
+      }
+    ],
+    "source": "https://github.com/duaghwns/Tickit-releases"
+  },
+  {
+    "id": "padkey",
+    "name": "PadKey",
+    "category": "work",
+    "repo": "PadKey-Releases",
+    "icon": "/assets/portfolio/padkey.png",
+    "tone": "gray",
+    "summary": "트랙패드의 모서리까지 나답게.",
+    "description": "모서리 클릭과 여러 손가락 제스처에 창 분할, 단축키, 앱 실행을 연결합니다.",
+    "requirements": "macOS 26+",
+    "platforms": [
+      "macos"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "PadKey.zip"
+      ]
+    ],
+    "version": "v1.0.0",
+    "published": "2026-10-18",
+    "releaseUrl": "https://github.com/duaghwns/PadKey-Releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "PadKey.zip",
+        "url": "https://github.com/duaghwns/PadKey-Releases/releases/latest/download/PadKey.zip",
+        "size": 1374030
+      }
+    ],
+    "source": "https://github.com/duaghwns/PadKey-Releases"
+  },
+  {
+    "id": "claudeusagebar",
+    "name": "ClaudeUsageBar",
+    "category": "work",
+    "repo": "ClaudeUsageBar",
+    "icon": "C:",
+    "tone": "clay",
+    "summary": "Claude 사용량을 메뉴바에서 바로.",
+    "description": "세션·주간 사용률과 모델별 사용량, 리셋 시간을 확인하는 작은 메뉴바 앱입니다.",
+    "requirements": "macOS 13+ · Claude Code 로그인 필요",
+    "platforms": [
+      "macos"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "ClaudeUsageBar-1.0.5.dmg"
+      ]
+    ],
+    "version": "v1.0.5",
+    "published": "2026-03-21",
+    "releaseUrl": "https://github.com/duaghwns/ClaudeUsageBar/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "ClaudeUsageBar-1.0.5.dmg",
+        "url": "https://github.com/duaghwns/ClaudeUsageBar/releases/download/v1.0.5/ClaudeUsageBar-1.0.5.dmg",
+        "size": 227011
+      }
+    ],
+    "source": "https://github.com/duaghwns/ClaudeUsageBar"
+  },
+  {
+    "id": "hancut",
+    "name": "한컷",
+    "english": "Hancut",
+    "category": "photo",
+    "repo": "hancut-releases",
+    "icon": "/assets/portfolio/hancut.png",
+    "tone": "orange",
+    "summary": "수많은 사진에서, 가장 좋은 한 컷.",
+    "description": "비슷한 RAW·JPG 사진을 장면별로 묶고 베스트 컷을 추천합니다. 셀렉 결과는 XMP 별점으로 이어집니다.",
+    "requirements": "macOS 12+ · Apple Silicon · 첫 분석 시 모델 다운로드",
+    "platforms": [
+      "macos"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "Hancut-macos-arm64.zip"
+      ]
+    ],
+    "featured": true,
+    "version": "v0.1.1",
+    "published": "2026-11-09",
+    "releaseUrl": "https://github.com/duaghwns/hancut-releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "Hancut-macos-arm64.zip",
+        "url": "https://github.com/duaghwns/hancut-releases/releases/latest/download/Hancut-macos-arm64.zip",
+        "size": 335950277
+      }
+    ],
+    "source": "https://github.com/duaghwns/hancut-releases"
+  },
+  {
+    "id": "photosorter",
+    "name": "PhotoFolderSorter",
+    "category": "photo",
+    "repo": "PhotoFolderSorter-Releases",
+    "icon": "P",
+    "tone": "blue",
+    "summary": "촬영 폴더를 정돈하는 한 가지 방법.",
+    "description": "날짜·확장자별 정리, 고객 셀렉 비교와 RAW 추출, 일괄 이름 변경을 지원합니다.",
+    "requirements": "macOS 13+ · Windows 10/11 64비트",
+    "platforms": [
+      "macos",
+      "windows"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "PhotoFolderSorter-macOS-universal.zip"
+      ],
+      [
+        "Windows",
+        "PhotoFolderSorter-Windows-x64.zip"
+      ]
+    ],
+    "version": "v1.0.3",
+    "published": "2026-07-31",
+    "releaseUrl": "https://github.com/duaghwns/PhotoFolderSorter-Releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "PhotoFolderSorter-macOS-universal.zip",
+        "url": "https://github.com/duaghwns/PhotoFolderSorter-Releases/releases/latest/download/PhotoFolderSorter-macOS-universal.zip",
+        "size": 3819174
+      },
+      {
+        "label": "Windows",
+        "name": "PhotoFolderSorter-Windows-x64.zip",
+        "url": "https://github.com/duaghwns/PhotoFolderSorter-Releases/releases/latest/download/PhotoFolderSorter-Windows-x64.zip",
+        "size": 66966243
+      }
+    ],
+    "source": "https://github.com/duaghwns/PhotoFolderSorter-Releases"
+  },
+  {
+    "id": "metashaper",
+    "name": "MetaShaper",
+    "category": "photo",
+    "icon": "M",
+    "tone": "purple",
+    "summary": "사진의 촬영 정보를, 캡션 한 줄로.",
+    "description": "EXIF에서 카메라·렌즈·노출 정보를 읽어 캡션을 만들고, 나만의 프리셋으로 저장합니다.",
+    "requirements": "브라우저에서 실행",
+    "platforms": [
+      "web"
+    ],
+    "href": "/metaShaper/",
+    "source": "/metaShaper/"
+  },
+  {
+    "id": "fileorganizer",
+    "name": "File Organizer",
+    "category": "photo",
+    "repo": "file_organizer",
+    "icon": "F",
+    "tone": "sand",
+    "summary": "드래그해서 시작하는 사진 정리.",
+    "description": "JPG·RAW를 날짜나 확장자별로 나누고 파일 이름을 일괄 변경하는 초기 이미지 정리 도구입니다.",
+    "requirements": "macOS · Windows",
+    "platforms": [
+      "macos",
+      "windows"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "Image_Organizer_Installer.dmg"
+      ],
+      [
+        "Windows",
+        "image_organizer_v1.0.zip"
+      ]
+    ],
+    "legacy": true,
+    "version": "1.0.0",
+    "published": "2025-08-07",
+    "releaseUrl": "https://github.com/duaghwns/file_organizer/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "Image_Organizer_Installer.dmg",
+        "url": "https://github.com/duaghwns/file_organizer/releases/latest/download/Image_Organizer_Installer.dmg",
+        "size": 17380668
+      },
+      {
+        "label": "Windows",
+        "name": "image_organizer_v1.0.zip",
+        "url": "https://github.com/duaghwns/file_organizer/releases/latest/download/image_organizer_v1.0.zip",
+        "size": 15390487
+      }
+    ],
+    "source": "https://github.com/duaghwns/file_organizer"
+  },
+  {
+    "id": "neatline",
+    "name": "Neatline",
+    "category": "system",
+    "repo": "Neatline-releases",
+    "icon": "N",
+    "tone": "green",
+    "summary": "내 맥을 한눈에, 파일을 제자리에.",
+    "description": "디스크 지도, 폴더 구조 재구성, 자동 정리와 중복 찾기를 한곳에서. 적용할 항목은 미리 보고 고릅니다.",
+    "requirements": "macOS 14+ · Apple Silicon / Intel",
+    "platforms": [
+      "macos"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "Neatline.dmg"
+      ]
+    ],
+    "featured": true,
+    "version": "v1.0.6",
+    "published": "2026-11-06",
+    "releaseUrl": "https://github.com/duaghwns/Neatline-releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "Neatline.dmg",
+        "url": "https://github.com/duaghwns/Neatline-releases/releases/latest/download/Neatline.dmg",
+        "size": 13086388
+      }
+    ],
+    "source": "https://github.com/duaghwns/Neatline-releases"
+  },
+  {
+    "id": "diskmap",
+    "name": "DiskMap",
+    "category": "system",
+    "repo": "duaghwns.github.io",
+    "icon": "D",
+    "tone": "blue",
+    "summary": "무엇이 공간을 쓰는지, 한눈에.",
+    "description": "폴더 크기를 버블 맵으로 살펴보는 읽기 전용 도구입니다. Chrome·Edge에서 바로 실행할 수 있습니다.",
+    "requirements": "웹: Chrome·Edge · 다운로드: macOS / Windows",
+    "platforms": [
+      "web",
+      "macos",
+      "windows"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "DiskMap-macos.zip"
+      ],
+      [
+        "Windows",
+        "DiskMap-windows.zip"
+      ]
+    ],
+    "href": "/DiskMap/static/index.html",
+    "source": "/DiskMap/",
+    "version": "diskmap-v1.1",
+    "published": "2026-06-02",
+    "releaseUrl": "https://github.com/duaghwns/duaghwns.github.io/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "DiskMap-macos.zip",
+        "url": "https://github.com/duaghwns/duaghwns.github.io/releases/latest/download/DiskMap-macos.zip",
+        "size": 7847483
+      },
+      {
+        "label": "Windows",
+        "name": "DiskMap-windows.zip",
+        "url": "https://github.com/duaghwns/duaghwns.github.io/releases/latest/download/DiskMap-windows.zip",
+        "size": 8643746
+      }
+    ]
+  },
+  {
+    "id": "followtracker",
+    "name": "Instagram Follow Tracker",
+    "category": "social",
+    "icon": "↗",
+    "tone": "pink",
+    "summary": "팔로워와 팔로잉 사이의 관계.",
+    "description": "인스타그램 내보내기 데이터로 새 팔로워, 언팔로우와 맞팔 관계를 살펴봅니다.",
+    "requirements": "브라우저에서 실행 · 인스타그램 내보내기 파일 필요",
+    "platforms": [
+      "web"
+    ],
+    "href": "/insta_follow_tracker/",
+    "source": "/insta_follow_tracker/"
+  },
+  {
+    "id": "messageanalyzer",
+    "name": "Instagram Message Analyzer",
+    "category": "social",
+    "icon": "↔",
+    "tone": "green",
+    "summary": "지난 대화에서 필요한 순간 찾기.",
+    "description": "메시지 내역 ZIP을 열어 대화를 키워드로 검색하고 정렬합니다. 데이터는 브라우저에서 처리합니다.",
+    "requirements": "브라우저에서 실행 · 인스타그램 메시지 ZIP 필요",
+    "platforms": [
+      "web"
+    ],
+    "href": "/insta_message_search/",
+    "source": "/insta_message_search/"
+  }
+]
