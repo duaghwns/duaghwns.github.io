@@ -325,18 +325,18 @@
     "downloads": [
       [
         "macOS",
-        "Silnun-1.0.0.dmg"
+        "Silnun-1.0.1.dmg"
       ]
     ],
-    "version": "v1.0.0",
+    "version": "v1.0.1",
     "published": "2026-11-11",
     "releaseUrl": "https://github.com/duaghwns/Silnun-releases/releases/latest",
     "downloadLinks": [
       {
         "label": "macOS",
-        "name": "Silnun-1.0.0.dmg",
-        "url": "https://github.com/duaghwns/Silnun-releases/releases/download/v1.0.0/Silnun-1.0.0.dmg",
-        "size": 1126107
+        "name": "Silnun-1.0.1.dmg",
+        "url": "https://github.com/duaghwns/Silnun-releases/releases/download/v1.0.1/Silnun-1.0.1.dmg",
+        "size": 1312201
       }
     ],
     "source": "https://github.com/duaghwns/Silnun-releases"
