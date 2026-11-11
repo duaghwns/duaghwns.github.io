@@ -236,7 +236,7 @@
     "name": "Neatline",
     "category": "system",
     "repo": "Neatline-releases",
-    "icon": "N",
+    "icon": "/assets/portfolio/neatline.png",
     "tone": "green",
     "summary": "내 맥을 한눈에, 파일을 제자리에.",
     "description": "디스크 지도, 폴더 구조 재구성, 자동 정리와 중복 찾기를 한곳에서. 적용할 항목은 미리 보고 고릅니다.",
