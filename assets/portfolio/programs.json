@@ -310,6 +310,38 @@
     ]
   },
   {
+    "id": "silnun",
+    "name": "실눈",
+    "category": "system",
+    "repo": "Silnun-releases",
+    "icon": "/assets/portfolio/silnun.png",
+    "tone": "gray",
+    "summary": "자리 비운 사이, 내 맥을 지켜보는 눈.",
+    "description": "단축키로 감시를 켜 두면 누가 맥을 만질 때 전면 카메라로 찍습니다. 찍힌 사진은 폰으로 받거나, 찍힌 사람에게 경고로 보여줄 수 있습니다.",
+    "requirements": "macOS 14+ · Apple Silicon / Intel",
+    "platforms": [
+      "macos"
+    ],
+    "downloads": [
+      [
+        "macOS",
+        "Silnun-1.0.0.dmg"
+      ]
+    ],
+    "version": "v1.0.0",
+    "published": "2026-11-11",
+    "releaseUrl": "https://github.com/duaghwns/Silnun-releases/releases/latest",
+    "downloadLinks": [
+      {
+        "label": "macOS",
+        "name": "Silnun-1.0.0.dmg",
+        "url": "https://github.com/duaghwns/Silnun-releases/releases/download/v1.0.0/Silnun-1.0.0.dmg",
+        "size": 1126107
+      }
+    ],
+    "source": "https://github.com/duaghwns/Silnun-releases"
+  },
+  {
     "id": "followtracker",
     "name": "Instagram Follow Tracker",
     "category": "social",
